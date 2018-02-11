@@ -1,0 +1,32 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{rhdx vignette}
+%\VignetteEncoding{UTF-8}
+-->
+
+
+
+rhdx vignette
+==============
+
+## Install
+
+Development version from GitLab
+
+```{r, eval = FALSE}
+devtools::install_git("https://gitlab.dickoa/rhdx")
+```
+
+
+```{r, eval = FALSE}
+library("rhdx")
+```
+
+To set one or both, run:
+
+
+```{r, eval = FALSE}
+# HDX production server
+rhdx_setup(hdx_site = "prod", read_only = TRUE)
+```
+

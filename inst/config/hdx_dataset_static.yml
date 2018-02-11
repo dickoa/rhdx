@@ -1,0 +1,10 @@
+license_id: "hdx_others"
+subnational: 1
+notes: "Dataset about cars and I can use Markdown syntax"
+caveats: "Not an exhaustive list"
+methodology: "Other"
+methodology_other: "It's in the manual"
+dataset_source: "Gondwana NSO"
+package_creator: "dickoah"
+private: FALSE
+

@@ -1,0 +1,29 @@
+Package: rhdx
+Title: Interact with the HDX platform and get data from HDX
+Description: HDX interface for R
+Version: 0.0.0.9000
+Authors@R: person("Dicko", "Ahmadou", email="dicko.ahmadou@gmail.com", role = c("aut", "cre"))
+License: MIT + file LICENSE
+LazyData: true
+URL: https://gitlab.com/dickoa/rhdx
+BugReports: https://gitlab.com/dickoa/rhdx/issues
+VignetteBuilder: knitr
+Depends: DBI (>= 0.3.1)
+Imports:
+    ckanr,
+    methods,
+    stats,
+    utils,
+    httr (>= 1.0.0),
+    jsonlite (>= 0.9.17),
+    dplyr (>= 0.5.0),
+    magrittr
+Suggests:
+    knitr,
+    maptools,
+    sf,
+    readxl,
+    testthat,
+    xml2,
+    lazyeval
+RoxygenNote: 6.0.1.9000
