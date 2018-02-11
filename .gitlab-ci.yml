@@ -1,0 +1,12 @@
+pages:
+  stage: deploy
+  image: rocker/r-base:latest
+  script:
+    - Rscript -e 'install.packages("devtools")'
+    - Rscript -e 'devtools::install_dev_deps()'
+    - Rscript -e 'devtools::install_github("hadley/pkgdown")'
+    - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhealthsites")'
+    - Rscript -e 'pkgdown::build_site(path = "public")'
+  artifacts:
+    paths:
+    - public
