@@ -49,7 +49,7 @@ Configuration <- R6::R6Class(
   "Configuration",
   private = list(
     remoteclient = NULL,
-    static = new.env(hash = TRUE, parent = emptyenv())
+    static = new.env()
   ),
   public = list(
     hdx_site = NULL,

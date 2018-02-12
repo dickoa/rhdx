@@ -79,6 +79,9 @@ Resource <- R6::R6Class(
         filename <- basename(self$data$url)
       download.file(url = self$data$url, destfile = file.path(folder, filename), mode = "wb")
     },
+    read_session = function() {
+      
+    },
     get_dataset = function() {
       package_id <- self$data$package_id
       if (is.null(package_id)) {

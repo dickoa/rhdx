@@ -47,10 +47,11 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-Development version
+This package is not on CRAN and to install the development version, you will also need the development version of the R package `crul`.
 
 ```{r}
-install.packages("devtools")
+## install.packages("devtools")
+devtools::install_github("ropensci/crul")
 devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
 ## rhdx tutorial
@@ -110,7 +111,7 @@ resources[[1]]$download()
 ## Future dev
 ### Develop all `create_in_hdx` methods
 ### Add tidy tools to easily get data
-### Rstudio Add-in to browse data interactively
+### Shiny apps amd Rstudio add-in to browse and select data interactively
 
 ## Meta
 
