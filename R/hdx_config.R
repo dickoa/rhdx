@@ -49,7 +49,7 @@ Configuration <- R6::R6Class(
   "Configuration",
   private = list(
     remoteclient = NULL,
-    static = new.env()
+    static = .rhdx_env
   ),
   public = list(
     hdx_site = NULL,
@@ -166,7 +166,7 @@ Configuration$read <- function() {
   conf <- Configuration$new()
   conf$read()
 }
-  
+
 #' @export
 #' @aliases Configuration
 rhdx_setup <- function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, configuration = NULL, ...) {
