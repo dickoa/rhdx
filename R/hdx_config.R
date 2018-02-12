@@ -59,7 +59,7 @@ Configuration <- R6::R6Class(
     read_only = TRUE,
     default_hdx_key_file = "~/.hdxkey",
     data = list(),
-    initialize = function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL, ...) {
+    initialize = function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL) {
       ## if (is.null(project_config) & is.null(hdx_config_yaml)) stop("More than one HDX configuration")
       if (is.null(hdx_config) & is.null(hdx_config_yaml)) {
         hdx_config <- yaml::yaml.load_file(system.file("config", "hdx_configuration.yml", package = "rhdx"))
@@ -115,18 +115,19 @@ Configuration <- R6::R6Class(
         private$static$configuration
       }
     },
-    setup = function(configuration = NULL, ...) {
-      if (is.null(configuration)) {
-        private$static$configuration <- Configuration$new(...)
-      } else {
+    setup = function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL, configuration = NULL) {
+      if (!is.null(configuration)) {
+        if (!inherits(configuration, "Configuration")) stop("Not a 'Configuration' object!")
         private$static$configuration <- configuration        
+      } else {
+        private$static$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_key_file = hdx_key_file, hdx_config = hdx_config, hdx_config_yaml =  hdx_config_yaml, hdx_config_json = hdx_config_json)
       }
     },
-    create = function(configuration = NULL, ...) {
+    create = function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL, configuration = NULL) {
       if (!is.null(private$static$configuration)) {
         stop("Configuration already created! You can use Configuration$setup or rhdx_setup to modify the configuration")
       } else {
-        self$setup(configuration, ...)
+        self$setup(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_key_file = hdx_key_file, hdx_config = hdx_config, hdx_config_yaml =  hdx_config_yaml, hdx_config_json = hdx_config_json, configuration = configuration)
       }
     },
     delete = function() {
@@ -144,15 +145,16 @@ Configuration <- R6::R6Class(
 
 
 #' @aliases Configuration
-Configuration$create <- function(configuration = NULL, ...) {
+Configuration$create <- function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL, configuration = NULL) {
   conf <- Configuration$new()
-  conf$create(configuration = configuration, ...)
+  conf$create(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_key_file = hdx_key_file, hdx_config = hdx_config, hdx_config_yaml =  hdx_config_yaml, hdx_config_json = hdx_config_json, configuration = configuration)
 }
-  
+
+
 #' @aliases Configuration
-Configuration$setup <- function(configuration = NULL, ...) {
+Configuration$setup <- function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL, configuration = NULL) {
   conf <- Configuration$new()
-  conf$setup(configuration = configuration, ...)
+  conf$setup(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_key_file = hdx_key_file, hdx_config = hdx_config, hdx_config_yaml =  hdx_config_yaml, hdx_config_json = hdx_config_json, configuration = configuration)
 }
 
 #' @aliases Configuration

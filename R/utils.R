@@ -6,16 +6,19 @@ check4X <- function(x) {
   }
 }
 
-read_sheet <- function(path, sheet, format = c("xlsx", "xls")) {
+read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   check4X("readxl")
   if (is.null(sheet)) {
     sheet <- readxl::excel_sheets(path)[[1]]
     cat("reading sheet: ", sheet, "\n")
   }
   format <- match.arg(format)
-  if (format == "xls")
-    readxl::read_xls(path, sheet = sheet)
-  readxl::read_xlsx(path, sheet = sheet)
+  if (format == "xls") {
+    df <- readxl::read_xls(path, sheet = sheet)
+  } else {
+    df <- readxl::read_xlsx(path, sheet = sheet)
+  }
+  df
 }
 
 read_spatial <- function(path, layer) {

@@ -81,8 +81,8 @@ Resource <- R6::R6Class(
       download.file(url = self$data$url, destfile = path, mode = "wb", ...)
       invisible(path)
     },
-    read_session = function(sheet = path, layer = NULL, folder = getwd(), json_simplifyVector = TRUE) {
-      path <- invisible(self$download(folder = folder, quiet = TRUE))
+    read_session = function(sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = TRUE) {
+      path <- self$download(folder = folder, quiet = TRUE)
       format <- self$get_file_type()
       switch(
         format,
@@ -90,19 +90,19 @@ Resource <- R6::R6Class(
           check4X("readr")
           readr::read_csv(path, comment = "#")
         },
-        excel = read_sheet(path, sheet, format = "xlsx"),
-        xlsx = read_sheet(path, sheet, format = "xlsx"),
-        xls = read_sheet(path, sheet, format = "xls"),
+        excel = read_sheet(path = path, sheet = sheet, format = "xlsx"),
+        xlsx = read_sheet(path = path, sheet = sheet, format = format),
+        xls = read_sheet(path = path, sheet = sheet, format = format),
         json = {
           check4X("jsonlite")
           jsonlite::fromJSON(path, simplifyVector = simplifyVector)
         },
         geojson = read_spatial(path, layer),
-        `zipped shapefile` = read_spatial(path, layer),
-        `zipped geodatabase` = read_spatial(path, layer),
-        `zipped geopackage` = read_spatial(path, layer),
-        kmz = read_spatial(path, layer),
-        `zipped kml` = read_spatial(path, layer))
+        `zipped shapefile` = read_spatial(path = layer, layer = layer),
+        `zipped geodatabase` = read_spatial(path = layer, layer = layer),
+        `zipped geopackage` = read_spatial(path = path, layer = layer),
+        kmz = read_spatial(path = path, layer = layer),
+        `zipped kml` = read_spatial(path = path, layer = layer))
     },
     get_dataset = function() {
       package_id <- self$data$package_id
