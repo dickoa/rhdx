@@ -23,66 +23,57 @@ Development version
     install.packages("devtools")
     devtools::install_git("https://gitlab.com/dickoa/rhdx")
 
-    library('rhdx')
+rhdx tutorial
+-------------
 
-Note: the default base CKAN URL is set to
-<http://data.techno-science.ca/>. Functions requiring write permissions
-in CKAN additionally require a privileged CKAN API key. You can change
-this using `rhdx_setup()`, or change the URL using the `url` parameter
-in each function call. To set one or both, run:
+    library("rhdx")
 
-    Configuration$create(prod = "demo") # restores default CKAN url to http://data.techno-science.ca/
+    Configuration$create(hdx_site = "test")
+    Configuration$read()
+    ## <HDX Configuration> 
+    ##   HDX site: test
+    ##   HDX site url: https://test-data.humdata.org/
+    ##   HDX API key: 
 
-    rhdx_setup(prod = "demo") # restores default CKAN url to http://data.techno-science.ca/
+    datasets <- Dataset$search_in_hdx("ACLED", rows = 1)
+    datasets
+    ## [[1]]
+    ## <HDX Dataset> ac9f19f0-132e-46e6-9a9c-7d29dca8a469 
+    ##   Title: ACLED Conflict Data for Algeria
+    ##   Name: acled-conflict-data-for-algeria
+    ##   Date: 01/01/1997-12/31/2015
+    ##   Tags (up to 5): conflict, political violence, protests, war
+    ##   Locations (up to 5): dza
+    ##   Resources (up to 5): Algeria.xlsx
+
+    resources <- datasets[[1]]$get_resources()
+    resources
+    ## [[1]]
+    ## <HDX Resource> 87ce2238-9049-4fb7-aa53-3c9d44b6183b 
+    ##   Name: Algeria.xlsx
+    ##   Description: 
+    ##   Size: 
+    ##   Format: XLSX
+
+    resources[[1]]$download()
+    ## trying URL 'http://www.acleddata.com/wp-content/uploads/2016/01/Eritrea.xlsx'
+    ## Content type 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' length 69983 bytes (68 KB)
+    ## ==================================================
+    ## downloaded 68 KB
 
 rhdx package API
 ----------------
 
-There are a suite of CKAN things (package, resource, etc.) that each
-have a set of functions in this package. The functions for each CKAN
-thing have an S3 class that is returned from most functions, and can be
-passed to most other functions (this also facilitates piping). The
-following is a list of the function groups for certain CKAN things, with
-the prefix for the functions that work with that thing, and the name of
-the S3 class:
-
 -   Configuration - `create()` - `setup` - `read`
 -   Dataset - `read_from_hdx` - `search_in_hdx`
--   Resource - `download` - `get_dataset` - `search_in_hdx`
-
-The R6 class objects all look very similar; for example:
-
-    <HDX Resource> 8abc92ad-7379-4fb8-bba0-549f38a26ddb
-      Name: Data From Digital Portal
-      Description:
-      Size:
-      Format: CSV
-
-All classes state the type of object, have the ID to the right of the
-type, then have a varying set of key-value fields deemed important. This
-printed object is just a summary of an R list, so you can index to
-specific values (e.g., `result$description`). If you feel there are
-important fields left out of these printed summaries, let us know.
-
-> note: Many examples are given in brief for readme brevity
-
-Packages
---------
-
-List packages
-
-    Dataset$search_in_hdx(query = "Somalia IDP", rows = 5L)
-
-### The National Geothermal Data System
-
-Website: <http://geothermaldata.org/>
-
-    rhdx_setup(hdx_site = "prod")
-    x <- Dataset$search_in_hdx(q = '*:*', rows = 1)
-    x$results
+-   Resource - `download` - `read_from_hdx` - `search_in_hdx`
 
 Future dev
 ----------
+
+### Develop all `create_in_hdx` methods
+
+### Add tidy tools to easily get data
 
 ### Rstudio Add-in to browse data interactively
 
