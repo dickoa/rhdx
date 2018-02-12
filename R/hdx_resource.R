@@ -90,9 +90,9 @@ Resource <- R6::R6Class(
           check4X("readr")
           readr::read_csv(path, comment = "#")
         },
-        excel = read_sheet(path, sheet),
-        xlsx = read_sheet(path, sheet),
-        xls = read_sheet(path, sheet),
+        excel = read_sheet(path, sheet, format = "xlsx"),
+        xlsx = read_sheet(path, sheet, format = "xlsx"),
+        xls = read_sheet(path, sheet, format = "xls"),
         json = {
           check4X("jsonlite")
           jsonlite::fromJSON(path, simplifyVector = simplifyVector)
