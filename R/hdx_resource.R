@@ -74,13 +74,35 @@ Resource <- R6::R6Class(
     touch = function() {
       private$configuration$call_remoteclient("resource_patch", list(id = self$data$id))
     },
-    download = function(folder = getwd(), filename = NULL) {
+    download = function(folder = getwd(), filename = NULL, ...) {
       if (is.null(filename))
         filename <- basename(self$data$url)
-      download.file(url = self$data$url, destfile = file.path(folder, filename), mode = "wb")
+      path <- file.path(folder, filename)
+      download.file(url = self$data$url, destfile = path, mode = "wb", ...)
+      invisible(path)
     },
-    read_session = function() {
-      
+    read_session = function(sheet = path, layer = NULL, folder = getwd(), json_simplifyVector = TRUE) {
+      path <- invisible(self$download(folder = folder, quiet = TRUE))
+      format <- self$get_file_type()
+      switch(
+        format,
+        csv = {
+          check4X("readr")
+          readr::read_csv(path, comment = "#")
+        },
+        excel = read_spatial(path, sheet),
+        xlsx = read_spatial(path, sheet),
+        xls = read_spatial(path, sheet),
+        json = {
+          check4X("jsonlite")
+          jsonlite::fromJSON(path, simplifyVector = simplifyVector)
+        },
+        geojson = read_spatial(path, layer),
+        `zipped shapefile` = read_spatial(path, layer),
+        `zipped geodatabase` = read_spatial(path, layer),
+        `zipped geopackage` = read_spatial(path, layer),
+        kmz = read_spatial(path, layer),
+        `zipped kml` = read_spatial(path, layer))
     },
     get_dataset = function() {
       package_id <- self$data$package_id
@@ -89,9 +111,6 @@ Resource <- R6::R6Class(
       } else {
         Dataset$read_from_hdx(package_id)        
       }
-    },
-    delete_resource = function(resource, index = 1, ignore_dataset_id = FALSE) {
-      self$data[[index]] <- NULL
     },
     get_file_to_upload = function() {
       self$data$file_to_upload
@@ -115,7 +134,7 @@ Resource <- R6::R6Class(
       if (is.null(configuration))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_search", list(query = query, ...))
-      list_of_rs <- purrr::map(res$result$results, ~ Resource$new(initial_data = ., configuration = configuration))
+      list_of_rs <- lapply(res$result$results, function(x) Resource$new(initial_data = x, configuration = configuration))
       list_of_rs
     },
     get_file_type = function() {
@@ -157,14 +176,13 @@ as_tibble.Resource <- function(x, ...) {
     resource_id = x$data$id,
     resource_name = x$data$name,
     resource_format = tolower(x$data$format),
-    resource_url = x$data$url
-  )
+    resource_url = x$data$url)
   df$resource <- list(x)
   df
 }
 
 #' @export
 #' @aliases Resource 
-as.list.Resource <- function(resource) {
-  resource$as_list()
+as.list.Resource <- function(x) {
+  x$as_list()
 }

@@ -65,9 +65,8 @@ Dataset <- R6::R6Class(
       key <- names(initial_data)
       self$init_resources()
       self$data <- initial_data
-      ## self$check_required_field()
       if ("resources" %in% key) {
-        self$resources <- purrr::map(self$data$resources, ~ Resource$new(initial_data = .x, configuration = configuration))
+        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration))
       }
     },
     init_resources = function() {
@@ -82,6 +81,10 @@ Dataset <- R6::R6Class(
     get_resources = function() {
       self$resources
     },
+    delete_resource = function(index = 1) {
+      self$data$resources[[index]] <- NULL
+      self$resources <- lapply(self$data$resources, function(x) Resource$new(x))
+    },
     search_in_hdx = function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
@@ -92,19 +95,19 @@ Dataset <- R6::R6Class(
                                limit = rows,
                                limit_chunk = page_size)
       suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"), list(q = query, ...)))
-      ds_list <- purrr::flatten(purrr::map(cc$parse(), ~ jsonlite::fromJSON(.x, simplifyVector = FALSE)$result$results))
-      ds_list <- purrr::map(ds_list, ~ Dataset$new(initial_data = .x, configuration = configuration))
+      ds_list <- unlist(lapply(cc$parse(), function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
+      ds_list <- lapply(ds_list, function(x) Dataset$new(initial_data = x, configuration = configuration))
       ds_list
     },
     update_from_yaml = function(hdx_dataset_static_yaml) {
       self$data <- yaml::yaml.load_file(hdx_dataset_static_yaml)
       if ("resources" %in% names(self$data))
-        self$resources <- purrr::map(self$data$resources, ~ Resource$new(initial_data = .x, configuration = configuration))
+        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration))
     },
     update_from_json = function(hdx_dataset_static_json) {
       self$data <- jsonlite::fromJSON(hdx_dataset_static_json, simplifyVector = FALSE)
       if ("resources" %in% names(self$data))
-        self$resources <- purrr::map(self$data$resources, ~ Resource$new(initial_data = .x, configuration = configuration))
+        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration))
     },
     get_configuration = function() {
       private$configuration
@@ -128,13 +131,13 @@ Dataset <- R6::R6Class(
       self$data$tags
     },
     add_tags = function(tags) {
-      self$data$tags <- purrr::map(tags, function(tag) list(names = tag))
+      self$data$tags <- lapply(tags, function(tag) list(names = tag))
     },
     get_locations = function() {
       self$data$groups
     },
     add_locations = function(locations) {
-      self$data$groups <- purrr::map(locations, function(location) list(names = location))
+      self$data$groups <- lapply(locations, function(location) list(names = location))
     },
     get_maintainer = function() {
       self$data$maintainer
@@ -209,10 +212,16 @@ Dataset$search_in_hdx <- function(query = "*:*", rows = 10L, page_size = 1000L, 
 }
   
 #' @aliases Dataset 
-Dataset$count <- function(configuration = NULL, ...) {
+Dataset$count <- function(configuration = NULL) {
   ds <- Dataset$new()
   ds$count(configuration = configuration)
 }
+
+#' @export
+#' @aliases Dataset 
+count_datasets <- function(configuration = NULL)
+  Dataset$count(configuration = configuration)
+
 
 #' @export
 #' @aliases Dataset 

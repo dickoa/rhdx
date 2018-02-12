@@ -1,5 +1,30 @@
 nc <- function(x) Filter(Negate(is.null), x)
 
+check4X <- function(x) {
+  if (!requireNamespace(x, quietly = TRUE)) {
+    stop("Please install ", x, call. = FALSE)
+  }
+}
+
+read_sheet <- function(path, sheet) {
+  check4X("readxl")
+  if (is.null(sheet)) {
+    sheet <- readxl::excel_sheets(path)[[1]]
+    cat("reading sheet: ", sheet, "\n")
+  }
+  readxl::read_excel(path, sheet = sheet)
+}
+
+read_spatial <- function(path, layer) {
+  check4X("sf")
+  path <- file.path("/vsizip", path)
+  if (is.null(layer)) {
+    layer <- sf::st_layers(path)[[1]]
+    message("reading layer: ", layer, "\n")
+  }
+  sf::read_sf(path, layer = layer)
+}
+
 merge_list <- function (x, y, ...) {
   if (length(x) == 0) 
     return(y)
@@ -12,10 +37,11 @@ merge_list <- function (x, y, ...) {
   x
 }
 
+
 sift_res <- function(z, key = "name") {
   if (!is.null(z) && length(z) > 0) {
     if (!key %in% names(z)) key <- "name"
-    paste0(na.omit(purrr::map_chr(z, ~ .[[key]])[1:5]), collapse = ", ")
+    paste0(nc(vapply(z, "[[", key, FUN.VALUE = "character")[1:5]), collapse = ", ")
   } else {
     ""
   }

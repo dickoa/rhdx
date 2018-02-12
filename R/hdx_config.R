@@ -55,18 +55,18 @@ Configuration <- R6::R6Class(
     hdx_site = NULL,
     hdx_key = NULL,
     hdx_config = NULL,
-    n_dataset = NULL,
     project_config = NULL,
     read_only = TRUE,
     default_hdx_key_file = "~/.hdxkey",
     data = list(),
     initialize = function(hdx_site = c("prod", "test", "feature", "demo"), hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, hdx_config_yaml = NULL, hdx_config_json = NULL, ...) {
       ## if (is.null(project_config) & is.null(hdx_config_yaml)) stop("More than one HDX configuration")
-      if (is.null(hdx_config)) 
+      if (is.null(hdx_config) & is.null(hdx_config_yaml)) {
         hdx_config <- yaml::yaml.load_file(system.file("config", "hdx_configuration.yml", package = "rhdx"))
+      }
       self$data <- hdx_config
+      self$hdx_site <- hdx_site
       hdx_site <- paste0("hdx_", match.arg(hdx_site), "_site")
-      self$hdx_site <- gsub("hdx_(\\w+)_site", "\\1", hdx_site)
       if (!is.null(hdx_key) && !read_only) {
         self$hdx_key <- hdx_key
       }
@@ -75,7 +75,7 @@ Configuration <- R6::R6Class(
                                                   opts = list(http_version = 2)) ## http 1.1
     },
     get_credentials = function() {
-      purrr::map(self$data[[paste0("hdx_", self$hdx_site, "_site")]][c("username", "password")], function(x) if (is.null(x)) x else rawToChar(base64enc::base64decode(x)))
+      lapply(self$data[[paste0("hdx_", self$hdx_site, "_site")]][c("username", "password")], function(x) if (is.null(x)) x else rawToChar(base64enc::base64decode(x)))
     },
     set_read_only = function() {
       self$hdx_key = NULL
@@ -91,14 +91,14 @@ Configuration <- R6::R6Class(
       self$hdx_key <- readLines(path)
     },
     set_hdx_site = function(hdx_site = c("prod", "test", "feature", "demo")) {
+      self$hdx_site <-  hdx_site
       hdx_site <- paste0("hdx_", match.arg(hdx_site), "_site")
-      self$hdx_site <-  gsub("hdx_(\\w+)_site", "\\1", hdx_site)
       private$remoteclient <- crul::HttpClient$new(url = self$data[[hdx_site]]$url, headers = list(`X-CKAN-API-Key` = self$hdx_key, `Content-Type` = "application/json"))
     },
     get_hdx_site = function() {
-      gsub("hdx_(\\w+)_site", "\\1", self$hdx_site)
+      self$hdx_site
     },
-    get_hdx_url = function() {
+    get_hdx_site_url = function() {
       self$data[[paste0("hdx_", self$hdx_site, "_site")]]$url
     },
     get_remoteclient = function() {
@@ -124,7 +124,7 @@ Configuration <- R6::R6Class(
     },
     create = function(configuration = NULL, ...) {
       if (!is.null(private$static$configuration)) {
-        stop("Configuration already created!")
+        stop("Configuration already created! You can use Configuration$setup or rhdx_setup to modify the configuration")
       } else {
         self$setup(configuration, ...)
       }
