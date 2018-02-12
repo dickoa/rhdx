@@ -51,7 +51,7 @@ This package is not on CRAN and to install the development version, you will als
 
 ```{r}
 ## install.packages("devtools")
-devtools::install_github("ropensci/crul")
+devtools::install_github("ropensci/crul") ## need the dev versio > 0.5.0
 devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
 ## rhdx tutorial
@@ -67,6 +67,21 @@ Configuration$read()
 ##   HDX site: test
 ##   HDX site url: https://test-data.humdata.org/
 ##   HDX API key: 
+```
+
+```{r}
+dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
+dataset
+## <HDX Dataset> 6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d 
+##   Title: ACLED Conflict Data for Africa (Realtime - 2016)
+##   Name: acled-conflict-data-for-africa-realtime-2016
+##   Date: 12/03/2016
+##   Tags (up to 5): conflict, political violence, protests, war
+##   Locations (up to 5): dza, ago, ben, bwa, bfa
+##   Resources (up to 5): ACLED-All-Africa-File_20160101-to-date.xlsx, ACLED-All-Africa-File_20160101-to-date_csv.zip
+
+dataset$get_dataset_date()
+## [1] "12/03/2016"
 ```
 
 ```{r}
@@ -109,9 +124,9 @@ resources[[1]]$download()
 + Resource - `download` - `read_from_hdx` - `search_in_hdx`
 
 ## Future dev
-### Develop all `create_in_hdx` methods
-### Add tidy tools to easily get data
-### Shiny apps amd Rstudio add-in to browse and select data interactively
+- Develop all `create_in_hdx` methods
+- Add tidy tools to easily get data
+- Shiny apps amd Rstudio add-in to browse and select data interactively
 
 ## Meta
 
