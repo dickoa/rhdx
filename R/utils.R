@@ -41,7 +41,7 @@ merge_list <- function (x, y, ...) {
 sift_res <- function(z, key = "name") {
   if (!is.null(z) && length(z) > 0) {
     if (!key %in% names(z)) key <- "name"
-    paste0(nc(vapply(z, "[[", key, FUN.VALUE = "character")[1:5]), collapse = ", ")
+    paste0(na.omit(vapply(z, "[[", key, FUN.VALUE = "character")[1:5]), collapse = ", ")
   } else {
     ""
   }
