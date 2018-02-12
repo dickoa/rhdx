@@ -227,7 +227,7 @@ as_tibble.Dataset <- function(x, ...) {
                   dataset_name = x$data$name,
                   dataset_date = x$get_dataset_date(),
                   requestable = x$is_requestable(),
-                  locations_name = purrr::map(x$get_location(), ~ .[["name"]]),
+                  locations_name = purrr::map(x$get_locations(), ~ .[["name"]]),
                   organization_name = x$data$organization$name)  
   df$resources_format <- list(tolower(purrr::map_chr(x$get_resources(), function(l) l$get_file_type())))    
   df$tags_name <- list(tolower(purrr::map_chr(x$get_tags(), function(l) l$name)))
