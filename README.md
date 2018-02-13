@@ -18,9 +18,11 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 Installation
 ------------
 
-Development version
+This package is not on CRAN and to install the development version, you
+will also need the development version of the R package `crul`.
 
-    install.packages("devtools")
+    ## install.packages("devtools")
+    devtools::install_github("ropensci/crul") ## need the dev versio > 0.5.0
     devtools::install_git("https://gitlab.com/dickoa/rhdx")
 
 rhdx tutorial
@@ -34,6 +36,19 @@ rhdx tutorial
     ##   HDX site: test
     ##   HDX site url: https://test-data.humdata.org/
     ##   HDX API key: 
+
+    dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
+    dataset
+    ## <HDX Dataset> 6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d 
+    ##   Title: ACLED Conflict Data for Africa (Realtime - 2016)
+    ##   Name: acled-conflict-data-for-africa-realtime-2016
+    ##   Date: 12/03/2016
+    ##   Tags (up to 5): conflict, political violence, protests, war
+    ##   Locations (up to 5): dza, ago, ben, bwa, bfa
+    ##   Resources (up to 5): ACLED-All-Africa-File_20160101-to-date.xlsx, ACLED-All-Africa-File_20160101-to-date_csv.zip
+
+    dataset$get_dataset_date()
+    ## [1] "12/03/2016"
 
     datasets <- Dataset$search_in_hdx("ACLED", rows = 1)
     datasets
@@ -61,6 +76,36 @@ rhdx tutorial
     ## ==================================================
     ## downloaded 68 KB
 
+    dplyr::glimpse(resources[[1]]$read_session())
+    ## reading sheet:  Sheet1 
+    ## Observations: 3,698
+    ## Variables: 25
+    ## $ GWNO             <dbl> 615, 615, 615, 615, 615, 615, 615, ...
+    ## $ EVENT_ID_CNTY    <chr> "1ALG", "2ALG", "3ALG", "4ALG", "5A...
+    ## $ EVENT_ID_NO_CNTY <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...
+    ## $ EVENT_DATE       <dttm> 1997-01-04, 1997-01-05, 1997-01-06...
+    ## $ YEAR             <dbl> 1997, 1997, 1997, 1997, 1997, 1997,...
+    ## $ TIME_PRECISION   <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+    ## $ EVENT_TYPE       <chr> "Violence against civilians", "Viol...
+    ## $ ACTOR1           <chr> "GIA: Armed Islamic Group", "GIA: A...
+    ## $ ALLY_ACTOR_1     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+    ## $ INTER1           <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,...
+    ## $ ACTOR2           <chr> "Civilians (Algeria)", "Civilians (...
+    ## $ ALLY_ACTOR_2     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+    ## $ INTER2           <dbl> 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,...
+    ## $ INTERACTION      <dbl> 27, 27, 27, 27, 27, 27, 27, 27, 27,...
+    ## $ COUNTRY          <chr> "Algeria", "Algeria", "Algeria", "A...
+    ## $ ADMIN1           <chr> "Blida", "Tipaza", "Tipaza", "Alger...
+    ## $ ADMIN2           <chr> "Blida", "Douaouda", "Hadjout", "Bo...
+    ## $ ADMIN3           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA,...
+    ## $ LOCATION         <chr> "Blida", "Douaouda", "Hadjout", "Al...
+    ## $ LATITUDE         <dbl> 36.46860, 36.67250, 36.51390, 36.75...
+    ## $ LONGITUDE        <dbl> 2.828900, 2.789400, 2.417800, 3.041...
+    ## $ GEO_PRECISION    <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+    ## $ SOURCE           <chr> "www.algeria-watch.org", "www.alger...
+    ## $ NOTES            <chr> "4 January: 16 citizens were murder...
+    ## $ FATALITIES       <dbl> 16, 18, 23, 20, 5, 14, 43, 54, 30, ...
+
 rhdx package API
 ----------------
 
@@ -71,11 +116,10 @@ rhdx package API
 Future dev
 ----------
 
-### Develop all `create_in_hdx` methods
-
-### Add tidy tools to easily get data
-
-### Rstudio Add-in to browse data interactively
+-   Develop all `create_in_hdx` methods
+-   Add tidy tools to easily get data
+-   Shiny apps amd Rstudio add-in to browse and select data
+    interactively
 
 Meta
 ----
