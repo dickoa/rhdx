@@ -1,32 +1,26 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{rhdx vignette}
-%\VignetteEncoding{UTF-8}
--->
+---
+title: "Tidy data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tidy data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
+## Humanitarian Data Exchange platform
 
-
-rhdx vignette
-==============
-
-## Install
+The Humanitarian Data Exchange is the UN OCHA platform for share 
 
 Development version from GitLab
 
 ```{r, eval = FALSE}
-devtools::install_git("https://gitlab.dickoa/rhdx")
+devtools::install_github("ropensci/crul")
+devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
 
 
-```{r, eval = FALSE}
+```{r}
 library("rhdx")
-```
-
-To set one or both, run:
-
-
-```{r, eval = FALSE}
-# HDX production server
 rhdx_setup(hdx_site = "prod", read_only = TRUE)
 ```
 

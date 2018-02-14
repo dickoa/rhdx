@@ -25,7 +25,7 @@ read_spatial <- function(path, layer) {
   check4X("sf")
   path <- file.path("/vsizip", path)
   if (is.null(layer)) {
-    layer <- sf::st_layers(path)[[1]]
+    layer <- sf::st_layers(path)[[1]][1]
     message("reading layer: ", layer, "\n")
   }
   sf::read_sf(path, layer = layer)
