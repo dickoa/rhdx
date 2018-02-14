@@ -21,14 +21,16 @@ read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   df
 }
 
-read_spatial <- function(path, layer) {
+read_spatial <- function(path = NULL, layer = NULL, zipped = TRUE) {
   check4X("sf")
-  path <- file.path("/vsizip", path)
+  if (zipped)
+    path <- file.path("/vsizip", path)
   if (is.null(layer)) {
+    ## read the first layer by default
     layer <- sf::st_layers(path)[[1]][1]
     message("reading layer: ", layer, "\n")
   }
-  sf::read_sf(path, layer = layer)
+  sf::read_sf(dsn = path, layer = layer)
 }
 
 merge_list <- function (x, y, ...) {
