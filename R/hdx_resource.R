@@ -172,11 +172,25 @@ Resource$search_in_hdx <- function(query = "*:*", configuration = NULL, ...) {
 #' @export
 #' @aliases Resource 
 as_tibble.Resource <- function(x, ...) {
-  df <- data_frame(
+  df <- tibble::data_frame(
     resource_id = x$data$id,
     resource_name = x$data$name,
     resource_format = tolower(x$data$format),
     resource_url = x$data$url)
+  df$resource <- list(x)
+  df
+}
+
+
+#' @export
+#' @aliases Resource 
+as.data.frame.Resource <- function(x, ...) {
+  df <- data.frame(
+    resource_id = x$data$id,
+    resource_name = x$data$name,
+    resource_format = tolower(x$data$format),
+    resource_url = x$data$url,
+    stringsAsFactors = FALSE)
   df$resource <- list(x)
   df
 }

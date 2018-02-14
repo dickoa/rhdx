@@ -29,6 +29,7 @@ knitr::knit_hooks$set(output = function(x, options) {
 
 knitr::opts_chunk$set(
   comment = "#>",
+  echo = TRUE,
   collapse = TRUE,
   eval = FALSE,
   warning = FALSE,
@@ -116,6 +117,8 @@ resources[[1]]$download()
 ## downloaded 68 KB
 ```
 
+We can also read the resources directly in R
+
 ```{r}
 dplyr::glimpse(resources[[1]]$read_session())
 ## reading sheet:  Sheet1 
@@ -147,6 +150,7 @@ dplyr::glimpse(resources[[1]]$read_session())
 ## $ NOTES            <chr> "4 January: 16 citizens were murder...
 ## $ FATALITIES       <dbl> 16, 18, 23, 20, 5, 14, 43, 54, 30, ...
 ```
+so far the following format are supported: `csv`, `xlsx`, `xls`, `zipped shapefile`,  `zipped kml` `kmz` `zipped geodatabase` and `zipped geopackage`
 
 ## rhdx package API
 

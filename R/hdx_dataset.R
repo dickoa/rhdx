@@ -81,9 +81,27 @@ Dataset <- R6::R6Class(
     get_resources = function() {
       self$resources
     },
-    delete_resource = function(index = 1) {
+    add_resource = function(resource, ignore_dataset_id = FALSE) {
+      if (!inherits(resource, "Resource")) stop("Not of class `Resource` please you `Resource$new()`!")
+      if ("package_id" %in% names(resource$data)) stop("Resource already have a dataset id")
+      if (length(self$data$resources) > 0) {
+        i <- self$data$num_resources
+        self$data$resources[[i + 1]] <- resource$data
+        self$resources[[i + 1]] <- Resource$new(resource$data)
+        self$data$num_resources <- self$data$num_resources + 1
+      } else {
+        self$data$resources[[1]] <- resource$data
+        self$resources <- list(Resource$new(resource$data))
+        self$data$num_resources <- 1L
+      }
+    },
+    delete_resource = function(index = 1L) {
+      n_resources <- self$data$num_resources
+      if (n_resources == 0) stop("No resources to delete!")
+      if (index > n_resources) stop("Just ", n_resources, "resource(s) available!")
       self$data$resources[[index]] <- NULL
-      self$resources <- lapply(self$data$resources, function(x) Resource$new(x))
+      self$resources[[index]] <- NULL
+      self$data$num_resources <- max(0, self$data$num_resources - 1)
     },
     search_in_hdx = function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
       if (is.null(configuration))
@@ -225,21 +243,39 @@ count_datasets <- function(configuration = NULL)
 
 #' @export
 #' @aliases Dataset 
-as.list.Dataset <- function(dataset) {
-  dataset$as_list()
+as.list.Dataset <- function(x) {
+  x$as_list()
 }
 
 #' @export
 #' @aliases Dataset 
 as_tibble.Dataset <- function(x, ...) {
-  df <- data_frame(dataset_title = tolower(x$data$title),
+  df <- tibble::data_frame(dataset_title = tolower(x$data$title),
+                          dataset_name = x$data$name,
+                          dataset_date = x$get_dataset_date(),
+                          requestable = x$is_requestable(),
+                          locations_name = lapply(x$get_locations(), function(x) x$name),
+                          organization_name = x$data$organization$name)  
+  df$resources_format <- list(tolower(vapply(x$get_resources(), function(l) l$get_file_type(), FUN.VALUE = "")))    
+  df$tags_name <- list(tolower(vapply(x$get_tags(), function(l) l$name, FUN.VALUE = "")))
+  df$resources <- list(x$get_resources())
+  df$dataset <- list(x)
+  df  
+}
+
+
+#' @export
+#' @aliases Dataset 
+as.data.frame.Dataset <- function(x, ...) {
+  df <- data.frame(dataset_title = tolower(x$data$title),
                   dataset_name = x$data$name,
                   dataset_date = x$get_dataset_date(),
                   requestable = x$is_requestable(),
-                  locations_name = purrr::map(x$get_locations(), ~ .[["name"]]),
-                  organization_name = x$data$organization$name)  
-  df$resources_format <- list(tolower(purrr::map_chr(x$get_resources(), function(l) l$get_file_type())))    
-  df$tags_name <- list(tolower(purrr::map_chr(x$get_tags(), function(l) l$name)))
+                  locations_name = lapply(x$get_locations(), function(x) x$name),
+                  organization_name = x$data$organization$name,
+                  stringsAsFactors = FALSE)  
+  df$resources_format <- list(tolower(vapply(x$get_resources(), function(l) l$get_file_type(), FUN.VALUE = "")))    
+  df$tags_name <- list(tolower(vapply(x$get_tags(), function(l) l$name, FUN.VALUE = "")))
   df$resources <- list(x$get_resources())
   df$dataset <- list(x)
   df  

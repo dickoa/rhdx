@@ -76,6 +76,8 @@ rhdx tutorial
     ## ==================================================
     ## downloaded 68 KB
 
+We can also read the resources directly in R
+
     dplyr::glimpse(resources[[1]]$read_session())
     ## reading sheet:  Sheet1 
     ## Observations: 3,698
@@ -105,6 +107,10 @@ rhdx tutorial
     ## $ SOURCE           <chr> "www.algeria-watch.org", "www.alger...
     ## $ NOTES            <chr> "4 January: 16 citizens were murder...
     ## $ FATALITIES       <dbl> 16, 18, 23, 20, 5, 14, 43, 54, 30, ...
+
+so far the following format are supported: `csv`, `xlsx`, `xls`,
+`zipped shapefile`, `zipped kml` `kmz` `zipped geodatabase` and
+`zipped geopackage`
 
 rhdx package API
 ----------------
