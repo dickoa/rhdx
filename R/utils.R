@@ -21,7 +21,7 @@ read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   df
 }
 
-read_spatial <- function(path = NULL, layer = NULL, zipped = TRUE) {
+read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
   check4X("sf")
   if (zipped)
     path <- file.path("/vsizip", path)
@@ -32,6 +32,14 @@ read_spatial <- function(path = NULL, layer = NULL, zipped = TRUE) {
   }
   sf::read_sf(dsn = path, layer = layer)
 }
+
+read_raster <- function(path = NULL, layer = NULL, zipped = TRUE) {
+  check4X("raster")
+  if (zipped)
+    path <- file.path("/vsizip", path, layer)
+  raster::raster(path)
+}
+
 
 merge_list <- function (x, y, ...) {
   if (length(x) == 0) 

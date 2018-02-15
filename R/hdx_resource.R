@@ -97,10 +97,11 @@ Resource <- R6::R6Class(
           check4X("jsonlite")
           jsonlite::fromJSON(path, simplifyVector = simplifyVector)
         },
-        geojson = read_spatial(path, layer),
-        `zipped shapefile` = read_spatial(path = path, layer = layer),
-        `zipped geodatabase` = read_spatial(path = path, layer = layer, zipped = FALSE),
-        `zipped geopackage` = read_spatial(path = path, layer = layer),
+        geojson = read_vector(path, layer),
+        `zipped shapefile` = read_vector(path = path, layer = layer),
+        `zipped geodatabase` = read_vector(path = path, layer = layer, zipped = FALSE),
+        `zipped geopackage` = read_vector(path = path, layer = layer),
+        `zipped geotiff` = read_raster(path = path, layer = layer),
         kmz = read_spatial(path = path, layer = layer),
         `zipped kml` = read_spatial(path = path, layer = layer))
     },
