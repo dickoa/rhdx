@@ -96,7 +96,9 @@ Organization <- R6::R6Class(
     print = function(x, ...) {
       cat(paste0("<HDX Organization> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
-      cat("  Description: ", self$data$description, "\n", sep = "")
+      cat("  Display name: ", self$data$display_name, "\n", sep = "")
+      cat("  No. Datasets: ", self$data$package_count, "\n", sep = "")
+      cat("  No. Members: ", length(self$data$users), "\n", sep = "")
       invisible(self)
     }
   )
