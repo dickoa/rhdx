@@ -1,8 +1,23 @@
-rhdx
-=====
+---
+output:
+  github_document
+---
 
-```{r echo=FALSE}
-library("knitr")
+rhdx
+============
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  eval = FALSE,
+  fig.width = 10,
+  fig.path = "inst/img/",
+  comment = "#> ")
+
 hook_output <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set(output = function(x, options) {
    lines <- options$output.lines
