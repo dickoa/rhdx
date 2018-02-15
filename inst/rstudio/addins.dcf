@@ -1,0 +1,4 @@
+Name: Browse and search HDX 
+Description: Search dataset in HDX.
+Binding: searchHDX
+Interactive: true
