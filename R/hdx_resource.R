@@ -159,9 +159,9 @@ Resource <- R6::R6Class(
 )
 
 #' @aliases Resource 
-Resource$read_from_hdx <- function(identifier, configuration = NULL, ...) {
+Resource$read_from_hdx <- function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
-  rs$read_from_hdx(identifier, configuration = configuration, ...)
+  rs$read_from_hdx(identifier = NULL, configuration = configuration, ...)
 }
 
 #' @aliases Resource

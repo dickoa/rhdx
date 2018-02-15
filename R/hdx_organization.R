@@ -1,4 +1,4 @@
-#' Create HDX Resource
+#' Create and manipulate HDX Organization
 #'
 #' R6 objects are essentially environments, structured in a way that makes them
 #' look like an object in a more typical object-oriented language than R. They
@@ -43,8 +43,8 @@
 #' @examples
 #' # ---------------------------------------------------------
 #' Configuration$create(hdx_site = "demo")
-#' resource <- Resource$read_from_hdx("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
-#' resource
+#' org <- Organization$read_from_hdx("ocha-mali", include_dataset = TRUE)
+#' org
 #' 
 #' @export
 #'
@@ -71,59 +71,69 @@ Organization <- R6::R6Class(
     update_from_json = function(hdx_organization_static_json) {
       self$data <- jsonlite::fromJSON(hdx_organization_static_json, simplifyVector = TRUE)
     },
-    read_from_hdx = function(identifier, configuration = NULL) {
+    read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("organization_show", list(id = identifier))
+      res <- configuration$call_remoteclient("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
       Organization$new(initial_data = res$result, configuration = configuration)
     },
-    search_in_hdx = function(query = "*:*", configuration = NULL, ...) {
+    get_all_organization_names = function(sort = "name asc", configuration = NULL, ...) {
+      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`")
       if (is.null(configuration))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("organization_search", list(query = query, ...))
-      list_of_org <- lapply(res$result$results, function(x) Organization$new(initial_data = x, configuration = configuration))
-      list_of_org
+      res <- configuration$call_remoteclient("organization_list", list(sort = sort, ...))
+      unlist(res$result)
     },
-    get_datasets = function(query = "*:*", configuration = NULL, ...) {
-      if (is.null(configuration))
-        configuration <- private$configuration
-      res <- configuration$call_remoteclient("organization_", list(query = query, ...))
-      list_of_org <- lapply(res$result$results, function(x) Organization$new(initial_data = x, configuration = configuration))
-      list_of_org
+    get_datasets = function() {
+      if (!"packages" %in% names(self$data)) stop("No datasets available, please run again Organization$read_from_hdx with `include_dataset = TRUE` and try again!")
+      list_of_ds <- lapply(self$data$packages, function(x) Dataset$new(initial_data = x))
+      list_of_ds
     },
     as_list = function() {
       self$data
     },
     print = function(x, ...) {
-      cat(paste0("<HDX Organization> ", self$data$id), "\n")
-      cat("  Name: ", self$data$name, "\n", sep = "")
-      cat("  Description: ", self$data$description, "\n", sep = "")
-      invisible(self)
+    cat(paste0("<HDX Organization> ", self$data$id), "\n")
+    cat("  Name: ", self$data$name, "\n", sep = "")
+    cat("  Description: ", self$data$description, "\n", sep = "")
+    invisible(self)
     }
   )
 )
 
-#' @aliases Resource 
-Organization$read_from_hdx <- function(identifier, configuration = NULL, ...) {
-  rs <- Organization$new()
-  rs$read_from_hdx(identifier, configuration = configuration, ...)
+#' @aliases Organization
+Organization$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+  org <- Organization$new()
+  org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
 
 #' @aliases Organization
 Organization$search_in_hdx <- function(query = "*:*", configuration = NULL, ...) {
-  rs <- Organization$new()
-  rs$search_in_hdx(query = query, configuration = configuration, ...)
+  org <- Organization$new()
+  org$search_in_hdx(query = query, configuration = configuration, ...)
 }
 
+#' @aliases Organization
+Organization$get_all_organization_names <- function(sort = "name asc", configuration = NULL, ...) {
+  org <- Organization$new()
+  org$get_all_organization_names(sort = sort, configuration = configuration, ...)
+}
+
+#' @aliases Organization
+Organization$get_datasets <- function(identifier = NULL, configuration = NULL, ...) {
+  org <- Organization$new()
+  res <- org$read_from_hdx(identifier = identifier, include_datasets = TRUE, configuration = configuration, ...)
+  res$get_datasets()
+}
+
+ 
 #' @export
 #' @aliases Organization 
 as_tibble.Organization <- function(x, ...) {
   df <- tibble::data_frame(
-    resource_id = x$data$id,
-    resource_name = x$data$name,
-    resource_format = tolower(x$data$format),
-    resource_url = x$data$url)
-  df$resource <- list(x)
+    organization_id = x$data$id,
+    organization_name = x$data$name)
+  df$organization <- list(x)
   df
 }
 
@@ -132,12 +142,10 @@ as_tibble.Organization <- function(x, ...) {
 #' @aliases Organization 
 as.data.frame.Organization <- function(x, ...) {
   df <- data.frame(
-    resource_id = x$data$id,
-    resource_name = x$data$name,
-    resource_format = tolower(x$data$format),
-    resource_url = x$data$url,
+    organization_id = x$data$id,
+    organization_name = x$data$name,
     stringsAsFactors = FALSE)
-  df$resource <- list(x)
+  df$organization <- list(x)
   df
 }
 
