@@ -76,12 +76,13 @@ Organization <- R6::R6Class(
       res <- configuration$call_remoteclient("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
       Organization$new(initial_data = res$result, configuration = configuration)
     },
-    get_all_organization_names = function(sort = "name asc", configuration = NULL, ...) {
+    get_all_organization_names = function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`")
       if (is.null(configuration))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("organization_list", list(sort = sort, ...))
-      unlist(res$result)
+      res <- configuration$call_remoteclient("organization_list", list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
+      if (!all_fields)
+        unlist(res$result)
     },
     get_datasets = function() {
       if (!"packages" %in% names(self$data)) stop("No datasets available, please run again Organization$read_from_hdx with `include_dataset = TRUE` and try again!")
@@ -113,9 +114,9 @@ Organization$search_in_hdx <- function(query = "*:*", configuration = NULL, ...)
 }
 
 #' @aliases Organization
-Organization$get_all_organization_names <- function(sort = "name asc", configuration = NULL, ...) {
+Organization$get_all_organization_names <- function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
   org <- Organization$new()
-  org$get_all_organization_names(sort = sort, configuration = configuration, ...)
+  org$get_all_organization_names(sort = sort, all_fields = all_fields, include_groups = include_groups, configuration = configuration, ...)
 }
 
 #' @aliases Organization
