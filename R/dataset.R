@@ -42,9 +42,11 @@
 #'
 #' @examples
 #' # ---------------------------------------------------------
+#' \dontrun{
 #' Configuration$create(hdx_site = "demo")
 #' dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
 #' dataset
+#' }
 #' 
 Dataset <- R6::R6Class(
   "Dataset",

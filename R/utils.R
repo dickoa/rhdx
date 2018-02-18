@@ -62,3 +62,116 @@ sift_res <- function(z, key = "name") {
     ""
   }
 }
+
+check_required_fields <- function(data, config = NULL, type = "dataset") {
+  if (config == NULL)
+    config <- yaml::yaml.load_file(system.file("config", "hdx_configuration.yml", package = "rhdx"))
+  n2 <- names(data)
+  n1 <- config$data$dataset$required_fields
+  if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2), "\n"))
+}
+
+update_frequencies <- list(
+  '-2' = 'Adhoc',
+  '-1' = 'Never',
+  '0' = 'Live',
+  '1'= 'Every day',
+  '7' = 'Every week',
+  '14' = 'Every two weeks',
+  '30' = 'Every month',
+  '90' = 'Every three months',
+  '180' = 'Every six months',
+  '365' = 'Every year',
+  'adhoc' = '-2',
+  'never' = '-1',
+  'live' = '0',
+  'every day' = '1',
+  'every week' = '7',
+  'every two weeks' = '14',
+  'every month' = '30',
+  'every three months' = '90',
+  'every six months' = '180',
+  'every year' = '365',
+  'daily' = '1',
+  'weekly' = '7',
+  'fortnightly' = '14',
+  'every other week' = '14',
+  'monthly' = '30',
+  'quarterly' = '90',
+  'semiannually' = '180',
+  'semiyearly' = '180',
+  'annually' = '365',
+  'yearly' = '365')
+
+
+#' Function to search HDX object
+#'
+#' 
+#' 
+#' @export
+#' @examples
+#' \dontrun{
+#' search_in_hdx("mali idps", type = "dataset") %>%
+#'  filter("ocha-mali" %in% organization, "idp" %in% tags) %>%
+#'  get_resources() %>%
+#'  filter("zipped shapefile" %in% format) %>%
+#'  read() -> mali_idps_shp
+#' 
+#'  search_in_hdx("ocha mali", type = "organization")
+#'  }
+#' 
+search_in_hdx <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, type = "dataset") {
+  if (!type %in% c("dataset", "resource", "organization")) stop("`type` should be `dataset`, `resource`, or `organization`")
+  switch(type,
+         dataset = {
+           ds <- Dataset$new()
+           ds <- ds$search_in_hdx(query = query, rows = rows, page_size = page_size, configuration = configuration)
+           ds
+           ## purrr::map_df(ds, as_tibble)
+         },
+         resource = {
+           rs <- Resource$new()
+           rs <- rs$search_in_hdx(query = query, configuration = configuration)
+           purrr::map_df(rs, as_tibble)
+         },
+         organization = {
+           org <- Organization$new()
+           org$search_in_hdx(query = query, rows = rows, page_size = page_size, configuration = configuration)
+           purrr::map_df(org, as_tibble)
+         }) 
+}
+
+
+#' Function to search HDX object
+#'
+#' 
+#' 
+#' @export
+#' @examples
+#' \dontrun{
+#'  read_from_hdx("ocha-mali", type = "organization")
+#'  }
+#' 
+read_from_hdx <- function(identifier, configuration = NULL, type = "dataset") {
+  if (!type %in% c("dataset", "resource", "organization")) stop("`type` should be `dataset`, `resource`, or `organization`")
+  switch(type,
+         dataset = {
+           ds <- Dataset$new()
+           ds$read_from_hdx(identifier = identifier, configuration = configuration)
+         },
+         resource = {
+           rs <- Resource$new()
+           rs$read_from_hdx(identifier = identifier, configuration = configuration)
+         },
+         organization = {
+           org <- Organization$new()
+           org$read_from_hdx(identifier = identifier, configuration = configuration)
+         }) 
+}
+
+
+#' @export
+filter.HDXObject <- function(x, ...) {
+}
+
+

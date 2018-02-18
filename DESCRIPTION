@@ -13,7 +13,10 @@ Imports:
     crul (> 0.5),
     jsonlite,
     yaml,
+    tibble,
+    hoardr
 Suggests:
+    roxygen2 (>= 6.0.1),
     knitr,
     rmarkdown,
     testthat

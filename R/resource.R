@@ -46,7 +46,6 @@
 #' resource <- Resource$read_from_hdx("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #' resource
 #' 
-#' @export
 #'
 Resource <- R6::R6Class(
   "Resource",
@@ -74,11 +73,16 @@ Resource <- R6::R6Class(
     touch = function() {
       private$configuration$call_remoteclient("resource_patch", list(id = self$data$id))
     },
-    download = function(folder = getwd(), filename = NULL, quiet = FALSE, ...) {
+    download = function(folder = getwd(), filename = NULL, quiet = FALSE, force = FALSE, ...) {
       if (is.null(filename))
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
-      download.file(url = self$data$url, destfile = path, mode = "wb", quiet = quiet, ...)
+      ## cached_files <- file.path(rhdx_cache$cache_path_get(), filename)
+      if (file.exists(path) & !force) {
+        message("File already present, at: ", path)
+      } else {
+        download.file(url = self$data$url, destfile = path, mode = "wb", quiet = quiet, ...)
+      }
       invisible(path)
     },
     read_session = function(sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = FALSE) {
@@ -205,13 +209,6 @@ as.list.Resource <- function(x) {
 
 #' @export
 #' @aliases Resource 
-#' @example{
-#' search_in_hdx("mali idps") %>%
-#' filter("ocha-mali" %in% organization, "idp" %in% tags) %>%
-#' get_resources() %>%
-#' filter("zipped shapefile" %in% format) %>%
-#' read_in_R() -> mali_idps
-#' }
 download_from_hdx <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE, ...) {
   if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!")
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
