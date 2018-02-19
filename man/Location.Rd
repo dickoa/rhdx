@@ -41,9 +41,11 @@ Possible parameters (not all are allowed in each HTTP verb):
 }
 \examples{
 # ---------------------------------------------------------
+\dontrun{
 Configuration$create(hdx_site = "demo")
 org <- Location$read_from_hdx("ocha-mali", include_dataset = TRUE)
 org
+}
 
 }
 \keyword{datasets}

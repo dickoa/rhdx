@@ -32,9 +32,11 @@
 #' }
 #'
 #' @examples
-#' Configuration$setup(hdx_site = "demo"),
+#' \dontrun{
+#' Configuration$setup(hdx_site = "demo")
 #' conf <- Configuration$read()
 #' conf
+#' }
 #' 
 Configuration <- R6::R6Class(
   "Configuration",
@@ -51,12 +53,12 @@ Configuration <- R6::R6Class(
     default_hdx_key_file = "~/.hdxkey",
     data = list(),
     initialize = function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, project_config = NULL) {
-      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`")
+      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       if (!is.null(hdx_config)) {
         if (is.character(hdx_config)) {
-          if (!file.exists(hdx_config)) stop("HDX config file not found!")
+          if (!file.exists(hdx_config)) stop("HDX config file not found!", call. = FALSE)
           file_ext <- tools::file_ext(hdx_config)
-          if (!file_ext %in% c("yml", "json")) stop("Only YAML and JSON configuration file are supported for the moment!")
+          if (!file_ext %in% c("yml", "json")) stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
           hdx_config <- switch(file_ext,
                               yml = yaml::yaml.load_file(hdx_config),
                               json = jsonlite::fromJSON(hdx_config, simplifyVector = FALSE))
@@ -64,7 +66,7 @@ Configuration <- R6::R6Class(
       } else {
         hdx_config <- yaml::yaml.load_file(system.file("config", "hdx_configuration.yml", package = "rhdx"))
       } 
-      if (!is.null(hdx_key) & !is.null(hdx_key_file)) stop ("You have two sources (key and key file) for your HDX API key, choose one!")
+      if (!is.null(hdx_key) & !is.null(hdx_key_file)) stop ("You have two sources (key and key file) for your HDX API key, choose one!", call. = FALSE)
       if (is.null(hdx_key) & is.null(hdx_key_file))
         hdx_key <- readLines(self$default_hdx_key_file)
       if (!is.null(hdx_key_file))
@@ -95,7 +97,7 @@ Configuration <- R6::R6Class(
       self$hdx_key <- readLines(path)
     },
     set_hdx_site = function(hdx_site = "prod") {
-      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`")
+      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       self$hdx_site <-  hdx_site
       hdx_site <- paste0("hdx_", match.arg(hdx_site), "_site")
       private$remoteclient <- crul::HttpClient$new(url = self$data[[hdx_site]]$url, headers = list(`X-CKAN-API-Key` = self$hdx_key, `Content-Type` = "application/json"))
@@ -115,24 +117,24 @@ Configuration <- R6::R6Class(
     },
     read = function() {
       if (is.null(private$shared$configuration)) {
-        stop("There is no HDX configuration! Use Configuration$create(...)")
+        stop("There is no HDX configuration! Use Configuration$create(...) or Configurartion$setup", call. = FALSE)
       } else {
         private$shared$configuration
       }
     },
     setup = function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, project_config = NULL, configuration = NULL) {
-      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`")
+      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       if (!is.null(configuration)) {
-        if (!inherits(configuration, "Configuration")) stop("Not a 'Configuration' object!")
+        if (!inherits(configuration, "Configuration")) stop("Not a 'Configuration' object!", call. = FALSE)
         private$shared$configuration <- configuration        
       } else {
         private$shared$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_key_file = hdx_key_file, hdx_config = hdx_config, project_config = project_config)
       }
     },
     create = function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_key_file = NULL, hdx_config = NULL, project_config = NULL, configuration = NULL) {
-      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`")
+      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       if (!is.null(private$shared$configuration)) {
-        stop("Configuration already created! You can use Configuration$setup or rhdx_setup to modify the configuration")
+        stop("Configuration already created! You can use Configuration$setup or rhdx_setup to modify the configuration", call. = FALSE)
       } else {
         self$setup(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_key_file = hdx_key_file, hdx_config = hdx_config, project_config = project_config, configuration = configuration)
       }

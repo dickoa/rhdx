@@ -39,9 +39,11 @@
 #'
 #' @examples
 #' # ---------------------------------------------------------
+#' \dontrun{
 #' Configuration$create(hdx_site = "demo")
 #' org <- Location$read_from_hdx("ocha-mali", include_dataset = TRUE)
 #' org
+#' }
 #' 
 #' @export
 Location <- R6::R6Class(
@@ -74,7 +76,7 @@ Location <- R6::R6Class(
       Location$new(initial_data = res$result, configuration = configuration)
     },
     list_all_locations = function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`")
+      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("group_list", list(sort = sort, all_fields = all_fields, ...))
@@ -84,13 +86,18 @@ Location <- R6::R6Class(
     },
     valid_locations = function() {
     },
+    browse = function() {
+      url <- private$configuration$get_hdx_site_url()
+      browseURL(url = paste0(url, "group/", self$data$name))
+    },
     as_list = function() {
       self$data
     },
     print = function(x, ...) {
     cat(paste0("<HDX Location> ", self$data$id), "\n")
     cat("  Name: ", self$data$name, "\n", sep = "")
-    cat("  Description: ", self$data$description, "\n", sep = "")
+    cat("  Display Name: ", self$data$display_name, "\n", sep = "")
+    cat("  No Datasets: ", self$data$package_count, "\n", sep = "")
     invisible(self)
     }
   )

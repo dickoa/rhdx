@@ -83,8 +83,8 @@ Dataset <- R6::R6Class(
       self$resources
     },
     add_resource = function(resource, ignore_dataset_id = FALSE) {
-      if (!inherits(resource, "Resource")) stop("Not of class `Resource` please you `Resource$new()`!")
-      if ("package_id" %in% names(resource$data)) stop("Resource already have a dataset id")
+      if (!inherits(resource, "Resource")) stop("Not of class `Resource` please use `Resource$new() to create Resource`!", call. = FALSE)
+      if ("package_id" %in% names(resource$data)) stop("Resource already have a dataset id", call. = FALSE)
       if (length(self$data$resources) > 0) {
         i <- self$data$num_resources
         self$data$resources[[i + 1]] <- resource$data
@@ -98,11 +98,15 @@ Dataset <- R6::R6Class(
     },
     delete_resource = function(index = 1L) {
       n_resources <- self$data$num_resources
-      if (n_resources == 0) stop("No resources to delete!")
+      if (n_resources == 0) stop("No resources to delete!", call. = FALSE)
       if (index > n_resources) stop("Just ", n_resources, "resource(s) available!")
       self$data$resources[[index]] <- NULL
       self$resources[[index]] <- NULL
       self$data$num_resources <- max(0, self$data$num_resources - 1)
+    },
+    browse = function() {
+      url <- private$configuration$get_hdx_site_url()
+      browseURL(url = paste0(url, "dataset/", self$data$name))
     },
     search_in_hdx = function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
       if (is.null(configuration))
@@ -124,7 +128,7 @@ Dataset <- R6::R6Class(
       res$result$status_code == 200L
     },
     list_all_datasets = function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
-      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`")
+      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("package_list", list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
@@ -133,9 +137,9 @@ Dataset <- R6::R6Class(
       res$result
     },
     update_from_file = function(hdx_dataset_static_file) {
-      if (!file.exists(hdx_dataset_static_file)) stop("HDX static dataset file not found!")
+      if (!file.exists(hdx_dataset_static_file)) stop("HDX static dataset file not found!", call. = FALSE)
       file_ext <- tools::file_ext(hdx_dataset_static_file)
-      if (!file_ext %in% c("yml", "json")) stop("Only YAML and JSON configuration file are supported for the moment!")
+      if (!file_ext %in% c("yml", "json")) stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
       self$data <- switch(file_ext,
                          yml = yaml::yaml.load_file(hdx_dataset_static_file),
                          json = jsonlite::fromJSON(hdx_dataset_static_file, simplifyVector = FALSE))
@@ -169,7 +173,7 @@ Dataset <- R6::R6Class(
       self$data$data_update_frequency
     },
     set_update_frequency = function(frequency) {
-      if (frequency %in% names(update_frequencies)) stop("Wrong argument for frequency!") 
+      if (frequency %in% names(update_frequencies)) stop("Wrong argument for frequency!", call. = FALSE) 
       self$data$data_update_frequency <- update_frequencies[[frequency]]
     },
     get_tags = function() {
@@ -297,14 +301,14 @@ as_tibble.Dataset <- function(x, ...) {
 #' @export
 #' @aliases Dataset 
 get_resources <- function(dataset) {
-  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!")
+  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$get_resources()
 }
 
 #' @export
 #' @aliases Dataset 
 add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
-  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!")
+  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$add_resource(resource, ignore_dataset_id = ignore_dataset_id)
   dataset
 }
@@ -312,7 +316,7 @@ add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
 #' @export
 #' @aliases Dataset 
 delete_resource <- function(index) {
-  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!")
+  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$delete_resource(index)
   dataset
 }

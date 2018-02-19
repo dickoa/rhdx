@@ -34,9 +34,11 @@ Possible parameters (not all are allowed in each HTTP verb):
 }
 }
 \examples{
-Configuration$setup(hdx_site = "demo"),
+\dontrun{
+Configuration$setup(hdx_site = "demo")
 conf <- Configuration$read()
 conf
+}
 
 }
 \keyword{datasets}

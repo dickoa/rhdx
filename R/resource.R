@@ -41,10 +41,12 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' # ---------------------------------------------------------
 #' Configuration$create(hdx_site = "demo")
 #' resource <- Resource$read_from_hdx("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #' resource
+#' }
 #' 
 #'
 Resource <- R6::R6Class(
@@ -112,7 +114,7 @@ Resource <- R6::R6Class(
     get_dataset = function() {
       package_id <- self$data$package_id
       if (is.null(package_id)) {
-        stop("Resource has no package id!")
+        stop("Resource has no package id!", call. = FALSE)
       } else {
         Dataset$read_from_hdx(package_id)        
       }
@@ -127,7 +129,7 @@ Resource <- R6::R6Class(
       n2 <- names(self$data)
       n1 <- private$configuration$data$resource$required_fields
       if (check_datasetid) n1 <- setdiff(n1, "package_id")
-      if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)))
+      if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
     },
     read_from_hdx = function(identifier, configuration = NULL) {
       if (is.null(configuration))
@@ -210,13 +212,13 @@ as.list.Resource <- function(x) {
 #' @export
 #' @aliases Resource 
 download_from_hdx <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE, ...) {
-  if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!")
+  if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
 }
 
 #' @export
 #' @aliases Resource 
 read_in_R <- function(resource, sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = FALSE) {
-  if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!")
+  if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
   resource$read_session(sheet = sheet, layer = layer, folder = folder, json_simplifyVector = json_simplifyVector)
 }
