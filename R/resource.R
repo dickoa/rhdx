@@ -211,7 +211,7 @@ as.list.Resource <- function(x) {
 
 #' @export
 #' @aliases Resource 
-download_from_hdx <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE, ...) {
+download <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE, ...) {
   if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
 }
