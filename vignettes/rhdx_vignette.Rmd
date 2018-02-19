@@ -1,5 +1,5 @@
 ---
-title: "Tidy data"
+title: "R client to the Humanitarian Data Exchange"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tidy data}
@@ -19,7 +19,7 @@ devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 library("rhdx")
 rhdx_setup(hdx_site = "prod", read_only = TRUE)
 ```
