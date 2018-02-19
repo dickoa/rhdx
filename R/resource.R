@@ -218,7 +218,7 @@ download_from_hdx <- function(resource, folder = getwd(), filename = NULL, quiet
 
 #' @export
 #' @aliases Resource 
-read_in_R <- function(resource, sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = FALSE) {
+read_session <- function(resource, sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = FALSE) {
   if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
   resource$read_session(sheet = sheet, layer = layer, folder = folder, json_simplifyVector = json_simplifyVector)
 }
