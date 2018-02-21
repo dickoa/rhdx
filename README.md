@@ -5,15 +5,15 @@
 
 [![GitLab CI Build
 Status](https://gitlab.com/dickoa/rhdx/badges/master/build.svg)](https://gitlab.com/dickoa/rhdx/pipelines)
-<!-- [![AppVeyror Build status](https://ci.appveyor.com/api/projects/status/qytbcx7vjq0t9ao5/branch/master?svg=true)](https://ci.appveyor.com/project/dickoa/rhdx)  -->
 [![Codecov Code
 Coverage](https://codecov.io/gl/dickoa/rhdx/branch/master/graph/badge.svg)](https://codecov.io/gl/dickoa/rhdx)
-<!-- [![](http://www.r-pkg.org/badges/version/rhdx)](http://www.r-pkg.org/pkg/rhdx) -->
-<!-- [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/rhdx)](http://www.r-pkg.org/pkg/rhdx) -->
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`rhdx` is an R client for the Humanitarian Exchange Data platform.
+`rhdx` is an R client for the Humanitarian Exchange Data
+platform.
+
+![](https://gitlab.com/dickoa/rhdx/raw/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif)
 
 ## Installation
 
@@ -25,9 +25,6 @@ will also need the development version of the R package `crul`.
 devtools::install_github("ropensci/crul") ## need the dev versio > 0.5.0
 devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
-
-![hello world example of
-rhdx](https://gitlab.com/dickoa/rhdx/blob/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif)
 
 ## rhdx tutorial
 
