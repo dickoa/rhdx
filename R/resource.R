@@ -87,7 +87,7 @@ Resource <- R6::R6Class(
       }
       invisible(path)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = FALSE) {
+    read_session = function(sheet = NULL, layer = NULL, folder = tempdir(), json_simplifyVector = FALSE) {
       path <- self$download(folder = folder, quiet = TRUE)
       format <- self$get_file_type()
       switch(
@@ -218,7 +218,7 @@ download <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE,
 
 #' @export
 #' @aliases Resource 
-read_session <- function(resource, sheet = NULL, layer = NULL, folder = getwd(), json_simplifyVector = FALSE) {
+read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(), json_simplifyVector = FALSE) {
   if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
   resource$read_session(sheet = sheet, layer = layer, folder = folder, json_simplifyVector = json_simplifyVector)
 }
