@@ -1,33 +1,8 @@
-#' Create HDX Dataset
+#' HDX Dataset
 #'
-#' R6 objects are essentially environments, structured in a way that makes them
-#' look like an object in a more typical object-oriented language than R. They
-#' support public and private members, as well as inheritance across different
-#' packages.
-#'
+#' Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
+#' 
 #' @export
-#' @details
-#' **Methods**
-#'   \describe{
-#'     \item{`create(path, query, disk, stream, ...)`}{
-#'       Make a GET request
-#'     }
-#'     \item{`read(path, query, body, disk, stream, ...)`}{
-#'       Make a POST request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a PUT request
-#'     }
-#'     \item{`setup(path, query, body, disk, stream, ...)`}{
-#'       Make a PATCH request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a DELETE request
-#'     }
-#'     \item{`head(path, query, ...)`}{
-#'       Make a HEAD request
-#'     }
-#'   }
 #'
 #' @format NULL
 #' @usage NULL
@@ -36,7 +11,8 @@
 #'  \item read_from_hdx - query terms, as a named list
 #'  \item search_in_hdx  - body as an R list
 #'  \item update_from_yaml - one of form, multipart, json, or raw
-#'  \item add_update_resource 
+#'  \item add_tags
+#'  \item list_all_datasets 
 #'  \item add_update_resources - one of form, multipart, json, or raw
 #' }
 #'
@@ -186,7 +162,8 @@ Dataset <- R6::R6Class(
       self$data$groups
     },
     add_locations = function(locations) {
-      self$data$groups <- lapply(locations, function(location) list(names = location))
+      self$data$groups <- lapply(locations,
+                                function(location) list(names = location))
     },
     get_maintainer = function() {
       self$data$maintainer
@@ -215,12 +192,14 @@ Dataset <- R6::R6Class(
       } else {
         n1 <- private$configuration$data$dataset$required_fields
       }
-      if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)))
+      if (!all(n1 %in% n2))
+        stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)))
     },
     count = function(configuration = NULL) {
       if (is.null(configuration))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("package_search", list(q = "*:*", rows = 1L))
+      res <- configuration$call_remoteclient("package_search",
+                                            list(q = "*:*", rows = 1L))
       res$result$count
     },
     as_list = function() {
@@ -257,7 +236,8 @@ Dataset$read_from_hdx <- function(identifier, configuration = NULL, ...) {
 #' @aliases Dataset 
 Dataset$search_in_hdx <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   ds <- Dataset$new()
-  ds$search_in_hdx(query = query, rows = rows, page_size = page_size, configuration = configuration, ...)
+  ds$search_in_hdx(query = query, rows = rows,
+                   page_size = page_size, configuration = configuration, ...)
 }
 
 
@@ -288,13 +268,16 @@ as_tibble.Dataset <- function(x, ...) {
                           dataset_name = x$data$name,
                           dataset_date = x$get_dataset_date(),
                           requestable = x$is_requestable(),
-                          locations_name = lapply(x$get_locations(), function(x) x$name),
-                          organization_name = x$data$organization$name)  
-  df$resources_format <- list(tolower(vapply(x$get_resources(), function(l) l$get_file_type(), FUN.VALUE = "")))    
-  df$tags_name <- list(tolower(vapply(x$get_tags(), function(l) l$name, FUN.VALUE = "")))
+                          locations_name = lapply(x$get_locations(),
+                                                  function(x) x$name),
+                          organization_name = x$data$organization$name)
+  df$resources_format <- list(tolower(vapply(x$get_resources(),
+                                            function(l) l$get_file_type(), FUN.VALUE = "")))   
+  df$tags_name <- list(tolower(vapply(x$get_tags(),
+                                     function(l) l$name, FUN.VALUE = "")))
   df$resources <- list(x$get_resources())
   df$dataset <- list(x)
-  df  
+  df 
 }
 
 
@@ -315,7 +298,7 @@ add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
 
 #' @export
 #' @aliases Dataset 
-delete_resource <- function(index) {
+delete_resource <- function(dataset, index) {
   if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$delete_resource(index)
   dataset
