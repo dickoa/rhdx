@@ -26,6 +26,9 @@ devtools::install_github("ropensci/crul") ## need the dev versio > 0.5.0
 devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
 
+![hello world example of
+rhdx](https://gitlab.com/dickoa/rhdx/blob/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif)
+
 ## rhdx tutorial
 
 ``` r
