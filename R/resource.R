@@ -70,12 +70,15 @@ Resource <- R6::R6Class(
       self$data <- yaml::yaml.load_file(hdx_resource_static_yaml)
     },
     update_from_json = function(hdx_resource_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_resource_static_json, simplifyVector = TRUE)
+      self$data <- jsonlite::fromJSON(hdx_resource_static_json,
+                                     simplifyVector = TRUE)
     },
     touch = function() {
-      private$configuration$call_remoteclient("resource_patch", list(id = self$data$id))
+      private$configuration$call_remoteclient("resource_patch",
+                                              list(id = self$data$id))
     },
-    download = function(folder = getwd(), filename = NULL, quiet = FALSE, force = FALSE, ...) {
+    download = function(folder = getwd(), filename = NULL,
+                        quiet = FALSE, force = FALSE, ...) {
       if (is.null(filename))
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
@@ -83,11 +86,13 @@ Resource <- R6::R6Class(
       if (file.exists(path) & !force) {
         message("File already present, at: ", path)
       } else {
-        download.file(url = self$data$url, destfile = path, mode = "wb", quiet = quiet, ...)
+        download.file(url = self$data$url, destfile = path,
+                      mode = "wb", quiet = quiet, ...)
       }
       invisible(path)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = tempdir(), json_simplifyVector = FALSE) {
+    read_session = function(sheet = NULL, layer = NULL,
+                            folder = tempdir(), simplifyVector = FALSE) {
       path <- self$download(folder = folder, quiet = TRUE)
       format <- self$get_file_type()
       switch(
@@ -101,7 +106,7 @@ Resource <- R6::R6Class(
         xls = read_sheet(path = path, sheet = sheet, format = format),
         json = {
           check4X("jsonlite")
-          jsonlite::fromJSON(path, simplifyVector = json_simplifyVector)
+          jsonlite::fromJSON(path, simplifyVector = simplifyVector)
         },
         geojson = read_vector(path, layer),
         `zipped shapefile` = read_vector(path = path, layer = layer),
@@ -116,7 +121,7 @@ Resource <- R6::R6Class(
       if (is.null(package_id)) {
         stop("Resource has no package id!", call. = FALSE)
       } else {
-        Dataset$read_from_hdx(package_id)        
+        Dataset$read_from_hdx(package_id)       
       }
     },
     get_file_to_upload = function() {
@@ -129,7 +134,8 @@ Resource <- R6::R6Class(
       n2 <- names(self$data)
       n1 <- private$configuration$data$resource$required_fields
       if (check_datasetid) n1 <- setdiff(n1, "package_id")
-      if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
+      if (!all(n1 %in% n2))
+        stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
     },
     read_from_hdx = function(identifier, configuration = NULL) {
       if (is.null(configuration))
@@ -212,13 +218,17 @@ as.list.Resource <- function(x) {
 #' @export
 #' @aliases Resource 
 download <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE, ...) {
-  if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
+  if (!inherits(resource, "Resource"))
+    stop("Not a HDX Resource object!", call. = FALSE)
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
 }
 
 #' @export
 #' @aliases Resource 
 read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(), json_simplifyVector = FALSE) {
-  if (!inherits(resource, "Resource")) stop("Not a HDX Resource object!", call. = FALSE)
-  resource$read_session(sheet = sheet, layer = layer, folder = folder, json_simplifyVector = json_simplifyVector)
+  if (!inherits(resource, "Resource"))
+    stop("Not a HDX Resource object!", call. = FALSE)
+  resource$read_session(sheet = sheet, layer = layer,
+                        folder = folder,
+                        json_simplifyVector = json_simplifyVector)
 }

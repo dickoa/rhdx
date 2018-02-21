@@ -43,8 +43,9 @@ Dataset <- R6::R6Class(
       key <- names(initial_data)
       self$init_resources()
       self$data <- initial_data
-      if ("resources" %in% key) 
-        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration))
+      if ("resources" %in% key)
+        self$resources <- lapply(self$data$resources,
+                                function(x) Resource$new(initial_data = x, configuration = configuration))
     },
     init_resources = function() {
       self$data$resources <- list()
@@ -59,8 +60,10 @@ Dataset <- R6::R6Class(
       self$resources
     },
     add_resource = function(resource, ignore_dataset_id = FALSE) {
-      if (!inherits(resource, "Resource")) stop("Not of class `Resource` please use `Resource$new() to create Resource`!", call. = FALSE)
-      if ("package_id" %in% names(resource$data)) stop("Resource already have a dataset id", call. = FALSE)
+      if (!inherits(resource, "Resource"))
+        stop("Not of class `Resource` please use `Resource$new() to create Resource`!", call. = FALSE)
+      if ("package_id" %in% names(resource$data))
+        stop("Resource already have a dataset id", call. = FALSE)
       if (length(self$data$resources) > 0) {
         i <- self$data$num_resources
         self$data$resources[[i + 1]] <- resource$data
@@ -74,8 +77,10 @@ Dataset <- R6::R6Class(
     },
     delete_resource = function(index = 1L) {
       n_resources <- self$data$num_resources
-      if (n_resources == 0) stop("No resources to delete!", call. = FALSE)
-      if (index > n_resources) stop("Just ", n_resources, "resource(s) available!")
+      if (n_resources == 0)
+        stop("No resources to delete!", call. = FALSE)
+      if (index > n_resources)
+        stop("Just ", n_resources, "resource(s) available!")
       self$data$resources[[index]] <- NULL
       self$resources[[index]] <- NULL
       self$data$num_resources <- max(0, self$data$num_resources - 1)
@@ -94,8 +99,10 @@ Dataset <- R6::R6Class(
                                limit = rows,
                                limit_chunk = page_size)
       suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"), list(q = query, ...)))
-      ds_list <- unlist(lapply(cc$parse(), function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
-      ds_list <- lapply(ds_list, function(x) Dataset$new(initial_data = x, configuration = configuration))
+      ds_list <- unlist(lapply(cc$parse(),
+                              function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
+      ds_list <- lapply(ds_list,
+                       function(x) Dataset$new(initial_data = x, configuration = configuration))
       ds_list
     },
     delete_from_hdx = function() {
@@ -103,34 +110,42 @@ Dataset <- R6::R6Class(
       res <- configuration$call_remoteclient("package_delete", list(id = self$data$id))
       res$result$status_code == 200L
     },
-    list_all_datasets = function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
-      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
+    list_all_datasets = function(sort = "name asc", all_fields = FALSE,
+                                 include_groups = FALSE, configuration = NULL, ...) {
+      if (!sort %in% c("name asc", "name", "package_count", "title"))
+        stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("package_list", list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
+      res <- configuration$call_remoteclient("package_list",
+                                            list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
       if (!all_fields)
         unlist(res$result)
       res$result
     },
     update_from_file = function(hdx_dataset_static_file) {
-      if (!file.exists(hdx_dataset_static_file)) stop("HDX static dataset file not found!", call. = FALSE)
+      if (!file.exists(hdx_dataset_static_file))
+        stop("HDX static dataset file not found!", call. = FALSE)
       file_ext <- tools::file_ext(hdx_dataset_static_file)
-      if (!file_ext %in% c("yml", "json")) stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
+      if (!file_ext %in% c("yml", "json"))
+        stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
       self$data <- switch(file_ext,
                          yml = yaml::yaml.load_file(hdx_dataset_static_file),
                          json = jsonlite::fromJSON(hdx_dataset_static_file, simplifyVector = FALSE))
       if ("resources" %in% names(self$data))
-        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration)) 
+        self$resources <- lapply(self$data$resources,
+                                function(x) Resource$new(initial_data = x, configuration = configuration)) 
     },
     update_from_yaml = function(hdx_dataset_static_yaml) {
       self$data <- yaml::yaml.load_file(hdx_dataset_static_yaml)
       if ("resources" %in% names(self$data))
-        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration))
+        self$resources <- lapply(self$data$resources,
+                                function(x) Resource$new(initial_data = x, configuration = configuration))
     },
     update_from_json = function(hdx_dataset_static_json) {
       self$data <- jsonlite::fromJSON(hdx_dataset_static_json, simplifyVector = FALSE)
       if ("resources" %in% names(self$data))
-        self$resources <- lapply(self$data$resources, function(x) Resource$new(initial_data = x, configuration = configuration))
+        self$resources <- lapply(self$data$resources,
+                                function(x) Resource$new(initial_data = x, configuration = configuration))
     },
     get_configuration = function() {
       private$configuration
@@ -149,7 +164,8 @@ Dataset <- R6::R6Class(
       self$data$data_update_frequency
     },
     set_update_frequency = function(frequency) {
-      if (frequency %in% names(update_frequencies)) stop("Wrong argument for frequency!", call. = FALSE) 
+      if (frequency %in% names(update_frequencies))
+        stop("Wrong argument for frequency!", call. = FALSE) 
       self$data$data_update_frequency <- update_frequencies[[frequency]]
     },
     get_tags = function() {
@@ -284,14 +300,16 @@ as_tibble.Dataset <- function(x, ...) {
 #' @export
 #' @aliases Dataset 
 get_resources <- function(dataset) {
-  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
+  if (!inherits(dataset, "Dataset"))
+    stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$get_resources()
 }
 
 #' @export
 #' @aliases Dataset 
 add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
-  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
+  if (!inherits(dataset, "Dataset"))
+    stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$add_resource(resource, ignore_dataset_id = ignore_dataset_id)
   dataset
 }
@@ -299,7 +317,8 @@ add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
 #' @export
 #' @aliases Dataset 
 delete_resource <- function(dataset, index) {
-  if (!inherits(dataset, "Dataset")) stop("Not a HDX Dataset object!", call. = FALSE)
+  if (!inherits(dataset, "Dataset"))
+    stop("Not a HDX Dataset object!", call. = FALSE)
   dataset$delete_resource(index)
   dataset
 }
