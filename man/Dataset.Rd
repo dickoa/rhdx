@@ -3,42 +3,18 @@
 \docType{data}
 \name{Dataset}
 \alias{Dataset}
-\title{Create HDX Dataset}
+\title{HDX Dataset}
 \description{
-R6 objects are essentially environments, structured in a way that makes them
-look like an object in a more typical object-oriented language than R. They
-support public and private members, as well as inheritance across different
-packages.
+Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
 }
 \details{
-**Methods**
-  \describe{
-    \item{`create(path, query, disk, stream, ...)`}{
-      Make a GET request
-    }
-    \item{`read(path, query, body, disk, stream, ...)`}{
-      Make a POST request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a PUT request
-    }
-    \item{`setup(path, query, body, disk, stream, ...)`}{
-      Make a PATCH request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a DELETE request
-    }
-    \item{`head(path, query, ...)`}{
-      Make a HEAD request
-    }
-  }
-
 Possible parameters (not all are allowed in each HTTP verb):
 \itemize{
  \item read_from_hdx - query terms, as a named list
  \item search_in_hdx  - body as an R list
  \item update_from_yaml - one of form, multipart, json, or raw
- \item add_update_resource 
+ \item add_tags
+ \item list_all_datasets 
  \item add_update_resources - one of form, multipart, json, or raw
 }
 }
