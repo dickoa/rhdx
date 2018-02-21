@@ -226,6 +226,7 @@ list `list_of_rs`
 ``` r
 idp_nga_rs <- list_of_rs[[1]]
 idp_nga_df <- idp_nga_rs$read_session(json_simplifyVector = TRUE, folder = tempdir())
+idp_nga_df
 ## $results
 ##   iso iso3 geo_name year conflict_new_displacements
 ## 1  NG  NGA  Nigeria 2009                       5000
