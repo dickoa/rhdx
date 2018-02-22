@@ -21,6 +21,7 @@ read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   df
 }
 
+
 read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
   check4X("sf")
   if (zipped)
@@ -32,6 +33,19 @@ read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
   }
   sf::read_sf(dsn = path, layer = layer)
 }
+
+get_layers_ <- function(path = NULL, zipped = TRUE) {
+  check4X("sf")
+  if (zipped)
+    path <- file.path("/vsizip", path)
+  sf::st_layers(path)
+}
+
+get_sheets_ <- function(path = NULL) {
+  check4X("readxl")
+  readxl::excel_sheets(path)
+}
+
 
 read_raster <- function(path = NULL, layer = NULL, zipped = TRUE) {
   check4X("raster")

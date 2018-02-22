@@ -78,7 +78,7 @@ Resource <- R6::R6Class(
                                               list(id = self$data$id))
     },
     download = function(folder = getwd(), filename = NULL,
-                        quiet = FALSE, force = FALSE, ...) {
+                        progress = TRUE, force = FALSE, ...) {
       if (is.null(filename))
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
@@ -87,12 +87,12 @@ Resource <- R6::R6Class(
         message("File already present, at: ", path)
       } else {
         download.file(url = self$data$url, destfile = path,
-                      mode = "wb", quiet = quiet, ...)
+                      mode = "wb", quiet = !progress, ...)
       }
       invisible(path)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = tempdir(), simplify_json = TRUE) {
-      path <- self$download(folder = folder, quiet = TRUE)
+    read_session = function(sheet = NULL, layer = NULL, folder = tempdir(), simplify_json = TRUE, progress = FALSE) {
+      path <- self$download(folder = folder, progress = progress)
       format <- self$get_file_type()
       switch(
         format,
@@ -114,6 +114,31 @@ Resource <- R6::R6Class(
         `zipped geotiff` = read_raster(path = path, layer = layer),
         kmz = read_spatial(path = path, layer = layer),
         `zipped kml` = read_spatial(path = path, layer = layer))
+    },
+    get_layers = function(folder = tempdir(), progress = FALSE) {
+      path <- self$download(folder = folder, progress = progress)
+      format <- self$get_file_type()
+      supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
+                               "zipped geopackage", "zipped geotiff", "kmz", "zipped kml")
+      if (!format %in% supported_geo_format) stop("This (spatial) data format is not yet supported", call. = FALSE)
+      switch(
+        format,
+        geojson = get_layers_(path, zipped = FALSE),
+        `zipped shapefile` = get_layers_(path),
+        `zipped geodatabase` = get_layers_(path, zipped = FALSE),
+        `zipped geopackage` = get_layers_(path),
+        kmz = get_layers_(path),
+        `zipped kml` = get_layers_(path))
+    },
+    get_sheets = function(folder = tempdir(), progress = FALSE) {
+      path <- self$download(folder = folder, progress = progress)
+      format <- self$get_file_type()
+      if (!format %in% c("xlsx", "xls")) stop("`get_sheets work only with `xlsx` or `xls` file`", call. = FALSE)
+      switch(
+        format,
+        excel = get_sheets_(path = path),
+        xlsx = get_sheets_(path = path),
+        xls = get_sheets_(path = path))
     },
     get_dataset = function() {
       package_id <- self$data$package_id
@@ -229,5 +254,23 @@ read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(
     stop("Not a HDX Resource object!", call. = FALSE)
   resource$read_session(sheet = sheet, layer = layer,
                         folder = folder,
-                        simplifyVector = simplify_json)
+                        simplify_json = simplify_json)
+}
+
+
+#' @export
+#' @aliases Resource 
+get_layers <- function(resource, folder = tempdir()) {
+  if (!inherits(resource, "Resource"))
+    stop("Not a HDX Resource object!", call. = FALSE)
+  resource$get_layers(folder = folder)
+}
+
+
+#' @export
+#' @aliases Resource 
+get_sheets <- function(resource, folder = tempdir()) {
+  if (!inherits(resource, "Resource"))
+    stop("Not a HDX Resource object!", call. = FALSE)
+  resource$get_sheets(folder = folder)
 }
