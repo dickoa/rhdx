@@ -25,7 +25,7 @@ read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
 read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
   check4X("sf")
   if (zipped)
-    path <- file.path("/vsizip", path)
+    path <- file.path("/vsizip/", path)
   if (is.null(layer)) {
     ## read the first layer by default
     layer <- sf::st_layers(path)[[1]][1]
@@ -37,7 +37,7 @@ read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
 get_layers_ <- function(path = NULL, zipped = TRUE) {
   check4X("sf")
   if (zipped)
-    path <- file.path("/vsizip", path)
+    path <- file.path("/vsizip/", path)
   sf::st_layers(path)
 }
 

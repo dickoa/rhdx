@@ -52,10 +52,10 @@
 Resource <- R6::R6Class(
   "Resource",
   private = list(
-    configuration = NULL
+    configuration = NULL,
+    download_folder_ = NULL
   ),
   public = list(
-    download_folder = NULL,
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration)) {
@@ -80,11 +80,8 @@ Resource <- R6::R6Class(
     },
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
-      if (is.null(folder)) {
-        self$download_folder <- tempdir()
-      } else {
-        self$download_folder <- folder
-      }
+      if (is.null(folder))
+        folder <- tempdir()
       if (is.null(filename))
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
@@ -94,9 +91,16 @@ Resource <- R6::R6Class(
         download.file(url = self$data$url, destfile = path,
                       mode = "wb", quiet = quiet, ...)
       }
-      invisible(path)
+      private$download_folder_ <- folder
+      invisible(path.expand(path))
+    },
+    download_folder = function() {
+      path.expand(private$download_folder_)
     },
     read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE) {
+      ## check if it was downloaded
+      if (!is.null(private$download_folder_) & is.null(folder))
+        folder <- private$download_folder_
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       switch(
@@ -117,10 +121,13 @@ Resource <- R6::R6Class(
         `zipped geodatabase` = read_vector(path = path, layer = layer, zipped = FALSE),
         `zipped geopackage` = read_vector(path = path, layer = layer),
         `zipped geotiff` = read_raster(path = path, layer = layer),
-        kmz = read_spatial(path = path, layer = layer),
-        `zipped kml` = read_spatial(path = path, layer = layer))
+        kmz = read_vector(path = path, layer = layer),
+        `zipped kml` = read_vector(path = path, layer = layer))
     },
     get_layers = function(folder = NULL, quiet = TRUE) {
+      ## check if it was downloaded
+      if (!is.null(private$download_folder_) & is.null(folder))
+        folder <- private$download_folder_
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
@@ -136,6 +143,8 @@ Resource <- R6::R6Class(
         `zipped kml` = get_layers_(path))
     },
     get_sheets = function(folder = NULL, quiet = TRUE) {
+      if (!is.null(private$download_folder_) & is.null(folder))
+        folder <- private$download_folder_
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       if (!format %in% c("xlsx", "xls")) stop("`get_sheets work only with `xlsx` or `xls` file`", call. = FALSE)
