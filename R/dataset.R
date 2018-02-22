@@ -279,6 +279,7 @@ as.list.Dataset <- function(x) {
 
 #' @export
 #' @aliases Dataset
+#' @importFrom tibble as_tibble
 as_tibble.Dataset <- function(x, ...) {
   df <- tibble::data_frame(dataset_title = tolower(x$data$title),
                           dataset_name = x$data$name,

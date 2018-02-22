@@ -138,6 +138,7 @@ Organization$get_datasets <- function(identifier = NULL, configuration = NULL, .
  
 #' @export
 #' @aliases Organization 
+#' @importFrom tibble as_tibble
 as_tibble.Organization <- function(x, ...) {
   df <- tibble::data_frame(
     organization_id = x$data$id,
@@ -146,17 +147,6 @@ as_tibble.Organization <- function(x, ...) {
   df
 }
 
-
-#' @export
-#' @aliases Organization 
-as.data.frame.Organization <- function(x, ...) {
-  df <- data.frame(
-    organization_id = x$data$id,
-    organization_name = x$data$name,
-    stringsAsFactors = FALSE)
-  df$organization <- list(x)
-  df
-}
 
 #' @export
 #' @aliases Organization 

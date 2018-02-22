@@ -110,6 +110,7 @@ User$list_all_users <- function(sort = "name asc", all_fields = FALSE, configura
  
 #' @export
 #' @aliases User 
+#' @importFrom tibble as_tibble
 as_tibble.User <- function(x, ...) {
   df <- tibble::data_frame(
     user_id = x$data$id,

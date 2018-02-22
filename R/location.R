@@ -118,6 +118,7 @@ Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, c
  
 #' @export
 #' @aliases Location 
+#' @importFrom tibble as_tibble
 as_tibble.Location <- function(x, ...) {
   df <- tibble::data_frame(
     location_id = x$data$id,
