@@ -91,8 +91,7 @@ Resource <- R6::R6Class(
       }
       invisible(path)
     },
-    read_session = function(sheet = NULL, layer = NULL,
-                            folder = tempdir(), simplifyVector = FALSE) {
+    read_session = function(sheet = NULL, layer = NULL, folder = tempdir(), simplify_json = TRUE) {
       path <- self$download(folder = folder, quiet = TRUE)
       format <- self$get_file_type()
       switch(
@@ -106,7 +105,7 @@ Resource <- R6::R6Class(
         xls = read_sheet(path = path, sheet = sheet, format = format),
         json = {
           check4X("jsonlite")
-          jsonlite::fromJSON(path, simplifyVector = simplifyVector)
+          jsonlite::fromJSON(path, simplifyVector = simplify_json)
         },
         geojson = read_vector(path, layer),
         `zipped shapefile` = read_vector(path = path, layer = layer),
@@ -225,10 +224,10 @@ download <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE,
 
 #' @export
 #' @aliases Resource 
-read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(), simplifyVector = FALSE) {
+read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(), simplify_json = TRUE) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
   resource$read_session(sheet = sheet, layer = layer,
                         folder = folder,
-                        simplifyVector = simplifyVector)
+                        simplifyVector = simplify_json)
 }
