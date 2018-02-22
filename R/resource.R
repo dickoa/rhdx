@@ -248,17 +248,17 @@ read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(
 
 #' @export
 #' @aliases Resource 
-get_layers <- function(resource, folder = tempdir()) {
+get_layers <- function(resource, folder = tempdir(), progress = progress) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
-  resource$get_layers(folder = folder)
+  resource$get_layers(folder = folder, progress = progress)
 }
 
 
 #' @export
 #' @aliases Resource 
-get_sheets <- function(resource, folder = tempdir()) {
+get_sheets <- function(resource, folder = tempdir(), progress = FALSE) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
-  resource$get_sheets(folder = folder)
+  resource$get_sheets(folder = folder, progress = progress)
 }
