@@ -55,6 +55,7 @@ Resource <- R6::R6Class(
     configuration = NULL
   ),
   public = list(
+    download_folder = NULL,
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration)) {
@@ -77,22 +78,26 @@ Resource <- R6::R6Class(
       private$configuration$call_remoteclient("resource_patch",
                                               list(id = self$data$id))
     },
-    download = function(folder = getwd(), filename = NULL,
-                        progress = TRUE, force = FALSE, ...) {
+    download = function(folder = NULL, filename = NULL,
+                        quiet = TRUE, force = FALSE, ...) {
+      if (is.null(folder)) {
+        self$download_folder <- tempdir()
+      } else {
+        self$download_folder <- folder
+      }
       if (is.null(filename))
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
-      ## cached_files <- file.path(rhdx_cache$cache_path_get(), filename)
       if (file.exists(path) & !force) {
         message("File already present, at: ", path)
       } else {
         download.file(url = self$data$url, destfile = path,
-                      mode = "wb", quiet = !progress, ...)
+                      mode = "wb", quiet = quiet, ...)
       }
       invisible(path)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = tempdir(), simplify_json = TRUE, progress = FALSE) {
-      path <- self$download(folder = folder, progress = progress)
+    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE) {
+      path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       switch(
         format,
@@ -115,8 +120,8 @@ Resource <- R6::R6Class(
         kmz = read_spatial(path = path, layer = layer),
         `zipped kml` = read_spatial(path = path, layer = layer))
     },
-    get_layers = function(folder = tempdir(), progress = FALSE) {
-      path <- self$download(folder = folder, progress = progress)
+    get_layers = function(folder = NULL, quiet = TRUE) {
+      path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
                                "zipped geopackage", "zipped geotiff", "kmz", "zipped kml")
@@ -130,8 +135,8 @@ Resource <- R6::R6Class(
         kmz = get_layers_(path),
         `zipped kml` = get_layers_(path))
     },
-    get_sheets = function(folder = tempdir(), progress = FALSE) {
-      path <- self$download(folder = folder, progress = progress)
+    get_sheets = function(folder = NULL, quiet = TRUE) {
+      path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       if (!format %in% c("xlsx", "xls")) stop("`get_sheets work only with `xlsx` or `xls` file`", call. = FALSE)
       switch(
@@ -229,36 +234,37 @@ as.list.Resource <- function(x) {
 
 #' @export
 #' @aliases Resource 
-download <- function(resource, folder = getwd(), filename = NULL, quiet = FALSE, ...) {
+download <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, ...) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
 }
 
+
 #' @export
 #' @aliases Resource 
-read_session <- function(resource, sheet = NULL, layer = NULL, folder = tempdir(), simplify_json = TRUE) {
+get_layers <- function(resource, folder = NULL, quiet = quiet) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
-  resource$read_session(sheet = sheet, layer = layer,
+  resource$get_layers(folder = folder, quiet = quiet)
+}
+
+
+#' @export
+#' @aliases Resource 
+get_sheets <- function(resource, folder = NULL, quiet = TRUE) {
+  if (!inherits(resource, "Resource"))
+    stop("Not a HDX Resource object!", call. = FALSE)
+  resource$get_sheets(folder = folder, quiet = quiet)
+}
+
+#' @export
+#' @aliases Resource 
+read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE) {
+  if (!inherits(resource, "Resource"))
+    stop("Not a HDX Resource object!", call. = FALSE)
+  resource$read_session(sheet = sheet,
+                        layer = layer,
                         folder = folder,
                         simplify_json = simplify_json)
-}
-
-
-#' @export
-#' @aliases Resource 
-get_layers <- function(resource, folder = tempdir(), progress = progress) {
-  if (!inherits(resource, "Resource"))
-    stop("Not a HDX Resource object!", call. = FALSE)
-  resource$get_layers(folder = folder, progress = progress)
-}
-
-
-#' @export
-#' @aliases Resource 
-get_sheets <- function(resource, folder = tempdir(), progress = FALSE) {
-  if (!inherits(resource, "Resource"))
-    stop("Not a HDX Resource object!", call. = FALSE)
-  resource$get_sheets(folder = folder, progress = progress)
 }
