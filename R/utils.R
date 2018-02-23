@@ -27,7 +27,6 @@ read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
   if (zipped)
     path <- file.path("/vsizip", path)
   if (is.null(layer)) {
-    ## read the first layer by default
     layer <- sf::st_layers(path)[[1]][1]
     message("reading layer: ", layer, "\n")
   }

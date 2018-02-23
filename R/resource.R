@@ -86,21 +86,20 @@ Resource <- R6::R6Class(
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
       if (file.exists(path) & !force) {
-        message("File already present, at: ", path)
+        message("File already present, at: ", tools::file_path_as_absolute(path))
       } else {
         download.file(url = self$data$url, destfile = path,
                       mode = "wb", quiet = quiet, ...)
       }
-      private$download_folder_ <- folder
+      private$download_folder_ <- tools::file_path_as_absolute(folder)
       invisible(tools::file_path_as_absolute(path))
     },
     download_folder = function() {
-      path.expand(private$download_folder_)
+      tools::file_path_as_absolute(private$download_folder_)
     },
     read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE) {
-      ## check if it was downloaded
       if (!is.null(private$download_folder_) & is.null(folder))
-        folder <- private$download_folder_
+        folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       switch(
@@ -125,9 +124,8 @@ Resource <- R6::R6Class(
         `zipped kml` = read_vector(path = path, layer = layer))
     },
     get_layers = function(folder = NULL, quiet = TRUE) {
-      ## check if it was downloaded
       if (!is.null(private$download_folder_) & is.null(folder))
-        folder <- private$download_folder_
+        folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
@@ -144,7 +142,7 @@ Resource <- R6::R6Class(
     },
     get_sheets = function(folder = NULL, quiet = TRUE) {
       if (!is.null(private$download_folder_) & is.null(folder))
-        folder <- private$download_folder_
+        folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       if (!format %in% c("xlsx", "xls")) stop("`get_sheets work only with `xlsx` or `xls` file`", call. = FALSE)
