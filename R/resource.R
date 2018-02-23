@@ -92,7 +92,7 @@ Resource <- R6::R6Class(
                       mode = "wb", quiet = quiet, ...)
       }
       private$download_folder_ <- folder
-      invisible(path.expand(path))
+      invisible(tools::file_path_as_absolute(path))
     },
     download_folder = function() {
       path.expand(private$download_folder_)
