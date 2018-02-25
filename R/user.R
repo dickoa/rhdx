@@ -51,7 +51,7 @@ User <- R6::R6Class(
   public = list(
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration)) {
+      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
       } else {
         private$configuration <- configuration
@@ -67,14 +67,14 @@ User <- R6::R6Class(
       self$data <- jsonlite::fromJSON(hdx_user_static_json, simplifyVector = TRUE)
     },
     read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("user_show", list(id = identifier, include_datasets = include_datasets, ...))
       User$new(initial_data = res$result, configuration = configuration)
     },
     list_all_users = function(order_by = "number_created_packages", configuration = NULL, ...) {
       if (!sort %in% c("name", "number_of_edits", "number_created_packages")) stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`")
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("user_list", list(order_by = order_by, ...))
       if (!all_fields)
