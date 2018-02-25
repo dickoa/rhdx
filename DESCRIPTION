@@ -1,7 +1,7 @@
 Package: rhdx
 Title: R client for the Humanitarian Data Exchange platform
 Description: R client for the Humanitarian Data Exchange platform
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Authors@R: person("Dicko", "Ahmadou", email="dicko.ahmadou@gmail.com", role = c("aut", "cre"))
 License: MIT + file LICENSE
 LazyData: true
@@ -14,6 +14,7 @@ Imports:
     jsonlite,
     yaml,
     tibble,
+    base64enc,
     hoardr
 Suggests:
     roxygen2 (>= 6.0.1),

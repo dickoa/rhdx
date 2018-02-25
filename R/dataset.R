@@ -33,7 +33,7 @@ Dataset <- R6::R6Class(
     resources = NULL,
     data = list(),
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration)) {
+      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
       } else {
         private$configuration <- configuration
@@ -51,7 +51,7 @@ Dataset <- R6::R6Class(
       self$data$resources <- list()
     },
     read_from_hdx = function(identifier, configuration = NULL) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("package_show", list(id = identifier))
       Dataset$new(initial_data = res$result, configuration = configuration)
@@ -61,7 +61,7 @@ Dataset <- R6::R6Class(
     },
     add_resource = function(resource, ignore_dataset_id = FALSE) {
       if (!inherits(resource, "Resource"))
-        stop("Not of class `Resource` please use `Resource$new() to create Resource`!", call. = FALSE)
+        stop("Not of class `Resource` please use `Resource$new()` to create a resource first!", call. = FALSE)
       if ("package_id" %in% names(resource$data))
         stop("Resource already have a dataset id", call. = FALSE)
       if (length(self$data$resources) > 0) {
@@ -90,7 +90,7 @@ Dataset <- R6::R6Class(
       browseURL(url = paste0(url, "dataset/", self$data$name))
     },
     search_in_hdx = function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       cc <- crul::Paginator$new(client = configuration$get_remoteclient(),
                                by = "query_params",
@@ -114,7 +114,7 @@ Dataset <- R6::R6Class(
                                  include_groups = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title"))
         stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("package_list",
                                             list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
@@ -131,18 +131,6 @@ Dataset <- R6::R6Class(
       self$data <- switch(file_ext,
                          yml = yaml::yaml.load_file(hdx_dataset_static_file),
                          json = jsonlite::fromJSON(hdx_dataset_static_file, simplifyVector = FALSE))
-      if ("resources" %in% names(self$data))
-        self$resources <- lapply(self$data$resources,
-                                function(x) Resource$new(initial_data = x, configuration = configuration)) 
-    },
-    update_from_yaml = function(hdx_dataset_static_yaml) {
-      self$data <- yaml::yaml.load_file(hdx_dataset_static_yaml)
-      if ("resources" %in% names(self$data))
-        self$resources <- lapply(self$data$resources,
-                                function(x) Resource$new(initial_data = x, configuration = configuration))
-    },
-    update_from_json = function(hdx_dataset_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_dataset_static_json, simplifyVector = FALSE)
       if ("resources" %in% names(self$data))
         self$resources <- lapply(self$data$resources,
                                 function(x) Resource$new(initial_data = x, configuration = configuration))
@@ -201,18 +189,25 @@ Dataset <- R6::R6Class(
       if (requestable)
         self$data$private <- FALSE
     },
+    get_required_fields = function() {
+      if (!is.null(self$is_requestable()) && self$is_requestable()) {
+        fields <- private$configuration$data$hdx_config$`dataset-requestable`$required_fields
+      } else {
+        fields <- private$configuration$data$hdx_config$dataset$required_fields
+      }
+      fields
+    },
     check_required_fields = function() {
       n2 <- names(self$data)
-      if (!is.null(self$is_requestable()) && self$is_requestable()) {
-        n1 <- private$configuration$data$`dataset-requestable`$required_fields
-      } else {
-        n1 <- private$configuration$data$dataset$required_fields
-      }
-      if (!all(n1 %in% n2))
+      n1 <- self$get_required_fields()
+      if (!all(n1 %in% n2)) {
         stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)))
+      } else {
+        TRUE
+      }
     },
     count = function(configuration = NULL) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("package_search",
                                             list(q = "*:*", rows = 1L))

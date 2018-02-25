@@ -54,7 +54,7 @@ Location <- R6::R6Class(
   public = list(
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration)) {
+      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
       } else {
         private$configuration <- configuration

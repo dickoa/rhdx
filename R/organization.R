@@ -57,7 +57,7 @@ Organization <- R6::R6Class(
   public = list(
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration)) {
+      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
       } else {
         private$configuration <- configuration
@@ -66,21 +66,15 @@ Organization <- R6::R6Class(
       initial_data <- nc(initial_data)
       self$data <- initial_data
     },
-    update_from_yaml = function(hdx_organization_static_yaml) {
-      self$data <- yaml::yaml.load_file(hdx_organization_static_yaml)
-    },
-    update_from_json = function(hdx_organization_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_organization_static_json, simplifyVector = TRUE)
-    },
     read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
       Organization$new(initial_data = res$result, configuration = configuration)
     },
     list_all_organizations = function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("organization_list", list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
       if (!all_fields)

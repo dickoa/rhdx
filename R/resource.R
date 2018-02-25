@@ -58,7 +58,7 @@ Resource <- R6::R6Class(
   public = list(
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration)) {
+      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
       } else {
         private$configuration <- configuration
@@ -174,13 +174,13 @@ Resource <- R6::R6Class(
         stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
     },
     read_from_hdx = function(identifier, configuration = NULL) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_show", list(id = identifier))
       Resource$new(initial_data = res$result, configuration = configuration)
     },
     search_in_hdx = function(query = "*:*", configuration = NULL, ...) {
-      if (is.null(configuration))
+      if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_search", list(query = query, ...))
       list_of_rs <- lapply(res$result$results, function(x) Resource$new(initial_data = x, configuration = configuration))

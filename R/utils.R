@@ -6,6 +6,11 @@ check4X <- function(x) {
   }
 }
 
+is_valid_uuid <- function(x) {
+  regex <- "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+  grepl(regex, x, ignore.case = TRUE)
+}
+
 read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   check4X("readxl")
   if (is.null(sheet)) {
