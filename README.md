@@ -18,13 +18,10 @@ platform.
 ## Installation
 
 This package is not on yet on CRAN and to install it, you will need the
-[`devtools`](https://github.com/r-lib/devtools) package and the
-development version of the [`crul`](https://github.com/ropensci/crul)
-package.
+[`devtools`](https://github.com/r-lib/devtools) package.
 
 ``` r
 ## install.packages("devtools") 
-devtools::install_github("ropensci/crul") ## need the dev versio > 0.5.0
 devtools::install_git("https://gitlab.com/dickoa/rhdx")
 ```
 
