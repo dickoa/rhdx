@@ -1,4 +1,4 @@
-crAddins <- function() {
+hdxAddins <- function() {
   ui <- miniPage(
     gadgetTitleBar("Search HDX"),
     miniTabstripPanel(
@@ -10,26 +10,26 @@ crAddins <- function() {
           DT::dataTableOutput("search_table")
         )
       ),
-      miniTabPanel(
-        "Search by organization",
-        icon = icon("barcode"),
-        miniContentPanel(
-          h4(
-            "Add a new bibliography entry through Crossref DOI",
-            class = "text-center",
-            style = "padding-bottom: 15px;"
-          ),
-          fillRow(
-            flex = c(7, 3),
-            height = "45px",
-            uiOutput("cr_input"),
-            uiOutput("add_to_my_citations")
-          ),
-          htmlOutput("preview")
-        )
+      ## miniTabPanel(
+      ##   "Search by organization",
+      ##   icon = icon("barcode"),
+      ##   miniContentPanel(
+      ##     h4(
+      ##       "Add a new bibliography entry through Crossref DOI",
+      ##       class = "text-center",
+      ##       style = "padding-bottom: 15px;"
+      ##     ),
+      ##     fillRow(
+      ##       flex = c(7, 3),
+      ##       height = "45px",
+      ##       uiOutput("cr_input"),
+      ##       uiOutput("add_to_my_citations")
+      ##     ),
+      ##     htmlOutput("preview")
+      ##   )
       )
     )
-  )
+  ## )
   
   server <- function(input, output, session) {
     # Search panel

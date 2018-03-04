@@ -60,14 +60,14 @@ read_raster <- function(path = NULL, layer = NULL, zipped = TRUE) {
 
 
 merge_list <- function (x, y, ...) {
-  if (length(x) == 0) 
+  if (length(x) == 0)
     return(y)
-  if (length(y) == 0) 
+  if (length(y) == 0)
     return(x)
-  i = match(names(y), names(x))
-  i = is.na(i)
-  if (any(i)) 
-    x[names(y)[which(i)]] = y[which(i)]
+  i <- match(names(y), names(x))
+  i <- is.na(i)
+  if (any(i))
+    x[names(y)[which(i)]] <- y[which(i)]
   x
 }
 
@@ -75,7 +75,8 @@ merge_list <- function (x, y, ...) {
 sift_res <- function(z, key = "name") {
   if (!is.null(z) && length(z) > 0) {
     if (!key %in% names(z)) key <- "name"
-    paste0(na.omit(vapply(z, "[[", key, FUN.VALUE = "character")[1:5]), collapse = ", ")
+    r <- na.omit(vapply(z, function(x) if (length(x) > 0 ) paste0(x[[key]], ", ") else "", FUN.VALUE = "character")[1:5])
+    gsub(", $", "", paste0(r, collapse = ""))
   } else {
     ""
   }
@@ -90,36 +91,36 @@ check_required_fields <- function(data, config = NULL, type = "dataset") {
 }
 
 update_frequencies <- list(
-  '-2' = 'Adhoc',
-  '-1' = 'Never',
-  '0' = 'Live',
-  '1'= 'Every day',
-  '7' = 'Every week',
-  '14' = 'Every two weeks',
-  '30' = 'Every month',
-  '90' = 'Every three months',
-  '180' = 'Every six months',
-  '365' = 'Every year',
-  'adhoc' = '-2',
-  'never' = '-1',
-  'live' = '0',
-  'every day' = '1',
-  'every week' = '7',
-  'every two weeks' = '14',
-  'every month' = '30',
-  'every three months' = '90',
-  'every six months' = '180',
-  'every year' = '365',
-  'daily' = '1',
-  'weekly' = '7',
-  'fortnightly' = '14',
-  'every other week' = '14',
-  'monthly' = '30',
-  'quarterly' = '90',
-  'semiannually' = '180',
-  'semiyearly' = '180',
-  'annually' = '365',
-  'yearly' = '365')
+  "-2" = "Adhoc",
+  "-1" = "Never",
+  "0" = "Live",
+  "1"= "Every day",
+  "7" = "Every week",
+  "14" = "Every two weeks",
+  "30" = "Every month",
+  "90" = "Every three months",
+  "180" = "Every six months",
+  "365" = "Every year",
+  "adhoc" = "-2",
+  "never" = "-1",
+  "live" = "0",
+  "every day" = "1",
+  "every week" = "7",
+  "every two weeks" = "14",
+  "every month" = "30",
+  "every three months" = "90",
+  "every six months" = "180",
+  "every year" = "365",
+  "daily" = "1",
+  "weekly" = "7",
+  "fortnightly" = "14",
+  "every other week" = "14",
+  "monthly" = "30",
+  "quarterly" = "90",
+  "semiannually" = "180",
+  "semiyearly" = "180",
+  "annually" = "365",
+  "yearly" = "365")
 
 
 #' Function to search HDX object
@@ -139,24 +140,12 @@ update_frequencies <- list(
 #'  }
 #' 
 search_in_hdx <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, type = "dataset") {
-  if (!type %in% c("dataset", "resource", "organization")) stop("`type` should be `dataset`, `resource`, or `organization`")
+  if (!type %in% c("dataset", "resource", "organization"))
+    stop("`type` should be `dataset`, `resource`, or `organization`")
   switch(type,
-         dataset = {
-           ds <- Dataset$new()
-           ds <- ds$search_in_hdx(query = query, rows = rows, page_size = page_size, configuration = configuration)
-           ds
-           ## purrr::map_df(ds, as_tibble)
-         },
-         resource = {
-           rs <- Resource$new()
-           rs <- rs$search_in_hdx(query = query, configuration = configuration)
-           purrr::map_df(rs, as_tibble)
-         },
-         organization = {
-           org <- Organization$new()
-           org$search_in_hdx(query = query, rows = rows, page_size = page_size, configuration = configuration)
-           purrr::map_df(org, as_tibble)
-         }) 
+         dataset = search_datasets(query = query, rows = rows, page_size = page_size, configuration = configuration),
+         resource = search_resources(query = query, rows = rows, page_size = page_size, configuration = configuration),
+         organization = search_organizations(query = query, rows = rows, page_size = page_size, configuration = configuration))
 }
 
 
@@ -171,7 +160,8 @@ search_in_hdx <- function(query = "*:*", rows = 10L, page_size = 1000L, configur
 #'  }
 #' 
 read_from_hdx <- function(identifier, configuration = NULL, type = "dataset") {
-  if (!type %in% c("dataset", "resource", "organization")) stop("`type` should be `dataset`, `resource`, or `organization`")
+  if (!type %in% c("dataset", "resource", "organization"))
+    stop("`type` should be `dataset`, `resource`, or `organization`")
   switch(type,
          dataset = {
            ds <- Dataset$new()

@@ -41,14 +41,10 @@ Dataset <- R6::R6Class(
       if (is.null(initial_data)) initial_data <- list()
       initial_data <- nc(initial_data)
       key <- names(initial_data)
-      self$init_resources()
       self$data <- initial_data
       if ("resources" %in% key)
         self$resources <- lapply(self$data$resources,
                                 function(x) Resource$new(initial_data = x, configuration = configuration))
-    },
-    init_resources = function() {
-      self$data$resources <- list()
     },
     read_from_hdx = function(identifier, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
@@ -216,6 +212,23 @@ Dataset <- R6::R6Class(
     as_list = function() {
       self$data
     },
+    create_in_hdx = function(upload_resource = FALSE) {
+      configuration <- private$configuration
+      data <- self$data
+      res <- configuration$call_remoteclient("package_create",
+                                            data,
+                                            verb = "post")
+      res$status_code == 200L
+      ## h <- curl::new_handle(.list = list(http_version = 2))
+      ## curl::handle_setform(h,
+      ##                      package_id = res$result$id,
+      ##                      name = rs$data$name,
+      ##                      format = rs$get_file_type(),
+      ##                      upload = crul::upload(file))
+      ## curl::handle_setheaders(h, "X-CKAN-API-Key" = configuration$get_hdx_key())
+      ## action <- paste0(configuration$get_hdx_site_url(), "api/action/resource_create")
+      ## curl::curl_fetch_memory(action, handle = h)
+    },
     print = function() {
       if (!is.null(self$is_requestable()) && self$is_requestable()) {
         cat(paste0("<HDX Requestable Dataset> ", self$data$id), "\n")
@@ -324,4 +337,19 @@ delete_resource <- function(dataset, index) {
 count_datasets <- function(configuration = NULL) {
   ds <- Dataset$new()
   ds <- ds$count(configuration = configuration)
+}
+
+#' @export
+#' @aliases Dataset 
+search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+  ds <- Dataset$new()
+  ds$search_in_hdx(query = query, rows = rows,
+                   page_size = page_size, configuration = configuration, ...)
+}
+
+#' @export
+#' @aliases Dataset 
+read_dataset <- function(identifier, configuration = NULL, ...) {
+  ds <- Dataset$new()
+  ds$read_from_hdx(identifier, configuration = configuration, ...)
 }

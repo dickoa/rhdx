@@ -275,3 +275,17 @@ read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, si
                         folder = folder,
                         simplify_json = simplify_json)
 }
+
+#' @export
+#' @aliases Resource
+search_resources <- function(query = "*:*", configuration = NULL, ...) {
+  rs <- Resource$new()
+  rs$search_in_hdx(query = query, configuration = configuration, ...)
+}
+
+#' @export
+#' @aliases Resource
+read_resource <- function(identifier = NULL, configuration = NULL, ...) {
+  rs <- Resource$new()
+  rs$read_from_hdx(identifier = NULL, configuration = configuration, ...)
+}

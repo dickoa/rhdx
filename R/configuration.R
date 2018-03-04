@@ -53,7 +53,8 @@ Configuration <- R6::R6Class(
         if (is.character(hdx_config)) {
           if (!file.exists(hdx_config)) stop("HDX config file not found!", call. = FALSE)
           file_ext <- tools::file_ext(hdx_config)
-          if (!file_ext %in% c("yml", "json")) stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
+          if (!file_ext %in% c("yml", "json"))
+            stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
           hdx_config <- switch(file_ext,
                               yml = yaml::yaml.load_file(hdx_config),
                               json = jsonlite::fromJSON(hdx_config, simplifyVector = FALSE))
@@ -110,9 +111,17 @@ Configuration <- R6::R6Class(
     get_remoteclient = function() {
       self$data$remoteclient
     },
-    call_remoteclient = function(action, data = NULL, ...) {
-      res <- self$data$remoteclient$get(path = paste0("/api/3/action/", action), query = data, ...)
-      list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+    call_remoteclient = function(action, data = NULL, verb = "get", encode = "json", ...) {
+      if (!verb %in% c("post", "get"))
+        stop("Only `get` and `post` are supported!")
+      if (verb == "get") {
+        res <- self$data$remoteclient$get(path = paste0("/api/3/action/", action), query = data, ...)
+        res <- list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+      } else {
+        res <- self$data$remoteclient$post(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
+        res <- list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+      }
+      res
     },
     read = function() {
       self
@@ -183,3 +192,7 @@ rhdx_setup <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_
   conf$setup(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, configuration = configuration)
   invisible(conf)
 }
+
+#' @export
+#' @aliases Configuration
+rhdx_config <- rhdx_setup

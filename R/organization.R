@@ -147,3 +147,17 @@ as_tibble.Organization <- function(x, ...) {
 as.list.Organization <- function(x) {
   x$as_list()
 }
+
+#' @export
+#' @aliases Organization
+search_organizations <- function(query = "*:*", configuration = NULL, ...) {
+  org <- Organization$new()
+  org$search_in_hdx(query = query, configuration = configuration, ...)
+}
+
+#' @export
+#' @aliases Organization
+read_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+  org <- Organization$new()
+  org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+}
