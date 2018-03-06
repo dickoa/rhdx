@@ -195,6 +195,24 @@ Resource <- R6::R6Class(
     as_list = function() {
       self$data
     },
+    create_in_hdx = function(dataset_id = NULL) {
+      configuration <- private$configuration
+      rs <- self$data
+      rs$package_id <- dataset_id
+      h <- curl::new_handle(http_version = 2, useragent = get_user_agent())
+      curl::handle_setheaders(h,
+                              `X-CKAN-API-Key` = configuration$get_hdx_key(),
+                              `Content-Type` =  "multipart/form-data") 
+      curl::handle_setform(h, .list = rs)
+      url <- paste0(configuration$get_hdx_site_url(), "api/action/resource_create")
+      res <- curl::curl_fetch_memory(url, handle = h)
+      if (res$status_code == 200L) {
+        message("All resources uploaded")
+      } else {
+        stop("Resources not created check the parameters")
+      }
+      invisible(res)
+    },
     print = function() {
       cat(paste0("<HDX Resource> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")

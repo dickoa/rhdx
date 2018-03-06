@@ -70,7 +70,7 @@ Configuration <- R6::R6Class(
         headers <- nc(list(`X-CKAN-API-Key` = hdx_key, `Content-Type` = "application/json"))
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
                                                     headers = headers,
-                                                    opts = list(http_version = 2)) ## http 1.1
+                                                    opts = list(http_version = 2, useragent = get_user_agent())) ## http 1.1
       private$shared$configuration <- self
     },
     get_credentials = function() {
@@ -84,7 +84,7 @@ Configuration <- R6::R6Class(
         headers <- nc(list(`X-CKAN-API-Key` = self$data$hdx_key, `Content-Type` = "application/json"))
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
                                                     headers = headers,
-                                                    opts = list(http_version = 2)) ## http 1.1
+                                                    opts = list(http_version = 2, useragent = get_user_agent())) ## http 1.1
     },
     set_hdx_key = function(hdx_key) {
       self$data$hdx_key <- hdx_key
@@ -99,7 +99,9 @@ Configuration <- R6::R6Class(
       if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       self$data$hdx_site <-  hdx_site
       hdx_site <- paste0("hdx_", hdx_site, "_site")
-      self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url, headers = nc(list(`X-CKAN-API-Key` = self$data$hdx_key, `Content-Type` = "application/json")))
+      self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
+                                                    headers = nc(list(`X-CKAN-API-Key` = self$data$hdx_key, `Content-Type` = "application/json")),
+                                                    opts = list(http_version = 2, useragent = get_user_agent()))
     },
     get_hdx_site = function() {
       self$data$hdx_site
@@ -108,7 +110,7 @@ Configuration <- R6::R6Class(
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
       self$data$hdx_config[[hdx_site]]$url
     },
-    get_remoteclient = function() {
+    remoteclient = function() {
       self$data$remoteclient
     },
     call_remoteclient = function(action, data = NULL, verb = "get", encode = "json", ...) {
@@ -161,10 +163,9 @@ Configuration <- R6::R6Class(
 
 #' @aliases Configuration
 Configuration$setup <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, configuration = NULL) {
-  conf <- .rhdx_env$configuration
-  if (is.null(conf) | !inherits(conf, "Configuration"))
-    conf <- Configuration$new()
-  conf$setup(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, configuration = configuration)
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    .rhdx_env$configuration <- configuration
+  .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config)
 }
 
 #' @aliases Configuration
@@ -186,11 +187,10 @@ Configuration$read <- function() {
 #' @export
 #' @aliases Configuration
 rhdx_setup <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, configuration = NULL) {
-  conf <- .rhdx_env$configuration
-  if (is.null(conf) | !inherits(conf, "Configuration"))
-    conf <- Configuration$new()
-  conf$setup(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, configuration = configuration)
-  invisible(conf)
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    .rhdx_env$configuration <- configuration
+  .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config)
+  invisible(.rhdx_env$configuration)
 }
 
 #' @export

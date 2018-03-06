@@ -11,6 +11,19 @@ is_valid_uuid <- function(x) {
   grepl(regex, x, ignore.case = TRUE)
 }
 
+get_user_agent <- function(x) {
+    rhdx_version <- packageVersion("rhdx")
+    os <- Sys.info()[["sysname"]]
+    os_version <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
+    r_version <- paste0(R.version$major, ".", R.version$minor, 
+        ifelse(R.version$status == "", "", paste0("-", R.version$status)))
+    header <- paste0("rhdx/", rhdx_version, " (", os, "/",
+                    os_version, "; ", "R/", r_version, ")")
+    header
+}
+
+
+
 read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   check4X("readxl")
   if (is.null(sheet)) {

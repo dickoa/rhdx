@@ -81,6 +81,11 @@ Dataset <- R6::R6Class(
       self$resources[[index]] <- NULL
       self$data$num_resources <- max(0, self$data$num_resources - 1)
     },
+    delete_all_resources = function() {
+      self$resources <- NULL
+      self$data$resources <- NULL
+      self$data$num_resources <- NULL
+    },
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "dataset/", self$data$name))
@@ -88,7 +93,7 @@ Dataset <- R6::R6Class(
     search_in_hdx = function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      cc <- crul::Paginator$new(client = configuration$get_remoteclient(),
+      cc <- crul::Paginator$new(client = configuration$remoteclient(),
                                by = "query_params",
                                limit_param = "rows",
                                offset_param = "start",
@@ -141,7 +146,6 @@ Dataset <- R6::R6Class(
       date
     },
     set_dataset_date = function(date, format = "%m/%d/%Y") {
-      ### dataset_date is month/day/year
       self$data$dataset_date <- format.Date(date, format = format)
     },
     get_update_frequency = function() {
@@ -212,22 +216,33 @@ Dataset <- R6::R6Class(
     as_list = function() {
       self$data
     },
+    update_in_hdx = function() {
+      if (is.null(self$data$id))
+        stop("Dataset not on HDX use `create_in_hdx`")
+      ## TODO
+      ## res1 <- configuration$call_remoteclient("package_create",
+      ##                                        ds,
+      ##                                        verb = "post")
+    },
     create_in_hdx = function(upload_resource = FALSE) {
+      invisible(self$check_required_fields())
       configuration <- private$configuration
-      data <- self$data
-      res <- configuration$call_remoteclient("package_create",
-                                            data,
-                                            verb = "post")
-      res$status_code == 200L
-      ## h <- curl::new_handle(.list = list(http_version = 2))
-      ## curl::handle_setform(h,
-      ##                      package_id = res$result$id,
-      ##                      name = rs$data$name,
-      ##                      format = rs$get_file_type(),
-      ##                      upload = crul::upload(file))
-      ## curl::handle_setheaders(h, "X-CKAN-API-Key" = configuration$get_hdx_key())
-      ## action <- paste0(configuration$get_hdx_site_url(), "api/action/resource_create")
-      ## curl::curl_fetch_memory(action, handle = h)
+      rs <- self$get_resources()
+      ds <- self$data
+      ds$resources <- NULL
+      ds$num_resources <- NULL
+      if (!is.null(self$data$id))
+        stop("Dataset already exists on HDX use `update_in_hdx`")
+      res1 <- configuration$call_remoteclient("package_create",
+                                             ds,
+                                             verb = "post")
+      if (res1$status_code == 200L) {
+        message("Dataset created, uploading resources")
+      } else {
+        stop("Dataset not created check the parameters")
+      }
+      res2 <- lapply(rs, function(r) r$create_in_hdx(res1$result$id))
+      invisible(list(dataset = res1, resources = res2))
     },
     print = function() {
       if (!is.null(self$is_requestable()) && self$is_requestable()) {
