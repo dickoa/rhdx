@@ -114,15 +114,25 @@ Configuration <- R6::R6Class(
       self$data$remoteclient
     },
     call_remoteclient = function(action, data = NULL, verb = "get", encode = "json", ...) {
-      if (!verb %in% c("post", "get"))
-        stop("Only `get` and `post` are supported!")
-      if (verb == "get") {
-        res <- self$data$remoteclient$get(path = paste0("/api/3/action/", action), query = data, ...)
-        res <- list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
-      } else {
-        res <- self$data$remoteclient$post(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
-        res <- list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
-      }
+      if (!verb %in% c("post", "get", "put", "patch"))
+        stop("Only `get`, `post`, `put` and `patch` are supported!")
+      res <- switch(verb,
+                   get = {
+                     res <- self$data$remoteclient$get(path = paste0("/api/3/action/", action), query = data, ...)
+                     list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+                   },
+                   post = {
+                     res <- self$data$remoteclient$post(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
+                     list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+                   },
+                   put = {
+                     res <- self$data$remoteclient$put(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
+                     list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+                   },
+                   patch = {
+                     res <- self$data$remoteclient$patch(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
+                     list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
+                   })
       res
     },
     read = function() {

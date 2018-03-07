@@ -195,6 +195,21 @@ Resource <- R6::R6Class(
     as_list = function() {
       self$data
     },
+    update_in_hdx = function() {
+      configuration <- private$configuration
+      resource_id <- self$data$id
+      if (is.null(resource_id))
+        stop("Resource not on HDX use `create_in_hdx` method")
+      rs <- self$data
+      res <- configuration$call_remoteclient("resource_update",
+                                            rs,
+                                            verb = "post")
+      if (res$status_code == 200L) {
+        message("Resource updated!")
+      } else {
+        stop("Resource not created check the parameters")
+      }
+    },
     create_in_hdx = function(dataset_id = NULL) {
       configuration <- private$configuration
       rs <- self$data

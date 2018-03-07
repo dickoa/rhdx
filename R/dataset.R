@@ -216,15 +216,35 @@ Dataset <- R6::R6Class(
     as_list = function() {
       self$data
     },
-    update_in_hdx = function() {
-      if (is.null(self$data$id))
-        stop("Dataset not on HDX use `create_in_hdx`")
-      ## TODO
-      ## res1 <- configuration$call_remoteclient("package_create",
-      ##                                        ds,
-      ##                                        verb = "post")
+    patch_in_hdx = function() {
     },
-    create_in_hdx = function(upload_resource = FALSE) {
+    update_in_hdx = function(field = NULL, update_resources = FALSE) {
+      configuration <- private$configuration
+      dataset_id <- self$data$id
+      if (is.null(dataset_id))
+        stop("Dataset not on HDX use `create_in_hdx` method")
+      rs <- self$get_resources()
+      ds <- self$data
+      ds$resources <- NULL
+      ds$num_resources <- NULL
+      res1 <- configuration$call_remoteclient("package_update",
+                                             ds,
+                                             verb = "put")
+      if (res1$status_code == 200L) {
+        message("Dataset updated!")
+      } else {
+        message("Didn't work")
+        ## return(res1)
+        ## stop("Dataset not created check the parameters")
+      }
+      if (update_resources) {
+        res2 <- lapply(rs, function(r) r$update_in_hdx(dataset_id))
+      } else {
+        res2 <- NULL
+      }
+      invisible(nc(list(dataset = res1, resources = res2)))
+    },
+    create_in_hdx = function(upload_resources = FALSE) {
       invisible(self$check_required_fields())
       configuration <- private$configuration
       rs <- self$get_resources()
