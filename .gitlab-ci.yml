@@ -10,6 +10,7 @@ pages:
     - apt-get install -t unstable --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev libssl-dev git libmagick++-dev pandoc pandoc-citeproc
 
   script:
+    - mkdir public
     - Rscript -e 'install.packages("devtools")'
     - Rscript -e 'devtools::install_dev_deps()'
     - Rscript -e 'devtools::install_github("hadley/pkgdown")'
