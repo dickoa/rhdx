@@ -191,17 +191,6 @@ kml` `kmz` `zipped geodatabase` and `zipped geopackage`
 You need to use the `Configuration` class to select a server
 
 ``` r
-conf <- Configuration$setup(hdx_site = "demo")
-conf
-## <HDX Configuration> 
-##   HDX site: demo
-##   HDX site url: https://demo-data.humdata.org/
-##   HDX API key: 
-```
-
-Switch to the production server
-
-``` r
 conf <- Configuration$setup(hdx_site = "prod")
 conf
 ## <HDX Configuration> 
@@ -212,8 +201,9 @@ conf
 
 ### Search datasets
 
-Once we have a server, we can search from dataset using the `Dataset`
-class and `search_in_hdx` method.
+Once we selected a server, we can now search from dataset using the
+`search_in_hdx` method from the `Dataset` class. In this case we will
+limit just to two results.
 
 ``` r
 list_of_ds <- Dataset$search_in_hdx("displaced Nigeria", rows = 2)
@@ -237,6 +227,8 @@ list_of_ds
 ##   Resources (up to 5): DTM Nigeria Baseline Assessment Round 21, DTM Nigeria Baseline Assessment Round 20, DTM Nigeria Baseline Assessment Round 19, DTM Nigeria Baseline Assessment Round 18, DTM Nigeria Baseline Assessment Round 17
 ```
 
+### Choose the dataset you want to manipulate in R, in this case we will take the first one.
+
 ``` r
 ds <- list_of_ds[[1]]
 ds
@@ -249,7 +241,7 @@ ds
 ##   Resources (up to 5): displacement_data, conflict_data, disaster_data
 ```
 
-### Download or read resources from datasets
+### List all resources in the dataset
 
 ``` r
 list_of_rs <- ds$get_resources()
@@ -276,12 +268,14 @@ list_of_rs
 ##   Format: JSON
 ```
 
+### Choose a resource we need to download/read
+
 We are looking for the displacement data, it’s the first resource in our
 list `list_of_rs`
 
 ``` r
 idp_nga_rs <- list_of_rs[[1]]
-idp_nga_df <- idp_nga_rs$read_session(json_simplifyVector = TRUE, folder = tempdir())
+idp_nga_df <- idp_nga_rs$read_session(simplify_json = TRUE, folder = tempdir())
 idp_nga_df
 ## $results
 ##   iso iso3 geo_name year conflict_new_displacements
@@ -324,6 +318,12 @@ idp_nga_df
 ## $offset
 ## [1] 0
 ```
+
+## Create a dataset in HDX
+
+### Connect to a server
+
+### Get an API key
 
 ## rhdx package API
 
