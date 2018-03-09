@@ -12,13 +12,10 @@ pages:
   script:
     - Rscript -e 'install.packages("devtools")'
     - Rscript -e 'devtools::install_dev_deps()'
-    - Rscript -e 'devtools::install_github("hadley/pkgdown")'
+    - Rscript -e 'devtools::install_github("r-lib/pkgdown")'
     - Rscript -e 'devtools::install_github("ropensci/crul")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
-    - Rscript -e 'pkgdown::build_site()'
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
+    - Rscript -e 'pkgdown::build_site(path = "public")'
 
   artifacts:
     paths:
