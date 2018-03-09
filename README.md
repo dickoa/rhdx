@@ -47,8 +47,7 @@ You can also use `rhdx_config` which is wrapper around the
 `Configuration$setup`
 
 ``` r
-key <- readLines("~/.hdxkey")
-rhdx_config(hdx_site = "demo", hdx_key = key, read_only = FALSE)
+rhdx_config(hdx_site = "demo")
 dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
 dataset
 ## <HDX Dataset> 6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d 
@@ -67,10 +66,14 @@ You can modify a dataset object and update it in HDX if you have an API
 key.
 
 ``` r
-dataset$set_dataset_date('2015-07-26')
-dataset$get_dataset_date()
+key <- readLines("~/.hdxkey")
+rhdx_config(hdx_site = "demo", hdx_key = key, read_only = FALSE)
 dataset$update_in_hdx()
 ```
+
+The previous approach assumed that you knew the name of the dataset you
+want to use in R. In most cases, you will search for data in HDX using
+specific keywords.
 
 ``` r
 datasets <- Dataset$search_in_hdx("ACLED", rows = 2)

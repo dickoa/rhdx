@@ -1,11 +1,14 @@
+image: rocker/r-base:latest
+
 pages:
   stage: deploy
-  image: rocker/r-base:latest
+  
   before_script:
     - apt-get update -qq
     - apt-get install -t unstable software-properties-common --yes
     - add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
     - apt-get install -t unstable --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev libssl-dev git libmagick++-dev pandoc pandoc-citeproc
+
   script:
     - Rscript -e 'install.packages("devtools")'
     - Rscript -e 'devtools::install_dev_deps()'
@@ -13,6 +16,7 @@ pages:
     - Rscript -e 'devtools::install_github("ropensci/crul")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
     - Rscript -e 'pkgdown::build_site(path = "public")'
+
   artifacts:
     paths:
-    - public
+      - public 
