@@ -224,17 +224,15 @@ Dataset <- R6::R6Class(
       if (is.null(dataset_id))
         stop("Dataset not on HDX use `create_in_hdx` method")
       rs <- self$get_resources()
-      ds <- self$data
-      ds$resources <- NULL
-      ds$num_resources <- NULL
+      ds <- nc(self$data)
       res1 <- configuration$call_remoteclient("package_update",
                                              ds,
-                                             verb = "put")
+                                             verb = "post",
+                                             encode = "json")
       if (res1$status_code == 200L) {
         message("Dataset updated!")
       } else {
-        message("Didn't work")
-        ## return(res1)
+        res1
         ## stop("Dataset not created check the parameters")
       }
       if (update_resources) {

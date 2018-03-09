@@ -1,4 +1,9 @@
-nc <- function(x) Filter(Negate(is.null), x)
+is_null_recursive <- function(x) is.null(x) | all(sapply(x, is.null))
+
+nc <- function(x) {
+  x <- Filter(Negate(is_null_recursive), x)
+  lapply(x, function(x) if (is.list(x)) nc(x) else x)
+}
 
 check4X <- function(x) {
   if (!requireNamespace(x, quietly = TRUE)) {
@@ -21,8 +26,6 @@ get_user_agent <- function(x) {
                     os_version, "; ", "R/", r_version, ")")
     header
 }
-
-
 
 read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
   check4X("readxl")

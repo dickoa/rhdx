@@ -1,6 +1,6 @@
 .rhdx_env <- new.env()
 
-rhdx_cache <- NULL # nocov start
+rhdx_cache <- NULL
 
 .onLoad <- function(libname, pkgname){
   x <- hoardr::hoard()

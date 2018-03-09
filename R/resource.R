@@ -157,7 +157,7 @@ Resource <- R6::R6Class(
       if (is.null(package_id)) {
         stop("Resource has no package id!", call. = FALSE)
       } else {
-        Dataset$read_from_hdx(package_id)       
+        Dataset$read_from_hdx(package_id)      
       }
     },
     get_file_to_upload = function() {
@@ -200,15 +200,20 @@ Resource <- R6::R6Class(
       resource_id <- self$data$id
       if (is.null(resource_id))
         stop("Resource not on HDX use `create_in_hdx` method")
-      rs <- self$data
-      res <- configuration$call_remoteclient("resource_update",
-                                            rs,
-                                            verb = "post")
+      rs <- nc(self$data)
+      h <- curl::new_handle(http_version = 2, useragent = get_user_agent())
+      curl::handle_setheaders(h,
+                              `X-CKAN-API-Key` = configuration$get_hdx_key(),
+                              `Content-Type` =  "multipart/form-data") 
+      curl::handle_setform(h, .list = rs)
+      url <- paste0(configuration$get_hdx_site_url(), "api/action/resource_update")
+      res <- curl::curl_fetch_memory(url, handle = h)
       if (res$status_code == 200L) {
-        message("Resource updated!")
+        message("All resources uploaded")
       } else {
-        stop("Resource not created check the parameters")
+        stop("Resources not created check the parameters")
       }
+      invisible(res)
     },
     create_in_hdx = function(dataset_id = NULL) {
       configuration <- private$configuration
@@ -240,9 +245,9 @@ Resource <- R6::R6Class(
 )
 
 #' @aliases Resource 
-Resource$read_from_hdx <- function(identifier = NULL, configuration = NULL, ...) {
+Resource$read_from_hdx <- function(identifier, configuration = NULL) {
   rs <- Resource$new()
-  rs$read_from_hdx(identifier = NULL, configuration = configuration, ...)
+  rs$read_from_hdx(identifier = identifier, configuration = configuration)
 }
 
 #' @aliases Resource
