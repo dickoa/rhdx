@@ -208,11 +208,8 @@ Resource <- R6::R6Class(
       curl::handle_setform(h, .list = rs)
       url <- paste0(configuration$get_hdx_site_url(), "api/action/resource_update")
       res <- curl::curl_fetch_memory(url, handle = h)
-      if (res$status_code == 200L) {
-        message("All resources uploaded")
-      } else {
+      if (res$status_code != 200L) 
         stop("Resources not created check the parameters")
-      }
       invisible(res)
     },
     create_in_hdx = function(dataset_id = NULL) {

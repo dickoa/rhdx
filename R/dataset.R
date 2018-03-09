@@ -229,12 +229,9 @@ Dataset <- R6::R6Class(
                                              ds,
                                              verb = "post",
                                              encode = "json")
-      if (res1$status_code == 200L) {
-        message("Dataset updated!")
-      } else {
-        res1
-        ## stop("Dataset not created check the parameters")
-      }
+      if (res1$status_code != 200L)
+        stop("Dataset not created check the parameters")
+      
       if (update_resources) {
         res2 <- lapply(rs, function(r) r$update_in_hdx(dataset_id))
       } else {

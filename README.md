@@ -31,8 +31,11 @@ devtools::install_git("https://gitlab.com/dickoa/rhdx")
 library("rhdx")
 ```
 
+The first step is to connect to an HDX server, we can use the `test`
+server
+
 ``` r
-Configuration$create(hdx_site = "test")
+Configuration$new(hdx_site = "test")
 Configuration$read()
 ## <HDX Configuration> 
 ##   HDX site: test
@@ -40,7 +43,12 @@ Configuration$read()
 ##   HDX API key: 
 ```
 
+You can also use `rhdx_config` which is wrapper around the
+`Configuration$setup`
+
 ``` r
+key <- readLines("~/.hdxkey")
+rhdx_config(hdx_site = "demo", hdx_key = key, read_only = FALSE)
 dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
 dataset
 ## <HDX Dataset> 6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d 
@@ -55,8 +63,17 @@ dataset$get_dataset_date()
 ## [1] "12/03/2016"
 ```
 
+You can modify a dataset object and update it in HDX if you have an API
+key.
+
 ``` r
-datasets <- Dataset$search_in_hdx("ACLED", rows = 1)
+dataset$set_dataset_date('2015-07-26')
+dataset$get_dataset_date()
+dataset$update_in_hdx()
+```
+
+``` r
+datasets <- Dataset$search_in_hdx("ACLED", rows = 2)
 datasets
 ## [[1]]
 ## <HDX Dataset> ac9f19f0-132e-46e6-9a9c-7d29dca8a469 
@@ -66,6 +83,15 @@ datasets
 ##   Tags (up to 5): conflict, political violence, protests, war
 ##   Locations (up to 5): dza
 ##   Resources (up to 5): Algeria.xlsx
+
+## [[2]]
+## <HDX Dataset> 5455e8fe-1034-47dc-8033-9a19aa29adee 
+##   Title: ACLED Conflict Data for Angola
+##   Name: acled-conflict-data-for-angola
+##   Date: 01/01/1997-12/31/2015
+##   Tags (up to 5): conflict, political violence, protests, war
+##   Locations (up to 5): ago
+##   Resources (up to 5): Angola.xlsx
 ```
 
 ``` r
@@ -87,7 +113,7 @@ resources[[1]]$download()
 ## downloaded 68 KB
 ```
 
-We can also read the resources directly in R
+We can also read the resources directly into our R session
 
 ``` r
 dplyr::glimpse(resources[[1]]$read_session())
@@ -121,9 +147,42 @@ dplyr::glimpse(resources[[1]]$read_session())
 ## $ FATALITIES       <dbl> 16, 18, 23, 20, 5, 14, 43, 54, 30, ...
 ```
 
-so far the following format are supported: `csv`, `xlsx`, `xls`, `zipped
-shapefile`, `zipped kml` `kmz` `zipped geodatabase` and `zipped
-geopackage`
+We can also have a more functional approach using wrapper function.
+
+``` r
+library(tidyverse)
+search_datasets("ACLED", rows = 2) %>% ## search dataset in HDX
+  first() %>% ## select the first dataset
+  get_resources() %>% ## get all resources in the datasets
+  first() %>% ## select the first resource
+  read_session() ## read it into R
+## reading sheet:  Sheet1 
+## # A tibble: 3,698 x 25
+##     GWNO EVENT_ID_CNTY EVENT_ID_NO_CNTY EVENT_DATE         
+##    <dbl> <chr>                    <dbl> <dttm>             
+##  1  615. 1ALG                        1. 1997-01-04 00:00:00
+##  2  615. 2ALG                        2. 1997-01-05 00:00:00
+##  3  615. 3ALG                        3. 1997-01-06 00:00:00
+##  4  615. 4ALG                        4. 1997-01-07 00:00:00
+##  5  615. 5ALG                        5. 1997-01-11 00:00:00
+##  6  615. 6ALG                        6. 1997-01-12 00:00:00
+##  7  615. 7ALG                        7. 1997-01-17 00:00:00
+##  8  615. 8ALG                        8. 1997-01-19 00:00:00
+##  9  615. 9ALG                        9. 1997-01-21 00:00:00
+## 10  615. 11ALG                      10. 1997-01-22 00:00:00
+## # ... with 3,688 more rows, and 21 more variables: YEAR <dbl>,
+## #   TIME_PRECISION <dbl>, EVENT_TYPE <chr>, ACTOR1 <chr>,
+## #   ALLY_ACTOR_1 <chr>, INTER1 <dbl>, ACTOR2 <chr>,
+## #   ALLY_ACTOR_2 <chr>, INTER2 <dbl>, INTERACTION <dbl>,
+## #   COUNTRY <chr>, ADMIN1 <chr>, ADMIN2 <chr>, ADMIN3 <lgl>,
+## #   LOCATION <chr>, LATITUDE <dbl>, LONGITUDE <dbl>,
+## #   GEO_PRECISION <dbl>, SOURCE <chr>, NOTES <chr>,
+## #   FATALITIES <dbl>
+```
+
+`read_session` will not work for all data in HDX, so far the following
+format are supported: `csv`, `xlsx`, `xls`, `zipped shapefile`, `zipped
+kml` `kmz` `zipped geodatabase` and `zipped geopackage`
 
 ## Get data from HDX
 
