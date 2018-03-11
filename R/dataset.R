@@ -251,11 +251,8 @@ Dataset <- R6::R6Class(
       res1 <- configuration$call_remoteclient("package_create",
                                              ds,
                                              verb = "post")
-      if (res1$status_code == 200L) {
-        message("Dataset created, uploading resources")
-      } else {
+      if (res1$status_code != 200L)
         stop("Dataset not created check the parameters")
-      }
       res2 <- lapply(rs, function(r) r$create_in_hdx(res1$result$id))
       invisible(list(dataset = res1, resources = res2))
     },
