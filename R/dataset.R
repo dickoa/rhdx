@@ -123,6 +123,12 @@ Dataset <- R6::R6Class(
         unlist(res$result)
       res$result
     },
+    list_showcases = function() {
+      configuration <- private$configuration
+      dataset_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_list", list(package_id = dataset_id))
+      res$result
+    },
     update_from_file = function(hdx_dataset_static_file) {
       if (!file.exists(hdx_dataset_static_file))
         stop("HDX static dataset file not found!", call. = FALSE)

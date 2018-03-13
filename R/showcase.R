@@ -72,6 +72,40 @@ Showcase <- R6::R6Class(
       res <- configuration$call_remoteclient("ckanext_showcase_show", list(id = identifier))
       Showcase$new(initial_data = res$result, configuration = configuration)
     },
+    add_dataset = function(dataset) {
+      if (!inherits(dataset, "Dataset"))
+        stop("Not of class Dataset, use `Dataset$new`!")
+      if (is.null(self$data$id))
+        stop("Not of class Dataset, use `Dataset$new`!")
+      configuration <- private$configuration
+      dataset_id <- dataset$data$id
+      showcase_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_package_association_create", list(showcase_id = showcase_id, package_id = dataset_id))
+      if (res$status_code != 200L)
+        stop("Dataset not added to the showcase")
+      res$result
+    },
+    delete_dataset = function(dataset) {
+      if (!inherits(dataset, "Dataset"))
+        stop("Not of class Dataset, use `Dataset$new`!")
+      if (is.null(self$data$id))
+        stop("Showcase not on HDX uses Showcase$create_in_hdx first")
+      configuration <- private$configuration
+      dataset_id <- dataset$data$id
+      showcase_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_package_association_delete", list(showcase_id = showcase_id, package_id = dataset_id))
+      if (res$status_code != 200L)
+        stop("Dataset not added to the showcase")
+      res$result
+    },
+    list_datasets = function() {
+      configuration <- private$configuration
+      showcase_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_list", list(showcase_id = showcase_id))
+      if (res$status_code != 200L)
+        stop("Dataset not added to the showcase")
+      res$result
+    },
     list_all_showcases = function(configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
@@ -87,6 +121,7 @@ Showcase <- R6::R6Class(
                                             encode = "json")
       if (res1$status_code != 200L)
         stop("Showcase not created check the parameters")
+      invisible(res1$result)
     },
     delete_from_hdx = function(name = NULL) {
       configuration <- private$configuration

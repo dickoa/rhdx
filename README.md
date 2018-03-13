@@ -184,10 +184,10 @@ search_datasets("ACLED", rows = 2) %>% ## search dataset in HDX
 ```
 
 `read_session` will not work for all data in HDX, so far the following
-format are supported: `csv`, `xlsx`, `xls`, `zipped shapefile`, `zipped
-kml` `kmz` `zipped geodatabase` and `zipped geopackage`
+format are supported: `csv`, `xlsx`, `xls`, `json`, `geojson`, `zipped
+shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`
 
-## Get data from HDX
+## Get data from HDX using an OOP approach
 
 ### Connect to a server
 
@@ -279,6 +279,195 @@ list `list_of_rs`
 ``` r
 idp_nga_rs <- list_of_rs[[1]]
 idp_nga_df <- idp_nga_rs$read_session(simplify_json = TRUE, folder = tempdir())
+idp_nga_df
+## $results
+##   iso iso3 geo_name year conflict_new_displacements
+## 1  NG  NGA  Nigeria 2009                       5000
+## 2  NG  NGA  Nigeria 2010                       5000
+## 3  NG  NGA  Nigeria 2011                      65000
+## 4  NG  NGA  Nigeria 2012                      63000
+## 5  NG  NGA  Nigeria 2013                     471000
+## 6  NG  NGA  Nigeria 2014                     975000
+## 7  NG  NGA  Nigeria 2015                     737000
+## 8  NG  NGA  Nigeria 2016                     501000
+##   disaster_new_displacements conflict_stock_displacement
+## 1                     140000                          NA
+## 2                     560000                          NA
+## 3                       6300                          NA
+## 4                    6112000                          NA
+## 5                     117000                     3300000
+## 6                       3000                     1075000
+## 7                     100000                     2096000
+## 8                      78000                     1955000
+
+## $lookups
+## named list()
+
+## $errors
+## list()
+
+## $success
+## [1] TRUE
+
+## $params
+## [1] "/api/displacement_data?iso3=NGA&ci=HDX00AKEYJUl17"
+
+## $total
+## [1] 8
+
+## $limit
+## [1] 0
+
+## $offset
+## [1] 0
+```
+
+## Getting data using a function programming approach
+
+### Connect to a server
+
+We will use the `rhdx_config` wrapper function
+
+``` r
+conf <- rhdx_config(hdx_site = "prod")
+conf
+## <HDX Configuration> 
+##   HDX site: prod
+##   HDX site url: https://data.humdata.org/
+##   HDX API key: 
+```
+
+### Search datasets
+
+Once we selected a server, we can now search from dataset using the
+`search_in_hdx` method from the `Dataset` class. In this case we will
+limit just to two results.
+
+``` r
+list_of_ds <- search_datasets("displaced Nigeria", rows = 2)
+list_of_ds
+## [[1]]
+## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
+##   Title: Nigeria - Internally displaced persons - IDPs
+##   Name: idmc-idp-data-for-nigeria
+##   Date: 01/01/2009-12/31/2016
+##   Tags (up to 5): displacement, idmc, population
+##   Locations (up to 5): nga
+##   Resources (up to 5): displacement_data, conflict_data, disaster_data
+
+## [[2]]
+## <HDX Dataset> 4adf7874-ae01-46fd-a442-5fc6b3c9dff1 
+##   Title: Nigeria Baseline Assessment Data [IOM DTM]
+##   Name: nigeria-baseline-data-iom-dtm
+##   Date: 01/31/2018
+##   Tags (up to 5): adamawa, assessment, baseline-data, baseline-dtm, bauchi
+##   Locations (up to 5): nga
+##   Resources (up to 5): DTM Nigeria Baseline Assessment Round 21, DTM Nigeria Baseline Assessment Round 20, DTM Nigeria Baseline Assessment Round 19, DTM Nigeria Baseline Assessment Round 18, DTM Nigeria Baseline Assessment Round 17
+```
+
+### Choose the dataset you want to manipulate in R, in this case we will take the first one.
+
+``` r
+ds <- first(list_of_ds)
+ds
+## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
+##   Title: Nigeria - Internally displaced persons - IDPs
+##   Name: idmc-idp-data-for-nigeria
+##   Date: 01/01/2009-12/31/2016
+##   Tags (up to 5): displacement, idmc, population
+##   Locations (up to 5): nga
+##   Resources (up to 5): displacement_data, conflict_data, disaster_data
+```
+
+### List all resources in the dataset
+
+``` r
+list_of_rs <- get_resources(ds)
+list_of_rs
+## [[1]]
+## <HDX Resource> f57be018-116e-4dd9-a7ab-8002e7627f36 
+##   Name: displacement_data
+##   Description: Internally displaced persons - IDPs (new displacement associated with conflict and violence)
+##   Size: 
+##   Format: JSON
+
+## [[2]]
+## <HDX Resource> 6261856c-afb9-4746-b340-9cf531cbd38f 
+##   Name: conflict_data
+##   Description: Internally displaced persons - IDPs (people displaced by conflict and violence)
+##   Size: 
+##   Format: JSON
+
+## [[3]]
+## <HDX Resource> b8ff1f4b-105c-4a6c-bf54-a543a486ab7e 
+##   Name: disaster_data
+##   Description: Internally displaced persons - IDPs (new displacement associated with disasters)
+##   Size: 
+##   Format: JSON
+```
+
+### Choose a resource we need to download/read
+
+We are looking for the displacement data, it’s the first resource in our
+list `list_of_rs`
+
+``` r
+idp_nga_rs <- first(list_of_rs)
+idp_nga_df <- read_session(idp_nga_rs, simplify_json = TRUE, folder = tempdir())
+idp_nga_df
+## $results
+##   iso iso3 geo_name year conflict_new_displacements
+## 1  NG  NGA  Nigeria 2009                       5000
+## 2  NG  NGA  Nigeria 2010                       5000
+## 3  NG  NGA  Nigeria 2011                      65000
+## 4  NG  NGA  Nigeria 2012                      63000
+## 5  NG  NGA  Nigeria 2013                     471000
+## 6  NG  NGA  Nigeria 2014                     975000
+## 7  NG  NGA  Nigeria 2015                     737000
+## 8  NG  NGA  Nigeria 2016                     501000
+##   disaster_new_displacements conflict_stock_displacement
+## 1                     140000                          NA
+## 2                     560000                          NA
+## 3                       6300                          NA
+## 4                    6112000                          NA
+## 5                     117000                     3300000
+## 6                       3000                     1075000
+## 7                     100000                     2096000
+## 8                      78000                     1955000
+
+## $lookups
+## named list()
+
+## $errors
+## list()
+
+## $success
+## [1] TRUE
+
+## $params
+## [1] "/api/displacement_data?iso3=NGA&ci=HDX00AKEYJUl17"
+
+## $total
+## [1] 8
+
+## $limit
+## [1] 0
+
+## $offset
+## [1] 0
+```
+
+### Using `magrittr` pipes
+
+``` r
+rhdx_config(hdx_site = "prod")
+
+search_datasets("displaced Nigeria", rows = 2) %>%
+ first() %>%
+ get_resources() %>%
+ first() %>%
+ read_session(idp_nga_rs, simplify_json = TRUE, folder = tempdir()) -> idp_nga_df
+
 idp_nga_df
 ## $results
 ##   iso iso3 geo_name year conflict_new_displacements
