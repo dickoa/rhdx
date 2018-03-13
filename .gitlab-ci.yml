@@ -15,9 +15,9 @@ pages:
     - Rscript -e 'devtools::install_github("r-lib/pkgdown")'
     - Rscript -e 'devtools::install_github("ropensci/crul")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
-    - pwd
-    - Rscript -e 'pkgdown::build_site(path = "public")'
+    - Rscript -e 'pkgdown::build_site()'
+    - ls /builds/dicko/rhdx/docs
 
   artifacts:
     paths:
-      - public 
+      - docs 

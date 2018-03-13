@@ -460,6 +460,8 @@ idp_nga_df
 ### Using `magrittr` pipes
 
 ``` r
+library(tidyverse)
+
 rhdx_config(hdx_site = "prod")
 
 search_datasets("displaced Nigeria", rows = 2) %>%
