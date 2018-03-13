@@ -6,18 +6,19 @@ pages:
   before_script:
     - apt-get update -qq
     - apt-get install -t unstable software-properties-common --yes
-    - add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-    - apt-get install -t unstable --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev libssl-dev git libmagick++-dev pandoc pandoc-citeproc
+    - apt-get install -t unstable --yes libssl-dev libxml2-dev git libmagick++-dev pandoc pandoc-citeproc
 
   script:
     - Rscript -e 'install.packages("devtools")'
-    - Rscript -e 'devtools::install_dev_deps()'
+    - Rscript -e 'install.packages("tibble")'
     - Rscript -e 'devtools::install_github("r-lib/pkgdown")'
     - Rscript -e 'devtools::install_github("ropensci/crul")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
-    - Rscript -e 'pkgdown::build_site()'
-    - ls /builds/dicko/rhdx/docs
+    - Rscript -e 'pkgdown::build_site(path = "public")'
+    - ls /builds/dicko/rhdx/
+    - ls /builds/dicko/rhdx/public
+    
 
   artifacts:
     paths:
-      - docs 
+      - public
