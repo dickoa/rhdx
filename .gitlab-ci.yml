@@ -15,8 +15,8 @@ pages:
     - Rscript -e 'devtools::install_github("ropensci/crul")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
     - Rscript -e 'pkgdown::build_site(path = "public")'
-    - ls /builds/dicko/rhdx/
-    - ls /builds/dicko/rhdx/public
+    - ls /builds/dickoa/rhdx/
+    - ls /builds/dickoa/rhdx/public
     
 
   artifacts:
