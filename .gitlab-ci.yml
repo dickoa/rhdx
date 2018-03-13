@@ -14,9 +14,8 @@ pages:
     - Rscript -e 'devtools::install_github("r-lib/pkgdown")'
     - Rscript -e 'devtools::install_github("ropensci/crul")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
-    - mkdir /builds/dickoa/rhdx/public
-    - Rscript -e 'pkgdown::build_site(path = "/builds/dickoa/rhdx/public")'
-    - ls /builds/dickoa/rhdx/
+    - Rscript -e 'pkgdown::build_site()'
+    - mv docs public
     - ls /builds/dickoa/rhdx/public
     
 
