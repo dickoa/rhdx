@@ -85,12 +85,10 @@ Resource <- R6::R6Class(
       if (is.null(filename))
         filename <- basename(self$data$url)
       path <- file.path(folder, filename)
-      if (file.exists(path) & !force) {
-        message("File already present, at: ", tools::file_path_as_absolute(path))
-      } else {
+      if (!file.exists(path) | force) 
         download.file(url = self$data$url, destfile = path,
                       mode = "wb", quiet = quiet, ...)
-      }
+      
       private$download_folder_ <- tools::file_path_as_absolute(folder)
       invisible(tools::file_path_as_absolute(path))
     },

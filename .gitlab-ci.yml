@@ -16,7 +16,6 @@ pages:
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
     - Rscript -e 'pkgdown::build_site()'
     - mv docs public
-    - ls /builds/dickoa/rhdx/public
     
 
   artifacts:

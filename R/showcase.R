@@ -55,6 +55,7 @@ Showcase <- R6::R6Class(
     configuration = NULL
   ),
   public = list(
+    datasets = NULL,
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
@@ -65,8 +66,13 @@ Showcase <- R6::R6Class(
       if (is.null(initial_data)) initial_data <- list()
       initial_data <- nc(initial_data)
       self$data <- initial_data
+      ## key <- names(initial_data)
+      ## if ("dataset" %in% key)
+      ##   self$datasets <- lapply(self$data$datasets,
+      ##                          function(x) Dataset$new(initial_data = x, configuration = configuration))
+
     },
-    read_from_hdx = function(identifier = NULL) {
+    read_from_hdx = function(identifier = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("ckanext_showcase_show", list(id = identifier))
@@ -106,10 +112,44 @@ Showcase <- R6::R6Class(
         stop("Dataset not added to the showcase")
       res$result
     },
-    list_all_showcases = function(configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_remoteclient("ckanext_showcase_list")
+    add_tag = function(tag) {
+      if (!inherits(tag, "Tag"))
+        stop("Not of class Tag, use `Tag$new`!")
+      if (is.null(self$data$id))
+        stop("Not of class Tag, use `Tag$new`!")
+      configuration <- private$configuration
+      tag_id <- tag$data$id
+      showcase_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_package_association_create",
+                                            list(showcase_id = showcase_id, package_id = tag_id),
+                                            verb = "post",
+                                            encode = "json")
+      if (res$status_code != 200L)
+        stop("Tag not added to the showcase")
+      res$result
+    },
+    delete_tag = function(tag) {
+      if (!inherits(tag, "Tag"))
+        stop("Not of class Tag, use `Tag$new`!")
+      if (is.null(self$data$id))
+        stop("Showcase not on HDX uses Showcase$create_in_hdx first")
+      configuration <- private$configuration
+      tag_id <- tag$data$id
+      showcase_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_package_association_delete",
+                                            list(showcase_id = showcase_id, tag_id = tag_id),
+                                            verb = "post",
+                                            encode = "json")
+      if (res$status_code != 200L)
+        stop("Tag not added to the showcase")
+      res$result
+    },
+    list_tags = function() {
+      configuration <- private$configuration
+      showcase_id <- self$data$id
+      res <- configuration$call_remoteclient("ckanext_showcase_list", list(showcase_id = showcase_id))
+      if (res$status_code != 200L)
+        stop("Tag not added to the showcase")
       res$result
     },
     create_in_hdx = function() {
@@ -143,10 +183,10 @@ Showcase <- R6::R6Class(
     },
     print = function() {
       cat(paste0("<HDX Showcase> ", self$data$id), "\n")
+      cat("  Title: ", self$data$title, "\n", sep = "")
       cat("  Name: ", self$data$name, "\n", sep = "")
-      cat("  Display name: ", self$data$display_name, "\n", sep = "")
-      cat("  No. Datasets: ", self$data$package_count, "\n", sep = "")
-      cat("  No. Members: ", length(self$data$users), "\n", sep = "")
+      cat("  Description: ", self$data$notes, "\n", sep = "")
+      cat("  Type: ", self$data$type, "\n", sep = "")
       invisible(self)
     }
   )
@@ -155,21 +195,14 @@ Showcase <- R6::R6Class(
 #' @aliases Showcase
 Showcase$read_from_hdx <- function(identifier = NULL, configuration = NULL) {
   org <- Showcase$new()
-  org$read_from_hdx(identifier = identifier, configuration = configuration, ...)
-}
-
-
-#' @aliases Showcase
-Showcase$list_all_showcases <- function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
-  org <- Showcase$new()
-  org$list_all_showcases(sort = sort, all_fields = all_fields, include_groups = include_groups, configuration = configuration, ...)
+  org$read_from_hdx(identifier = identifier, configuration = configuration)
 }
 
  
 #' @export
 #' @aliases Showcase 
 #' @importFrom tibble as_tibble
-as_tibble.Showcase <- function(x, ...) {
+as_tibble.Showcase <- function(x) {
   df <- tibble::data_frame(
     showcase_id = x$data$id,
     showcase_name = x$data$name)
@@ -186,7 +219,7 @@ as.list.Showcase <- function(x) {
 
 #' @export
 #' @aliases Showcase
-read_showcase <- function(identifier = NULL, configuration = NULL, ...) {
+read_showcase <- function(identifier = NULL, configuration = NULL) {
   org <- Showcase$new()
-  org$read_from_hdx(identifier = identifier, configuration = configuration, ...)
+  org$read_from_hdx(identifier = identifier, configuration = configuration)
 }
