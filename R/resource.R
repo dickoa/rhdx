@@ -84,6 +84,8 @@ Resource <- R6::R6Class(
         folder <- tempdir()
       if (is.null(filename))
         filename <- basename(self$data$url)
+      if (self$data$resource_type == "api")
+        filename <- gsub("\\?.*", "", filename)
       path <- file.path(folder, filename)
       if (!file.exists(path) | force) 
         download.file(url = self$data$url, destfile = path,
