@@ -97,10 +97,10 @@ Resource <- R6::R6Class(
     download_folder = function() {
       tools::file_path_as_absolute(private$download_folder_)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE) {
+    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet)
+      path <- self$download(folder = folder, quiet = quiet, ...)
       format <- self$get_file_type()
       switch(
         format,
@@ -302,13 +302,14 @@ get_sheets <- function(resource, folder = NULL, quiet = TRUE) {
 
 #' @export
 #' @aliases Resource 
-read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE) {
+read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, ...) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
   resource$read_session(sheet = sheet,
                         layer = layer,
                         folder = folder,
-                        simplify_json = simplify_json)
+                        simplify_json = simplify_json,
+                        ...)
 }
 
 #' @export
