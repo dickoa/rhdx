@@ -75,120 +75,18 @@ devtools::install_git("https://gitlab.com/dickoa/rhdx")
 library("rhdx")
 ```
 
-The first step is to connect to an HDX server, we can use the `test` server
+The first step is to connect to an HDX server, we can use the `demo` server, we can use the `rhdx_config` function
+
 
 ```{r}
-Configuration$new(hdx_site = "test")
-Configuration$read()
+conf <- rhdx_config(hdx_site = "demo")
+conf
 ## <HDX Configuration> 
-##   HDX site: test
-##   HDX site url: https://test-data.humdata.org/
+##   HDX site: demo
+##   HDX site url: https://demo-data.humdata.org/
 ##   HDX API key: 
 ```
-You can also use `rhdx_config` which is wrapper around the `Configuration$setup`
-
-```{r}
-rhdx_config(hdx_site = "demo")
-dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
-dataset
-## <HDX Dataset> 6f36a41c-f126-4b18-aaaf-6c2ddfbc5d4d 
-##   Title: ACLED Conflict Data for Africa (Realtime - 2016)
-##   Name: acled-conflict-data-for-africa-realtime-2016
-##   Date: 12/03/2016
-##   Tags (up to 5): conflict, political violence, protests, war
-##   Locations (up to 5): dza, ago, ben, bwa, bfa
-##   Resources (up to 5): ACLED-All-Africa-File_20160101-to-date.xlsx, ACLED-All-Africa-File_20160101-to-date_csv.zip
-
-dataset$get_dataset_date()
-## [1] "12/03/2016"
-```
-
-You can modify a dataset object and update it in HDX if you have an API key.
-
-```{r}
-key <- readLines("~/.hdxkey")
-rhdx_config(hdx_site = "demo", hdx_key = key, read_only = FALSE)
-dataset$update_in_hdx()
-```
-The previous approach assumed that you knew the name of the dataset you want to use in R.
-In most cases, you will search for data in HDX using specific keywords.
-
-```{r}
-datasets <- Dataset$search_in_hdx("ACLED", rows = 2)
-datasets
-## [[1]]
-## <HDX Dataset> ac9f19f0-132e-46e6-9a9c-7d29dca8a469 
-##   Title: ACLED Conflict Data for Algeria
-##   Name: acled-conflict-data-for-algeria
-##   Date: 01/01/1997-12/31/2015
-##   Tags (up to 5): conflict, political violence, protests, war
-##   Locations (up to 5): dza
-##   Resources (up to 5): Algeria.xlsx
-
-## [[2]]
-## <HDX Dataset> 5455e8fe-1034-47dc-8033-9a19aa29adee 
-##   Title: ACLED Conflict Data for Angola
-##   Name: acled-conflict-data-for-angola
-##   Date: 01/01/1997-12/31/2015
-##   Tags (up to 5): conflict, political violence, protests, war
-##   Locations (up to 5): ago
-##   Resources (up to 5): Angola.xlsx
-```
-
-```{r}
-resources <- datasets[[1]]$get_resources()
-resources
-## [[1]]
-## <HDX Resource> 87ce2238-9049-4fb7-aa53-3c9d44b6183b 
-##   Name: Algeria.xlsx
-##   Description: 
-##   Size: 
-##   Format: XLSX
-```
-
-```{r}
-resources[[1]]$download()
-## trying URL 'http://www.acleddata.com/wp-content/uploads/2016/01/Eritrea.xlsx'
-## Content type 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' length 69983 bytes (68 KB)
-## ==================================================
-## downloaded 68 KB
-```
-
-We can also read the resources directly into our R session
-
-```{r}
-dplyr::glimpse(resources[[1]]$read_session())
-## reading sheet:  Sheet1 
-## Observations: 3,698
-## Variables: 25
-## $ GWNO             <dbl> 615, 615, 615, 615, 615, 615, 615, ...
-## $ EVENT_ID_CNTY    <chr> "1ALG", "2ALG", "3ALG", "4ALG", "5A...
-## $ EVENT_ID_NO_CNTY <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...
-## $ EVENT_DATE       <dttm> 1997-01-04, 1997-01-05, 1997-01-06...
-## $ YEAR             <dbl> 1997, 1997, 1997, 1997, 1997, 1997,...
-## $ TIME_PRECISION   <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
-## $ EVENT_TYPE       <chr> "Violence against civilians", "Viol...
-## $ ACTOR1           <chr> "GIA: Armed Islamic Group", "GIA: A...
-## $ ALLY_ACTOR_1     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA,...
-## $ INTER1           <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,...
-## $ ACTOR2           <chr> "Civilians (Algeria)", "Civilians (...
-## $ ALLY_ACTOR_2     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA,...
-## $ INTER2           <dbl> 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,...
-## $ INTERACTION      <dbl> 27, 27, 27, 27, 27, 27, 27, 27, 27,...
-## $ COUNTRY          <chr> "Algeria", "Algeria", "Algeria", "A...
-## $ ADMIN1           <chr> "Blida", "Tipaza", "Tipaza", "Alger...
-## $ ADMIN2           <chr> "Blida", "Douaouda", "Hadjout", "Bo...
-## $ ADMIN3           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA,...
-## $ LOCATION         <chr> "Blida", "Douaouda", "Hadjout", "Al...
-## $ LATITUDE         <dbl> 36.46860, 36.67250, 36.51390, 36.75...
-## $ LONGITUDE        <dbl> 2.828900, 2.789400, 2.417800, 3.041...
-## $ GEO_PRECISION    <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
-## $ SOURCE           <chr> "www.algeria-watch.org", "www.alger...
-## $ NOTES            <chr> "4 January: 16 citizens were murder...
-## $ FATALITIES       <dbl> 16, 18, 23, 20, 5, 14, 43, 54, 30, ...
-```
-
-We can also have a more functional approach using wrapper function.
+We can `search_datasets`, `get_resources` and `read_session` to get data from HDX to R directly
 
 ```{r}
 library(tidyverse)
@@ -493,7 +391,7 @@ search_datasets("displaced Nigeria", rows = 2) %>%
  first() %>%
  get_resources() %>%
  first() %>%
- read_session(idp_nga_rs, simplify_json = TRUE, folder = tempdir()) -> idp_nga_df
+ read_session(simplify_json = TRUE, folder = tempdir()) -> idp_nga_df
 
 idp_nga_df
 ## $results

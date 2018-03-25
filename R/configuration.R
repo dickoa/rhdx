@@ -196,13 +196,24 @@ Configuration$read <- function() {
 
 #' @export
 #' @aliases Configuration
-rhdx_setup <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, configuration = NULL) {
+set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, configuration = NULL) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     .rhdx_env$configuration <- configuration
   .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config)
   invisible(.rhdx_env$configuration)
 }
 
+
 #' @export
 #' @aliases Configuration
-rhdx_config <- rhdx_setup
+get_rhdx_config <- function() {
+  conf <- .rhdx_env$configuration
+  if (is.null(conf) | !inherits(conf, "Configuration"))
+    stop("There is no HDX configuration! Use `Configuration$new` or `rhdx_setup`", call. = FALSE)
+  conf$read()
+}
+
+
+#' @export
+#' @aliases Configuration
+rhdx_config <- set_rhdx_config
