@@ -190,12 +190,11 @@ read_from_hdx <- function(identifier, configuration = NULL, type = "dataset") {
          organization = {
            org <- Organization$new()
            org$read_from_hdx(identifier = identifier, configuration = configuration)
-         }) 
+         })
 }
 
+browse <- function(x, ...)
+  UseMethod("browse", x)
 
-#' @export
-filter.HDXObject <- function(x, ...) {
-}
-
-
+browse.default <- function(x, ...)
+  x$browse()

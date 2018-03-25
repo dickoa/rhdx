@@ -386,3 +386,6 @@ read_dataset <- function(identifier, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$read_from_hdx(identifier, configuration = configuration, ...)
 }
+
+browse.Dataset <- function(x, ...)
+  x$browse()
