@@ -84,7 +84,7 @@ Resource <- R6::R6Class(
         folder <- tempdir()
       if (is.null(filename))
         filename <- basename(self$data$url)
-      if (!is.null(self$data$resource_type) & self$data$resource_type == "api")
+      if (!is.null(self$data$resource_type) && self$data$resource_type == "api")
         filename <- gsub("\\?.*", "", filename)
       path <- file.path(folder, filename)
       if (!file.exists(path) | force) 

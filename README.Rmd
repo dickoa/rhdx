@@ -77,7 +77,6 @@ library("rhdx")
 
 The first step is to connect to an HDX server, we can use the `demo` server, we can use the `rhdx_config` function
 
-
 ```{r}
 set_rhdx_config(hdx_site = "demo")
 get_rhdx_config()

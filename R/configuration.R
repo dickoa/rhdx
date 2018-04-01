@@ -180,18 +180,18 @@ Configuration$setup <- function(hdx_site = "prod", hdx_key = NULL, read_only = T
 
 #' @aliases Configuration
 Configuration$delete <- function() {
-  conf <- .rhdx_env$configuration
-  if (is.null(conf) | !inherits(conf, "Configuration"))
-    conf <- Configuration$new()
+  configuration <- .rhdx_env$configuration
+  if (is.null(configuration) | !inherits(configuration, "Configuration"))
+    configuration <- Configuration$new()
   conf$delete()
 }
   
 #' @aliases Configuration
 Configuration$read <- function() {
-  conf <- .rhdx_env$configuration
-  if (is.null(conf) | !inherits(conf, "Configuration"))
-    stop("There is no HDX configuration! Use `Configuration$new` or `rhdx_setup`", call. = FALSE)
-  conf$read()
+  configuration <- .rhdx_env$configuration
+  if (is.null(configuration) | !inherits(configuration, "Configuration"))
+    stop("There is no HDX configuration! Use `set_rhdx_config`", call. = FALSE)
+  configuration$read()
 }
 
 #' @export
@@ -208,6 +208,6 @@ set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
 get_rhdx_config <- function() {
   configuration <- .rhdx_env$configuration
   if (is.null(configuration) | !inherits(configuration, "Configuration"))
-    stop("There is no HDX configuration! Use `Configuration$new` or `rhdx_setup`", call. = FALSE)
+    stop("There is no HDX configuration! Use `set_rhdx_config`", call. = FALSE)
   configuration$read()
 }
