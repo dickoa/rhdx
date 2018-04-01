@@ -84,7 +84,7 @@ Resource <- R6::R6Class(
         folder <- tempdir()
       if (is.null(filename))
         filename <- basename(self$data$url)
-      if (self$data$resource_type == "api")
+      if (!is.null(self$data$resource_type) & self$data$resource_type == "api")
         filename <- gsub("\\?.*", "", filename)
       path <- file.path(folder, filename)
       if (!file.exists(path) | force) 
@@ -145,7 +145,7 @@ Resource <- R6::R6Class(
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
-      if (!format %in% c("xlsx", "xls")) stop("`get_sheets work only with `xlsx` or `xls` file`", call. = FALSE)
+      if (!format %in% c("xlsx", "xls", "excel")) stop("`get_sheets work only with Excel file", call. = FALSE)
       switch(
         format,
         excel = get_sheets_(path = path),

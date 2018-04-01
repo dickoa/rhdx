@@ -387,5 +387,6 @@ read_dataset <- function(identifier, configuration = NULL, ...) {
   ds$read_from_hdx(identifier, configuration = configuration, ...)
 }
 
+#' @export
 browse.Dataset <- function(x, ...)
   x$browse()

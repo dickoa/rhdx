@@ -27,23 +27,17 @@ get_user_agent <- function(x) {
     header
 }
 
-read_sheet <- function(path = NULL, sheet = NULL, format = c("xlsx", "xls")) {
+read_sheet <- function(path = NULL, sheet = NULL, ...) {
   check4X("readxl")
   if (is.null(sheet)) {
     sheet <- readxl::excel_sheets(path)[[1]]
-    cat("reading sheet: ", sheet, "\n")
+    cat("Reading sheet: ", sheet, "\n")
   }
-  format <- match.arg(format)
-  if (format == "xls") {
-    df <- readxl::read_xls(path, sheet = sheet)
-  } else {
-    df <- readxl::read_xlsx(path, sheet = sheet)
-  }
-  df
+  readxl::read_excel(path, sheet = sheet, ...)
 }
 
 
-read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
+read_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
   check4X("sf")
   if (zipped)
     path <- file.path("/vsizip", path)
@@ -51,7 +45,7 @@ read_vector <- function(path = NULL, layer = NULL, zipped = TRUE) {
     layer <- sf::st_layers(path)[[1]][1]
     message("reading layer: ", layer, "\n")
   }
-  sf::read_sf(dsn = path, layer = layer)
+  sf::read_sf(dsn = path, layer = layer, ...)
 }
 
 get_layers_ <- function(path = NULL, zipped = TRUE) {
@@ -67,11 +61,11 @@ get_sheets_ <- function(path = NULL) {
 }
 
 
-read_raster <- function(path = NULL, layer = NULL, zipped = TRUE) {
+read_raster <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
   check4X("raster")
   if (zipped)
     path <- file.path("/vsizip", path, layer)
-  raster::raster(path)
+  raster::raster(path, ...)
 }
 
 
