@@ -161,3 +161,8 @@ read_organization <- function(identifier = NULL, include_datasets = FALSE, confi
   org <- Organization$new()
   org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
+
+#' @export
+#' @aliases Organization 
+browse.Organization <- function(x, ...)
+  x$browse()

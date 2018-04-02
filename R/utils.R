@@ -187,8 +187,10 @@ read_from_hdx <- function(identifier, configuration = NULL, type = "dataset") {
          })
 }
 
+#' @export
 browse <- function(x, ...)
   UseMethod("browse", x)
 
+#' @export
 browse.default <- function(x, ...)
   x$browse()

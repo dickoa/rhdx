@@ -48,7 +48,7 @@ Configuration <- R6::R6Class(
     initialize = function(hdx_site = "prod", hdx_key = NULL, hdx_config = NULL, read_only = TRUE) {
       if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       if (is.null(hdx_config)) {
-        hdx_config <- yaml::yaml.load_file(system.file("config", "hdx_configuration.yml", package = "rhdx"))
+        hdx_config <- yaml::read_yaml(system.file("config", "hdx_configuration.yml", package = "rhdx"))
       } else {
         if (is.character(hdx_config)) {
           if (!file.exists(hdx_config)) stop("HDX config file not found!", call. = FALSE)
@@ -56,7 +56,7 @@ Configuration <- R6::R6Class(
           if (!file_ext %in% c("yml", "json"))
             stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
           hdx_config <- switch(file_ext,
-                              yml = yaml::yaml.load_file(hdx_config),
+                              yml = yaml::read_yaml(hdx_config),
                               json = jsonlite::fromJSON(hdx_config, simplifyVector = FALSE))
         }
       }

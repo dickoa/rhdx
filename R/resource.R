@@ -230,6 +230,12 @@ Resource <- R6::R6Class(
       }
       invisible(res)
     },
+    browse = function() {
+      url <- private$configuration$get_hdx_site_url()
+      dataset_id <- self$data$package_id
+      resource_id <- self$data$id
+      browseURL(url = paste0(url, "dataset/", dataset_id, "/resource/", resource_id))
+    },
     print = function() {
       cat(paste0("<HDX Resource> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -285,7 +291,7 @@ download <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, ..
 
 #' @export
 #' @aliases Resource 
-get_layers <- function(resource, folder = NULL, quiet = quiet) {
+get_layers <- function(resource, folder = NULL, quiet = TRUE) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
   resource$get_layers(folder = folder, quiet = quiet)
@@ -323,5 +329,10 @@ search_resources <- function(query = "*:*", configuration = NULL, ...) {
 #' @aliases Resource
 read_resource <- function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
-  rs$read_from_hdx(identifier = NULL, configuration = configuration, ...)
+  rs$read_from_hdx(identifier = identifier, configuration = configuration, ...)
 }
+
+#' @export
+#' @aliases Resource 
+browse.Resource <- function(x, ...)
+  x$browse()

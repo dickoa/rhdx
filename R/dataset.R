@@ -52,7 +52,13 @@ Dataset <- R6::R6Class(
       res <- configuration$call_remoteclient("package_show", list(id = identifier))
       Dataset$new(initial_data = res$result, configuration = configuration)
     },
-    get_resources = function() {
+    get_resource = function(index) {
+      n_res <- self$data$num_resources
+      if (index > n_res)
+        stop("You have ", n_res, " resources in this dataset", call. = FALSE)
+      self$resources[[index]]
+    },
+    get_all_resources = function() {
       self$resources
     },
     add_resource = function(resource, ignore_dataset_id = FALSE) {
@@ -129,6 +135,8 @@ Dataset <- R6::R6Class(
       res <- configuration$call_remoteclient("ckanext_showcase_list", list(package_id = dataset_id))
       res$result
     },
+    update = function() {
+    },
     update_from_file = function(hdx_dataset_static_file) {
       if (!file.exists(hdx_dataset_static_file))
         stop("HDX static dataset file not found!", call. = FALSE)
@@ -136,7 +144,7 @@ Dataset <- R6::R6Class(
       if (!file_ext %in% c("yml", "json"))
         stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
       self$data <- switch(file_ext,
-                         yml = yaml::yaml.load_file(hdx_dataset_static_file),
+                         yml = yaml::read_yaml(hdx_dataset_static_file),
                          json = jsonlite::fromJSON(hdx_dataset_static_file, simplifyVector = FALSE))
       if ("resources" %in% names(self$data))
         self$resources <- lapply(self$data$resources,
@@ -229,7 +237,7 @@ Dataset <- R6::R6Class(
       dataset_id <- self$data$id
       if (is.null(dataset_id))
         stop("Dataset not on HDX use `create_in_hdx` method")
-      rs <- self$get_resources()
+      rs <- self$get_all_resources()
       ds <- nc(self$data)
       res1 <- configuration$call_remoteclient("package_update",
                                              ds,
@@ -248,7 +256,7 @@ Dataset <- R6::R6Class(
     create_in_hdx = function(upload_resources = FALSE) {
       invisible(self$check_required_fields())
       configuration <- private$configuration
-      rs <- self$get_resources()
+      rs <- self$get_all_resources()
       ds <- self$data
       ds$resources <- NULL
       ds$num_resources <- NULL
@@ -329,22 +337,30 @@ as_tibble.Dataset <- function(x, ...) {
                           locations_name = lapply(x$get_locations(),
                                                   function(x) x$name),
                           organization_name = x$data$organization$name)
-  df$resources_format <- list(tolower(vapply(x$get_resources(),
+  df$resources_format <- list(tolower(vapply(x$get_all_resources(),
                                             function(l) l$get_file_type(), FUN.VALUE = "")))   
   df$tags_name <- list(tolower(vapply(x$get_tags(),
                                      function(l) l$name, FUN.VALUE = "")))
-  df$resources <- list(x$get_resources())
+  df$resources <- list(x$get_all_resources())
   df$dataset <- list(x)
   df 
+}
+
+#' @export
+#' @aliases Dataset 
+get_resource <- function(dataset, index) {
+  if (!inherits(dataset, "Dataset"))
+    stop("Not a HDX Dataset object!", call. = FALSE)
+  dataset$get_resource(index)
 }
 
 
 #' @export
 #' @aliases Dataset 
-get_resources <- function(dataset) {
+get_all_resources <- function(dataset) {
   if (!inherits(dataset, "Dataset"))
     stop("Not a HDX Dataset object!", call. = FALSE)
-  dataset$get_resources()
+  dataset$get_all_resources()
 }
 
 #' @export
@@ -365,6 +381,17 @@ delete_resource <- function(dataset, index) {
   dataset
 }
 
+
+#' @export
+#' @aliases Dataset 
+delete_all_resources <- function(dataset) {
+  if (!inherits(dataset, "Dataset"))
+    stop("Not a HDX Dataset object!", call. = FALSE)
+  invisible(lapply(seq(dataset$data$num_resources),
+                   function(index) delete_resource(dataset, index)))
+}
+ 
+
 #' @export
 #' @aliases Dataset 
 count_datasets <- function(configuration = NULL) {
@@ -377,7 +404,8 @@ count_datasets <- function(configuration = NULL) {
 search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$search_in_hdx(query = query, rows = rows,
-                   page_size = page_size, configuration = configuration, ...)
+                   page_size = page_size,
+                   configuration = configuration, ...)
 }
 
 #' @export
@@ -388,5 +416,6 @@ read_dataset <- function(identifier, configuration = NULL, ...) {
 }
 
 #' @export
+#' @aliases Dataset 
 browse.Dataset <- function(x, ...)
   x$browse()
