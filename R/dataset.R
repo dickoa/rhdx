@@ -365,6 +365,10 @@ get_all_resources <- function(dataset) {
 
 #' @export
 #' @aliases Dataset 
+get_resources <- get_all_resources
+
+#' @export
+#' @aliases Dataset 
 add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
   if (!inherits(dataset, "Dataset"))
     stop("Not a HDX Dataset object!", call. = FALSE)
