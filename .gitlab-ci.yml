@@ -13,7 +13,6 @@ pages:
     - Rscript -e 'install.packages("tibble")'
     - Rscript -e 'devtools::install_github("r-lib/pkgdown")'
     - Rscript -e 'devtools::install_github("ropensci/crul")'
-    - Rscript -e 'devtools::install_github("ropensci/vcr")'
     - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
     - Rscript -e 'pkgdown::build_site()'
     - mv docs public

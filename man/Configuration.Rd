@@ -35,9 +35,8 @@ Possible parameters (not all are allowed in each HTTP verb):
 }
 \examples{
 \dontrun{
-Configuration$setup(hdx_site = "demo")
-conf <- Configuration$read()
-conf
+set_rhdx_config(hdx_site = "demo")
+get_rhd_config()
 }
 
 }
