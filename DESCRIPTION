@@ -15,7 +15,7 @@ Imports:
     yaml,
     tibble,
     base64enc,
-    vcr
+    vcr,
     hoardr
 Suggests:
     roxygen2 (>= 6.0.1),
