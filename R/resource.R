@@ -82,12 +82,13 @@ Resource <- R6::R6Class(
                         quiet = TRUE, force = FALSE, ...) {
       if (is.null(folder))
         folder <- tempdir()
-      if (is.null(filename))
+      if (is.null(filename)) {
         filename <- basename(self$data$url)
-      if (!is.null(self$data$resource_type) && self$data$resource_type == "api")
-        filename <- gsub("\\?.*", "", filename)
+        if (!is.null(self$data$resource_type) && self$data$resource_type == "api")
+          filename <- gsub("\\?.*", "", filename)
+      }
       path <- file.path(folder, filename)
-      if (!file.exists(path) | force) 
+      if (!file.exists(path) | force)
         download.file(url = self$data$url, destfile = path,
                       mode = "wb", quiet = quiet, ...)
       
@@ -97,7 +98,7 @@ Resource <- R6::R6Class(
     download_folder = function() {
       tools::file_path_as_absolute(private$download_folder_)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, ...) {
+    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, comment = "#", ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet, ...)
@@ -106,7 +107,7 @@ Resource <- R6::R6Class(
         format,
         csv = {
           check4X("readr")
-          readr::read_csv(path, comment = "#")
+          readr::read_csv(path, comment = comment)
         },
         excel = read_sheet(path = path, sheet = sheet),
         xlsx = read_sheet(path = path, sheet = sheet),
@@ -140,10 +141,10 @@ Resource <- R6::R6Class(
         kmz = get_layers_(path),
         `zipped kml` = get_layers_(path))
     },
-    get_sheets = function(folder = NULL, quiet = TRUE) {
+    get_sheets = function(folder = NULL, quiet = TRUE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet)
+      path <- self$download(folder = folder, quiet = quiet, ...)
       format <- self$get_file_type()
       if (!format %in% c("xlsx", "xls", "excel")) stop("`get_sheets work only with Excel file", call. = FALSE)
       switch(
@@ -300,10 +301,10 @@ get_layers <- function(resource, folder = NULL, quiet = TRUE) {
 
 #' @export
 #' @aliases Resource 
-get_sheets <- function(resource, folder = NULL, quiet = TRUE) {
+get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
   if (!inherits(resource, "Resource"))
     stop("Not a HDX Resource object!", call. = FALSE)
-  resource$get_sheets(folder = folder, quiet = quiet)
+  resource$get_sheets(folder = folder, quiet = quiet, ...)
 }
 
 #' @export

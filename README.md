@@ -35,11 +35,11 @@ The first step is to connect to an HDX server, we can use the `demo`
 server, we can use the `rhdx_config` function
 
 ``` r
-set_rhdx_config(hdx_site = "demo")
+set_rhdx_config(hdx_site = "prod")
 get_rhdx_config()
 ## <HDX Configuration> 
-##   HDX site: demo
-##   HDX site url: https://demo-data.humdata.org/
+##   HDX site: prod
+##   HDX site url: https://data.humdata.org/
 ##   HDX API key: 
 ```
 
