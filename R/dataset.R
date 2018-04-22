@@ -39,7 +39,7 @@ Dataset <- R6::R6Class(
         private$configuration <- configuration
       }
       if (is.null(initial_data)) initial_data <- list()
-      initial_data <- nc(initial_data)
+      initial_data <- drop_nulls(initial_data)
       key <- names(initial_data)
       self$data <- initial_data
       if ("resources" %in% key)
@@ -59,6 +59,9 @@ Dataset <- R6::R6Class(
       self$resources[[index]]
     },
     get_all_resources = function() {
+      self$resources
+    },
+    get_resources = function() {
       self$resources
     },
     add_resource = function(resource, ignore_dataset_id = FALSE) {
@@ -106,11 +109,12 @@ Dataset <- R6::R6Class(
                                limit = rows,
                                limit_chunk = page_size)
       suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"), list(q = query, ...)))
-      ds_list <- unlist(lapply(cc$parse(),
-                              function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
-      ds_list <- lapply(ds_list,
-                       function(x) Dataset$new(initial_data = x, configuration = configuration))
-      ds_list
+      list_of_ds <- unlist(lapply(cc$parse(),
+                                 function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
+      list_of_ds <- lapply(list_of_ds,
+                          function(x) Dataset$new(initial_data = x, configuration = configuration))
+      class(list_of_ds) <- "datasets_list"
+      list_of_ds
     },
     delete_from_hdx = function() {
       configuration <- private$configuration
@@ -190,10 +194,10 @@ Dataset <- R6::R6Class(
       self$data$maintainer <- maintainer
     },
     get_organization = function() {
-      self$data$owner_org
+      self$data$organization
     },
     set_organization = function(organization) {
-      self$data$owner_org <- organization
+      self$data$organization <- organization
     },
     is_requestable = function() {
       self$data$is_requestdata_type
@@ -236,9 +240,9 @@ Dataset <- R6::R6Class(
       configuration <- private$configuration
       dataset_id <- self$data$id
       if (is.null(dataset_id))
-        stop("Dataset not on HDX use `create_in_hdx` method")
+        stop("Dataset not on HDX use `create_in_hdx` to create a Dataset")
       rs <- self$get_all_resources()
-      ds <- nc(self$data)
+      ds <- drop_nulls(self$data)
       res1 <- configuration$call_remoteclient("package_update",
                                              ds,
                                              verb = "post",
@@ -251,7 +255,7 @@ Dataset <- R6::R6Class(
       } else {
         res2 <- NULL
       }
-      invisible(nc(list(dataset = res1, resources = res2)))
+      invisible(drop_nulls(list(dataset = res1, resources = res2)))
     },
     create_in_hdx = function(upload_resources = FALSE) {
       invisible(self$check_required_fields())
@@ -293,17 +297,17 @@ Dataset <- R6::R6Class(
 )
 
 #' @aliases Dataset 
-Dataset$read_from_hdx <- function(identifier, configuration = NULL, ...) {
+Dataset$read_from_hdx <- memoise::memoise(function(identifier, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$read_from_hdx(identifier, configuration = configuration, ...)
-}
+})
 
 #' @aliases Dataset 
-Dataset$search_in_hdx <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+Dataset$search_in_hdx <- memoise::memoise(function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$search_in_hdx(query = query, rows = rows,
                    page_size = page_size, configuration = configuration, ...)
-}
+})
 
 
 #' @aliases Dataset 
@@ -349,8 +353,7 @@ as_tibble.Dataset <- function(x, ...) {
 #' @export
 #' @aliases Dataset 
 get_resource <- function(dataset, index) {
-  if (!inherits(dataset, "Dataset"))
-    stop("Not a HDX Dataset object!", call. = FALSE)
+  assert_dataset(dataset)
   dataset$get_resource(index)
 }
 
@@ -358,8 +361,7 @@ get_resource <- function(dataset, index) {
 #' @export
 #' @aliases Dataset 
 get_all_resources <- function(dataset) {
-  if (!inherits(dataset, "Dataset"))
-    stop("Not a HDX Dataset object!", call. = FALSE)
+  assert_dataset(dataset)
   dataset$get_all_resources()
 }
 
@@ -370,8 +372,7 @@ get_resources <- get_all_resources
 #' @export
 #' @aliases Dataset 
 add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
-  if (!inherits(dataset, "Dataset"))
-    stop("Not a HDX Dataset object!", call. = FALSE)
+  assert_dataset(dataset)
   dataset$add_resource(resource, ignore_dataset_id = ignore_dataset_id)
   dataset
 }
@@ -379,8 +380,7 @@ add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
 #' @export
 #' @aliases Dataset 
 delete_resource <- function(dataset, index) {
-  if (!inherits(dataset, "Dataset"))
-    stop("Not a HDX Dataset object!", call. = FALSE)
+  assert_dataset(dataset)
   dataset$delete_resource(index)
   dataset
 }
@@ -389,12 +389,14 @@ delete_resource <- function(dataset, index) {
 #' @export
 #' @aliases Dataset 
 delete_all_resources <- function(dataset) {
-  if (!inherits(dataset, "Dataset"))
-    stop("Not a HDX Dataset object!", call. = FALSE)
+  assert_dataset(dataset)
   invisible(lapply(seq(dataset$data$num_resources),
                    function(index) delete_resource(dataset, index)))
 }
- 
+
+#' @export
+#' @aliases Dataset 
+delete_resources <- delete_all_resources
 
 #' @export
 #' @aliases Dataset 
@@ -405,21 +407,83 @@ count_datasets <- function(configuration = NULL) {
 
 #' @export
 #' @aliases Dataset 
-search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+search_datasets <- memoise::memoise(function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$search_in_hdx(query = query, rows = rows,
-                   page_size = page_size,
-                   configuration = configuration, ...)
-}
+    page_size = page_size,
+    configuration = configuration,
+    ...)
+})
+
 
 #' @export
 #' @aliases Dataset 
-read_dataset <- function(identifier, configuration = NULL, ...) {
+read_dataset <- memoise::memoise(function(identifier, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$read_from_hdx(identifier, configuration = configuration, ...)
-}
+})
 
 #' @export
 #' @aliases Dataset 
 browse.Dataset <- function(x, ...)
   x$browse()
+
+#' @export
+#' @aliases Dataset
+get_formats <- function(dataset) {
+  assert_dataset(dataset)
+  vapply(dataset$get_resources(), function(resource) resource$get_format(), character(1))
+}
+
+
+#' @export
+#' @aliases Dataset
+refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = NULL, tags = NULL, quick_charts = NULL, organization = NULL, cod = NULL) {
+  
+  assert_datasets_list(datasets_list)
+
+  lgl <- !logical(length = length(datasets_list))
+
+  if (!is.null(format)) {
+    lgl_format <- vapply(datasets_list, function(dataset) format %in% get_formats(dataset), logical(1))
+    lgl <- lgl & lgl_format
+  }
+
+  if (!is.null(organization)) {
+    lgl_org <- vapply(datasets_list, function(dataset) organization %in% get_organization_name(dataset), logical(1))
+    lgl <- lgl & lgl_org
+  }
+  
+  if (!is.null(hxl) && isTRUE(hxl)) {
+    lgl_hxl <- vapply(datasets_list, function(dataset) "hxl" %in% get_tags_name(dataset), logical(1))
+    lgl <- lgl & lgl_hxl
+  }
+  
+  if (!is.null(hxl) && isFALSE(hxl)) {
+    lgl_hxl <- vapply(datasets_list, function(dataset) !"hxl" %in% get_tags_name(dataset), logical(1))
+    lgl <- lgl & lgl_hxl
+  }
+
+  if (!is.null(tags)) {
+    lgl_tags <- lapply(datasets_list, function(dataset) vapply(tags, function(tag) tag %in% get_tags_name(dataset), logical(1)))
+    lgl_tags <- vapply(lgl_tags, function(x) Reduce(`&`, x), logical(1))
+    lgl <- lgl & lgl_tags
+  }
+
+  if (!is.null(locations)) {
+    lgl_locs <- lapply(datasets_list, function(dataset) vapply(locations, function(loc) loc %in% get_locations_name(dataset), logical(1)))
+    lgl_locs <- vapply(lgl_locs, function(x) Reduce(`&`, x), logical(1))
+    lgl <- lgl & lgl_locs
+  }
+ 
+  datasets_list[lgl]
+}
+
+get_locations_name <- function(dataset)
+  vapply(dataset$get_locations(), function(location) location$name, character(1))
+
+get_tags_name <- function(dataset)
+  vapply(dataset$get_tags(), function(tag) tag$name, character(1))
+
+get_organization_name <- function(dataset)
+  dataset$get_organization()[["name"]]

@@ -13,6 +13,7 @@ Imports:
     crul (> 0.5),
     jsonlite,
     yaml,
+    memoise,
     tibble,
     base64enc,
 Suggests:
@@ -20,6 +21,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-RoxygenNote: 6.0.1.9000
+Remotes: github::dirkschumacher/rhxl    
+RoxygenNote: 6.0.1
 Encoding: UTF-8
-

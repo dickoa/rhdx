@@ -64,7 +64,7 @@ Resource <- R6::R6Class(
         private$configuration <- configuration
       }
       if (is.null(initial_data)) initial_data <- list()
-      initial_data <- nc(initial_data)
+      initial_data <- drop_nulls(initial_data)
       self$data <- initial_data
     },
     update_from_yaml = function(hdx_resource_static_yaml) {
@@ -98,7 +98,7 @@ Resource <- R6::R6Class(
     download_folder = function() {
       tools::file_path_as_absolute(private$download_folder_)
     },
-    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, comment = "#", ...) {
+    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, hxl = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet, ...)
@@ -107,11 +107,14 @@ Resource <- R6::R6Class(
         format,
         csv = {
           check4X("readr")
-          readr::read_csv(path, comment = comment)
+          df <- readr::read_csv(path)
+          if (isTRUE(hxl))
+            df <- rhxl::as_hxl(df)
+          df
         },
-        excel = read_sheet(path = path, sheet = sheet),
-        xlsx = read_sheet(path = path, sheet = sheet),
-        xls = read_sheet(path = path, sheet = sheet),
+        excel = read_sheet(path = path, sheet = sheet, hxl = hxl),
+        xlsx = read_sheet(path = path, sheet = sheet, hxl = hxl),
+        xls = read_sheet(path = path, sheet = sheet, hxl = hxl),
         json = {
           check4X("jsonlite")
           jsonlite::fromJSON(path, simplifyVector = simplify_json)
@@ -185,13 +188,20 @@ Resource <- R6::R6Class(
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_search", list(query = query, ...))
       list_of_rs <- lapply(res$result$results, function(x) Resource$new(initial_data = x, configuration = configuration))
+      class(list_of_rs) <- "resources_list"
       list_of_rs
     },
     get_file_type = function() {
       tolower(self$data$format)
     },
+    get_format = function() {
+      tolower(self$data$format)
+    },
     set_file_type = function(file_type) {
       self$data$format <- file_type
+    },
+    set_format = function(format) {
+      self$data$format <- format
     },
     as_list = function() {
       self$data
@@ -201,7 +211,7 @@ Resource <- R6::R6Class(
       resource_id <- self$data$id
       if (is.null(resource_id))
         stop("Resource not on HDX use `create_in_hdx` method")
-      rs <- nc(self$data)
+      rs <- drop_nulls(self$data)
       h <- curl::new_handle(http_version = 2, useragent = get_user_agent())
       curl::handle_setheaders(h,
                               `X-CKAN-API-Key` = configuration$get_hdx_key(),
@@ -230,6 +240,12 @@ Resource <- R6::R6Class(
         stop("Resources not created check the parameters")
       }
       invisible(res)
+    },
+    create_datastore = function() {
+    },
+    delete_datastore = function() {
+    },
+    update_datastore = function() {
     },
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
@@ -284,8 +300,7 @@ as.list.Resource <- function(x) {
 #' @export
 #' @aliases Resource 
 download <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, ...) {
-  if (!inherits(resource, "Resource"))
-    stop("Not a HDX Resource object!", call. = FALSE)
+  assert_resource(resource)
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
 }
 
@@ -293,8 +308,7 @@ download <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, ..
 #' @export
 #' @aliases Resource 
 get_layers <- function(resource, folder = NULL, quiet = TRUE) {
-  if (!inherits(resource, "Resource"))
-    stop("Not a HDX Resource object!", call. = FALSE)
+  assert_resource(resource)
   resource$get_layers(folder = folder, quiet = quiet)
 }
 
@@ -302,38 +316,46 @@ get_layers <- function(resource, folder = NULL, quiet = TRUE) {
 #' @export
 #' @aliases Resource 
 get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
-  if (!inherits(resource, "Resource"))
-    stop("Not a HDX Resource object!", call. = FALSE)
+  assert_resource(resource)
   resource$get_sheets(folder = folder, quiet = quiet, ...)
 }
 
 #' @export
 #' @aliases Resource 
-read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, ...) {
-  if (!inherits(resource, "Resource"))
-    stop("Not a HDX Resource object!", call. = FALSE)
+get_format <- function(resource) {
+  assert_resource(resource)
+  resource$get_format()
+}
+
+
+#' @export
+#' @aliases Resource 
+read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, hxl = FALSE, ...) {
+  assert_resource(resource)
   resource$read_session(sheet = sheet,
                         layer = layer,
                         folder = folder,
                         simplify_json = simplify_json,
+                        hxl = hxl,
                         ...)
 }
 
 #' @export
 #' @aliases Resource
-search_resources <- function(query = "*:*", configuration = NULL, ...) {
+search_resources <- memoise::memoise(function(query = "*:*", configuration = NULL, ...) {
   rs <- Resource$new()
   rs$search_in_hdx(query = query, configuration = configuration, ...)
-}
+})
 
 #' @export
 #' @aliases Resource
-read_resource <- function(identifier = NULL, configuration = NULL, ...) {
+read_resource <- memoise::memoise(function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
   rs$read_from_hdx(identifier = identifier, configuration = configuration, ...)
-}
+})
+
 
 #' @export
 #' @aliases Resource 
-browse.Resource <- function(x, ...)
+browse.Resource <- function(x)
   x$browse()

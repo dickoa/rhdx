@@ -1,15 +1,76 @@
-is_null_recursive <- function(x) is.null(x) | all(sapply(x, is.null))
+is_null_recursive <- function(x) is.null(x) | all(vapply(x, is.null, logical(1)))
 
-nc <- function(x) {
+drop_nulls <- function(x) {
   x <- Filter(Negate(is_null_recursive), x)
-  lapply(x, function(x) if (is.list(x)) nc(x) else x)
+  lapply(x, function(x) if (is.list(x)) drop_nulls(x) else x)
 }
 
-check4X <- function(x) {
+nc <- drop_nulls
+
+check_config_params <- function(hdx_site = NULL, hdx_key = NULL, hdx_config_file = NULL, read_only = NULL, user_agent = NULL) {
+  
+  if (!is.null(hdx_site) && !hdx_site %in% c("prod", "test", "feature", "demo"))
+    stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
+  
+  if (!is.null(read_only) && !is.logical(read_only))
+    stop("read_only should be take a logical, either `TRUE` or `FALSE`", call. = FALSE)
+  
+  if (!is.null(user_agent) && !is.character(user_agent))
+    stop("user_agent should be a character", call. = FALSE)
+
+  if (!is.null(hdx_key) && !is_valid_uuid(hdx_key))
+    stop("hdx_key not valid!", call. = FALSE)
+  
+  if (!is.null(hdx_config_file) && !file.exists(hdx_config_file)) 
+    stop("HDX config file not found!", call. = FALSE)
+  
+  if (!is.null(hdx_config_file) && file.exists(hdx_config_file)) {
+    file_ext <- tools::file_ext(hdx_config_file)
+    if (!file_ext %in% c("yml", "json"))
+      stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
+  }
+}
+
+assert_configuration <- function(configuration)
+  if (is.null(configuration) | !inherits(configuration, "Configuration"))
+    stop("HDX configuration not set! Use `set_rhdx_config`", call. = FALSE)
+
+assert_dataset <- function(x, requestable = NULL) {
+  if (!inherits(x, "Dataset"))
+    stop("Not an HDX dataset!", call. = FALSE)
+  if (!is.null(requestable) && isTRUE(requestable) && isFALSE(x$is_requestable()))
+    stop("Not an HDX requestable dataset", call. = FALSE)
+  if (!is.null(requestable) && isFALSE(requestable) && isTRUE(x$is_requestable()))
+    stop("Not a non requestable HDX dataset", call. = FALSE)
+}
+
+assert_datasets_list <- function(x)
+  if (!inherits(x, "datasets_list"))
+    stop("Not a list of HDX Datasets!", call. = FALSE)
+
+
+assert_resource <- function(x)
+  if (!inherits(x, "Resource"))
+    stop("Not an HDX Resource object!", call. = FALSE)
+
+assert_organization <- function(x)
+  if (!inherits(x, "Organization"))
+    stop("Not an HDX Organization object!", call. = FALSE)
+
+
+check_packages <- function(x) {
   if (!requireNamespace(x, quietly = TRUE)) {
     stop("Please install ", x, call. = FALSE)
   }
 }
+
+`[.datasets_list` <- function(x, i, ...) {
+    structure(NextMethod("["), class = class(x))
+ }
+
+`[.resources_list` <- function(x, i, ...) {
+    structure(NextMethod("["), class = class(x))
+ }
 
 is_valid_uuid <- function(x) {
   regex <- "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
@@ -27,18 +88,32 @@ get_user_agent <- function(x) {
     header
 }
 
-read_sheet <- function(path = NULL, sheet = NULL, ...) {
-  check4X("readxl")
+read_sheet <- function(path = NULL, sheet = NULL, hxl = FALSE, ...) {
+  check_packages("readxl")
   if (is.null(sheet)) {
     sheet <- readxl::excel_sheets(path)[[1]]
     cat("Reading sheet: ", sheet, "\n")
   }
-  readxl::read_excel(path, sheet = sheet, ...)
+  df <- readxl::read_excel(path, sheet = sheet, ...)
+  if (isTRUE(hxl))
+    df <- rhxl::as_hxl(df)
+  df
 }
 
+get_layers_ <- function(path = NULL, zipped = TRUE) {
+  check_packages("sf")
+  if (zipped)
+    path <- file.path("/vsizip", path)
+  sf::st_layers(path)
+}
+
+get_sheets_ <- function(path = NULL) {
+  check_packages("readxl")
+  readxl::excel_sheets(path)
+}
 
 read_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
-  check4X("sf")
+  check_packages("sf")
   if (zipped)
     path <- file.path("/vsizip", path)
   if (is.null(layer)) {
@@ -48,26 +123,12 @@ read_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
   sf::read_sf(dsn = path, layer = layer, ...)
 }
 
-get_layers_ <- function(path = NULL, zipped = TRUE) {
-  check4X("sf")
-  if (zipped)
-    path <- file.path("/vsizip", path)
-  sf::st_layers(path)
-}
-
-get_sheets_ <- function(path = NULL) {
-  check4X("readxl")
-  readxl::excel_sheets(path)
-}
-
-
 read_raster <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
-  check4X("raster")
+  check_packages("raster")
   if (zipped)
     path <- file.path("/vsizip", path, layer)
   raster::raster(path, ...)
 }
-
 
 merge_list <- function (x, y, ...) {
   if (length(x) == 0)
@@ -92,45 +153,13 @@ sift_res <- function(z, key = "name") {
   }
 }
 
-check_required_fields <- function(data, config = NULL, type = "dataset") {
-  if (config == NULL)
-    config <- yaml::yaml.load_file(system.file("config", "hdx_configuration.yml", package = "rhdx"))
+check_required_fields <- function(data, configuration = NULL, type = "dataset") {
+  if (is.null(configuration))
+    config <- yaml::read_yaml(system.file("config", "hdx_configuration.yml", package = "rhdx"))
   n2 <- names(data)
   n1 <- config$data$dataset$required_fields
   if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2), "\n"))
 }
-
-update_frequencies <- list(
-  "-2" = "Adhoc",
-  "-1" = "Never",
-  "0" = "Live",
-  "1"= "Every day",
-  "7" = "Every week",
-  "14" = "Every two weeks",
-  "30" = "Every month",
-  "90" = "Every three months",
-  "180" = "Every six months",
-  "365" = "Every year",
-  "adhoc" = "-2",
-  "never" = "-1",
-  "live" = "0",
-  "every day" = "1",
-  "every week" = "7",
-  "every two weeks" = "14",
-  "every month" = "30",
-  "every three months" = "90",
-  "every six months" = "180",
-  "every year" = "365",
-  "daily" = "1",
-  "weekly" = "7",
-  "fortnightly" = "14",
-  "every other week" = "14",
-  "monthly" = "30",
-  "quarterly" = "90",
-  "semiannually" = "180",
-  "semiyearly" = "180",
-  "annually" = "365",
-  "yearly" = "365")
 
 
 #' Function to search HDX object
@@ -173,18 +202,10 @@ read_from_hdx <- function(identifier, configuration = NULL, type = "dataset") {
   if (!type %in% c("dataset", "resource", "organization"))
     stop("`type` should be `dataset`, `resource`, or `organization`")
   switch(type,
-         dataset = {
-           ds <- Dataset$new()
-           ds$read_from_hdx(identifier = identifier, configuration = configuration)
-         },
-         resource = {
-           rs <- Resource$new()
-           rs$read_from_hdx(identifier = identifier, configuration = configuration)
-         },
-         organization = {
-           org <- Organization$new()
-           org$read_from_hdx(identifier = identifier, configuration = configuration)
-         })
+         dataset = read_dataset(identifier = identifier, configuration = configuration),
+         resource = read_resource(identifier = identifier, configuration = configuration),
+         organization = read_organization(identifier = identifier, configuration = configuration)
+         )
 }
 
 #' @export
