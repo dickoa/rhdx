@@ -105,10 +105,10 @@ Organization <- R6::R6Class(
 )
 
 #' @aliases Organization
-Organization$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+Organization$read_from_hdx <- memoise::memoise(function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   org <- Organization$new()
   org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
-}
+})
 
 #' @aliases Organization
 Organization$search_in_hdx <- function(query = "*:*", configuration = NULL, ...) {
@@ -157,10 +157,10 @@ search_organizations <- function(query = "*:*", configuration = NULL, ...) {
 
 #' @export
 #' @aliases Organization
-read_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+read_organization <- memoise::memoise(function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   org <- Organization$new()
   org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
-}
+})
 
 #' @export
 #' @aliases Organization 
