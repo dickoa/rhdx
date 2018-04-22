@@ -466,13 +466,13 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
 
   if (!is.null(tags)) {
     lgl_tags <- lapply(datasets_list, function(dataset) vapply(tags, function(tag) tag %in% get_tags_name(dataset), logical(1)))
-    lgl_tags <- vapply(lgl_tags, function(x) Reduce(`&`, x), logical(1))
+    lgl_tags <- vapply(lgl_tags, function(x) Reduce(`|`, x), logical(1))
     lgl <- lgl & lgl_tags
   }
 
   if (!is.null(locations)) {
     lgl_locs <- lapply(datasets_list, function(dataset) vapply(locations, function(loc) loc %in% get_locations_name(dataset), logical(1)))
-    lgl_locs <- vapply(lgl_locs, function(x) Reduce(`&`, x), logical(1))
+    lgl_locs <- vapply(lgl_locs, function(x) Reduce(`|`, x), logical(1))
     lgl <- lgl & lgl_locs
   }
  
