@@ -438,7 +438,7 @@ get_formats <- function(dataset) {
 
 #' @export
 #' @aliases Dataset
-refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = NULL, tags = NULL, quick_charts = NULL, organization = NULL, cod = NULL) {
+refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = NULL, tags = NULL, quick_charts = NULL, organization = NULL, cod = NULL, requestable = NULL) {
   
   assert_datasets_list(datasets_list)
 
@@ -454,16 +454,28 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
     lgl <- lgl & lgl_org
   }
   
-  if (!is.null(hxl) && isTRUE(hxl)) {
+  if (!is.null(requestable) && is.logical(requestable)) {
+    lgl_req <- vapply(datasets_list, function(dataset) dataset$is_requestable(), logical(1))
+    if (isFALSE(requestable))
+      lgl_req <- !lgl_req
+    lgl <- lgl & lgl_req
+  }
+
+  if (!is.null(hxl) && is.logical(hxl)) {
     lgl_hxl <- vapply(datasets_list, function(dataset) "hxl" %in% get_tags_name(dataset), logical(1))
+    if (isFALSE(hxl))
+      lgl_hxl <- !lgl_hxl
     lgl <- lgl & lgl_hxl
   }
   
-  if (!is.null(hxl) && isFALSE(hxl)) {
-    lgl_hxl <- vapply(datasets_list, function(dataset) !"hxl" %in% get_tags_name(dataset), logical(1))
-    lgl <- lgl & lgl_hxl
+  if (!is.null(cod) && is.logical(cod)) {
+    lgl_cod <- vapply(datasets_list, function(dataset) "cod" %in% get_tags_name(dataset), logical(1))
+    if (isFALSE(cod))
+      lgl_cod <- !lgl_cod
+    lgl <- lgl & lgl_cod
   }
-
+  
+  
   if (!is.null(tags)) {
     lgl_tags <- lapply(datasets_list, function(dataset) vapply(tags, function(tag) tag %in% get_tags_name(dataset), logical(1)))
     lgl_tags <- vapply(lgl_tags, function(x) Reduce(`|`, x), logical(1))
