@@ -18,7 +18,15 @@ platform.
 ## Installation
 
 This package is not on yet on CRAN and to install it, you will need the
-[`devtools`](https://github.com/r-lib/devtools) package.
+[`devtools`](https://github.com/r-lib/devtools) package. You can
+download it from Github
+
+``` r
+## install.packages("devtools") 
+devtools::install_github("dickoa/rhdx")
+```
+
+or Gitlab
 
 ``` r
 ## install.packages("devtools") 
@@ -283,24 +291,15 @@ idp_nga_df
 ## [1] 0
 ```
 
+## Read data with HXL tags
+
+The `rhxl` package is used to manipulate HXLated dataset
+
 ## Create a dataset in HDX
 
 ### Connect to a server
 
 ### Get an API key
-
-## rhdx package API
-
-  - Configuration - `create()` - `setup` - `read`
-  - Dataset - `read_from_hdx` - `search_in_hdx`
-  - Resource - `download` - `read_from_hdx` - `search_in_hdx`
-
-## Future dev
-
-  - Develop all `create_in_hdx` methods
-  - Add tidy tools to easily get data
-  - Shiny apps amd Rstudio add-in to browse and select data
-    interactively
 
 ## Meta
 
