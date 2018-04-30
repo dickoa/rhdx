@@ -1,29 +1,24 @@
 #' HDX Dataset
 #'
-#' Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
+#' Dataset class containing all logic for accessing, creating, and updating datasets and associated resources.
 #' 
-#' @export
 #'
 #' @format NULL
 #' @usage NULL
 #' @details Possible parameters (not all are allowed in each HTTP verb):
-#' \itemize{
-#'  \item read_from_hdx - query terms, as a named list
-#'  \item search_in_hdx  - body as an R list
-#'  \item update_from_yaml - one of form, multipart, json, or raw
-#'  \item add_tags
-#'  \item list_all_datasets 
-#'  \item add_update_resources - one of form, multipart, json, or raw
-#' }
 #'
 #' @examples
 #' # ---------------------------------------------------------
 #' \dontrun{
-#' Configuration$create(hdx_site = "demo")
-#' dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
-#' dataset
+#' set_rhdx_config(hdx_site = "prod")
+#' acled_mali <- read_dataset("acled-conflict-data-for-africa-realtime-2016")
+#' acled_mali
+#'
+#' search_datasets("3W Somalia", rows = 5)
+#' 
 #' }
 #' 
+#' @export
 Dataset <- R6::R6Class(
   "Dataset",
   private = list(
@@ -334,20 +329,16 @@ as.list.Dataset <- function(x) {
 #' @aliases Dataset
 #' @importFrom tibble as_tibble
 as_tibble.Dataset <- function(x, ...) {
-  df <- tibble::data_frame(dataset_title = tolower(x$data$title),
-                          dataset_name = x$data$name,
-                          dataset_date = x$get_dataset_date(),
-                          requestable = x$is_requestable(),
-                          locations_name = lapply(x$get_locations(),
-                                                  function(x) x$name),
-                          organization_name = x$data$organization$name)
-  df$resources_format <- list(tolower(vapply(x$get_all_resources(),
-                                            function(l) l$get_file_type(), FUN.VALUE = "")))   
-  df$tags_name <- list(tolower(vapply(x$get_tags(),
-                                     function(l) l$name, FUN.VALUE = "")))
-  df$resources <- list(x$get_all_resources())
-  df$dataset <- list(x)
-  df 
+  tibble::data_frame(dataset_title = tolower(x$data$title),
+                     dataset_name = x$data$name,
+                     dataset_date = x$get_dataset_date(),
+                     requestable = x$is_requestable(),
+                     locations_name = list(get_locations_name(x)),
+                     organization_name = get_organization_name(x),
+                     resources_format = list(get_formats(x)),
+                     tags_name = list(get_tags_name(x)),
+                     resources <- list(x$get_all_resources()),
+                     dataset = list(x))
 }
 
 #' @export

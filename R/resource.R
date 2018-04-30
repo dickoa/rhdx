@@ -106,7 +106,7 @@ Resource <- R6::R6Class(
       switch(
         format,
         csv = {
-          check4X("readr")
+          check_packages("readr")
           df <- readr::read_csv(path)
           if (isTRUE(hxl))
             df <- rhxl::as_hxl(df)
