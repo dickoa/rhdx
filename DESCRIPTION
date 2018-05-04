@@ -11,6 +11,7 @@ VignetteBuilder: knitr
 Imports:
     curl (>= 3.1.0),
     crul (> 0.5),
+    magrittr,
     jsonlite,
     yaml,
     memoise,

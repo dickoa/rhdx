@@ -5,25 +5,20 @@
 \alias{Dataset}
 \title{HDX Dataset}
 \description{
-Dataset class containing all logic for creating, checking, and updating datasets and associated resources.
+Dataset class containing all logic for accessing, creating, and updating datasets and associated resources.
 }
 \details{
 Possible parameters (not all are allowed in each HTTP verb):
-\itemize{
- \item read_from_hdx - query terms, as a named list
- \item search_in_hdx  - body as an R list
- \item update_from_yaml - one of form, multipart, json, or raw
- \item add_tags
- \item list_all_datasets 
- \item add_update_resources - one of form, multipart, json, or raw
-}
 }
 \examples{
 # ---------------------------------------------------------
 \dontrun{
-Configuration$create(hdx_site = "demo")
-dataset <- Dataset$read_from_hdx("acled-conflict-data-for-africa-realtime-2016")
-dataset
+set_rhdx_config(hdx_site = "prod")
+acled_mali <- read_dataset("acled-conflict-data-for-africa-realtime-2016")
+acled_mali
+
+search_datasets("3W Somalia", rows = 5)
+
 }
 
 }
