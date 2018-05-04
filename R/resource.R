@@ -215,11 +215,11 @@ Resource <- R6::R6Class(
       h <- curl::new_handle(http_version = 2, useragent = get_user_agent())
       curl::handle_setheaders(h,
                               `X-CKAN-API-Key` = configuration$get_hdx_key(),
-                              `Content-Type` =  "multipart/form-data") 
+                              `Content-Type` = "multipart/form-data")
       curl::handle_setform(h, .list = rs)
       url <- paste0(configuration$get_hdx_site_url(), "api/action/resource_update")
       res <- curl::curl_fetch_memory(url, handle = h)
-      if (res$status_code != 200L) 
+      if (res$status_code != 200L)
         stop("Resources not created check the parameters")
       invisible(res)
     },
@@ -335,7 +335,6 @@ read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, si
                         ...)
 }
 
-#' @export
 #' @aliases Resource
 .search_resources <- function(query = "*:*", configuration = NULL, ...) {
   rs <- Resource$new()
@@ -355,7 +354,6 @@ search_resources <- memoise::memoise(.search_resources)
 #' @export
 #' @aliases Resource
 read_resource <- memoise::memoise(.read_resource)
-
 
 #' @export
 #' @aliases Resource 
