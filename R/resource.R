@@ -289,13 +289,11 @@ as_tibble.Resource <- function(x, ...) {
   df
 }
 
-
 #' @export
 #' @aliases Resource 
 as.list.Resource <- function(x) {
   x$as_list()
 }
-
 
 #' @export
 #' @aliases Resource 
@@ -304,14 +302,12 @@ download <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, ..
   resource$download(folder = folder, filename = filename, quiet = quiet, ...)
 }
 
-
 #' @export
 #' @aliases Resource 
 get_layers <- function(resource, folder = NULL, quiet = TRUE) {
   assert_resource(resource)
   resource$get_layers(folder = folder, quiet = quiet)
 }
-
 
 #' @export
 #' @aliases Resource 
@@ -327,7 +323,6 @@ get_format <- function(resource) {
   resource$get_format()
 }
 
-
 #' @export
 #' @aliases Resource 
 read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, hxl = FALSE, ...) {
@@ -342,17 +337,24 @@ read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, si
 
 #' @export
 #' @aliases Resource
-search_resources <- memoise::memoise(function(query = "*:*", configuration = NULL, ...) {
+.search_resources <- function(query = "*:*", configuration = NULL, ...) {
   rs <- Resource$new()
   rs$search_in_hdx(query = query, configuration = configuration, ...)
-})
+}
 
 #' @export
 #' @aliases Resource
-read_resource <- memoise::memoise(function(identifier = NULL, configuration = NULL, ...) {
+search_resources <- memoise::memoise(.search_resources)
+
+#' @aliases Resource
+.read_resource <- function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
   rs$read_from_hdx(identifier = identifier, configuration = configuration, ...)
-})
+}
+
+#' @export
+#' @aliases Resource
+read_resource <- memoise::memoise(.read_resource)
 
 
 #' @export

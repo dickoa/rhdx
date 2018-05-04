@@ -348,7 +348,6 @@ get_resource <- function(dataset, index) {
   dataset$get_resource(index)
 }
 
-
 #' @export
 #' @aliases Dataset 
 get_all_resources <- function(dataset) {
@@ -376,7 +375,6 @@ delete_resource <- function(dataset, index) {
   dataset
 }
 
-
 #' @export
 #' @aliases Dataset 
 delete_all_resources <- function(dataset) {
@@ -396,23 +394,28 @@ count_datasets <- function(configuration = NULL) {
   ds <- ds$count(configuration = configuration)
 }
 
-#' @export
 #' @aliases Dataset 
-search_datasets <- memoise::memoise(function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+.search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$search_in_hdx(query = query, rows = rows,
     page_size = page_size,
     configuration = configuration,
     ...)
-})
-
+}
 
 #' @export
+#' @aliases Dataset
+search_datasets <- memoise::memoise(.search_datasets)
+
 #' @aliases Dataset 
-read_dataset <- memoise::memoise(function(identifier, configuration = NULL, ...) {
+.read_dataset <- function(identifier, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$read_from_hdx(identifier, configuration = configuration, ...)
-})
+}
+
+#' @export
+#' @aliases Dataset
+read_dataset <- memoise::memoise(.read_dataset)
 
 #' @export
 #' @aliases Dataset 
@@ -425,7 +428,6 @@ get_formats <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_resources(), function(resource) resource$get_format(), character(1))
 }
-
 
 #' @export
 #' @aliases Dataset
@@ -482,11 +484,14 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
   datasets_list[lgl]
 }
 
+#' @aliases Dataset
 get_locations_name <- function(dataset)
   vapply(dataset$get_locations(), function(location) location$name, character(1))
 
+#' @aliases Dataset
 get_tags_name <- function(dataset)
   vapply(dataset$get_tags(), function(tag) tag$name, character(1))
 
+#' @aliases Dataset
 get_organization_name <- function(dataset)
   dataset$get_organization()[["name"]]

@@ -217,9 +217,12 @@ as.list.Showcase <- function(x) {
   x$as_list()
 }
 
-#' @export
 #' @aliases Showcase
-read_showcase <- function(identifier = NULL, configuration = NULL) {
+.read_showcase <- function(identifier = NULL, configuration = NULL) {
   org <- Showcase$new()
   org$read_from_hdx(identifier = identifier, configuration = configuration)
 }
+
+#' @export
+#' @aliases Showcase
+read_showcase <- memoise::memoise(.read_showcase)
