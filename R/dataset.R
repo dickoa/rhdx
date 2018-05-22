@@ -134,8 +134,6 @@ Dataset <- R6::R6Class(
       res <- configuration$call_remoteclient("ckanext_showcase_list", list(package_id = dataset_id))
       res$result
     },
-    update = function() {
-    },
     update_from_file = function(hdx_dataset_static_file) {
       if (!file.exists(hdx_dataset_static_file))
         stop("HDX static dataset file not found!", call. = FALSE)
@@ -229,8 +227,6 @@ Dataset <- R6::R6Class(
     as_list = function() {
       self$data
     },
-    patch_in_hdx = function() {
-    },
     update_in_hdx = function(field = NULL, update_resources = FALSE) {
       configuration <- private$configuration
       dataset_id <- self$data$id
@@ -265,7 +261,7 @@ Dataset <- R6::R6Class(
                                              ds,
                                              verb = "post")
       if (res1$status_code != 200L)
-        stop("Dataset not created check the parameters")
+        stop("Dataset not created, check the parameters!")
       res2 <- lapply(rs, function(r) r$create_in_hdx(res1$result$id))
       invisible(list(dataset = res1, resources = res2))
     },
@@ -337,7 +333,7 @@ as_tibble.Dataset <- function(x, ...) {
                      organization_name = get_organization_name(x),
                      resources_format = list(get_formats(x)),
                      tags_name = list(get_tags_name(x)),
-                     resources <- list(x$get_all_resources()),
+                     resources = list(x$get_resources()),
                      dataset = list(x))
 }
 
@@ -485,13 +481,19 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
 }
 
 #' @aliases Dataset
-get_locations_name <- function(dataset)
+get_locations_name <- function(dataset) {
+  assert_dataset(dataset)
   vapply(dataset$get_locations(), function(location) location$name, character(1))
+}
 
 #' @aliases Dataset
-get_tags_name <- function(dataset)
+get_tags_name <- function(dataset) {
+  assert_dataset(dataset)
   vapply(dataset$get_tags(), function(tag) tag$name, character(1))
+}
 
 #' @aliases Dataset
-get_organization_name <- function(dataset)
+get_organization_name <- function(dataset) {
+  assert_dataset(dataset)
   dataset$get_organization()[["name"]]
+}

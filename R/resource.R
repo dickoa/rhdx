@@ -273,7 +273,7 @@ Resource$read_from_hdx <- function(identifier, configuration = NULL) {
 #' @aliases Resource
 Resource$search_in_hdx <- function(query = "*:*", configuration = NULL, ...) {
   rs <- Resource$new()
-  rs$search_in_hdx(query = query, configuration = configuration, ...)
+  rs$search_in_hdx(query = query, configuratixson = configuration, ...)
 }
 
 #' @export
