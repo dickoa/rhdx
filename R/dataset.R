@@ -113,7 +113,7 @@ Dataset <- R6::R6Class(
     },
     delete_from_hdx = function() {
       configuration <- private$configuration
-      res <- configuration$call_remoteclient("package_delete", list(id = self$data$id))
+      res <- configuration$call_remoteclient("package_delete", list(id = self$data$id), verb = "post")
       res$result$status_code == 200L
     },
     list_all_datasets = function(sort = "name asc", all_fields = FALSE,
@@ -412,6 +412,13 @@ search_datasets <- memoise::memoise(.search_datasets)
 #' @export
 #' @aliases Dataset
 read_dataset <- memoise::memoise(.read_dataset)
+
+#' @export
+#' @aliases Dataset
+delete_dataset <- function(dataset) {
+  assert_dataset(dataset)
+  dataset$delete_from_hdx()
+}
 
 #' @export
 #' @aliases Dataset 
