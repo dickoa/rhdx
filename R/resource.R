@@ -116,7 +116,7 @@ Resource <- R6::R6Class(
         xlsx = read_sheet(path = path, sheet = sheet, hxl = hxl),
         xls = read_sheet(path = path, sheet = sheet, hxl = hxl),
         json = {
-          check4X("jsonlite")
+          check_packages("jsonlite")
           jsonlite::fromJSON(path, simplifyVector = simplify_json)
         },
         geojson = read_vector(path, layer),
