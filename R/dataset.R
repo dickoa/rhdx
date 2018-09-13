@@ -111,8 +111,10 @@ Dataset <- R6::R6Class(
       class(list_of_ds) <- "datasets_list"
       list_of_ds
     },
-    delete_from_hdx = function() {
+    delete_from_hdx = function(purge = FALSE) {
       configuration <- private$configuration
+      if (purge)
+        res <- configuration$call_remoteclient("hdx_dataset_purge", list(id = self$data$id), verb = "post")
       res <- configuration$call_remoteclient("package_delete", list(id = self$data$id), verb = "post")
       res$result$status_code == 200L
     },
