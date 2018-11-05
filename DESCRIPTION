@@ -2,7 +2,7 @@ Package: rhdx
 Title: R client for the Humanitarian Data Exchange platform
 Description: R client for the Humanitarian Data Exchange platform
 Version: 0.0.1.9000
-Authors@R: person("Dicko", "Ahmadou", email="dicko.ahmadou@gmail.com", role = c("aut", "cre"))
+Authors@R: person("Dicko", "Ahmadou", email="mail@ahmadoudicko.com", role = c("aut", "cre"))
 License: MIT + file LICENSE
 LazyData: true
 URL: https://gitlab.com/dickoa/rhdx
@@ -16,12 +16,12 @@ Imports:
     yaml,
     memoise,
     tibble,
-    base64enc,
+    countrycode
 Suggests:
     roxygen2 (>= 6.0.1),
     knitr,
     rmarkdown,
     testthat
-Remotes: github::dirkschumacher/rhxl    
+Remotes: github::dickoa/rhxl    
 RoxygenNote: 6.1.0
 Encoding: UTF-8

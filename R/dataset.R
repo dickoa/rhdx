@@ -173,14 +173,17 @@ Dataset <- R6::R6Class(
       self$data$tags
     },
     add_tags = function(tags) {
-      self$data$tags <- lapply(tags, function(tag) list(names = tag))
+      self$data$tags <- lapply(tags, function(tag) list(name = tag))
     },
     get_locations = function() {
       self$data$groups
     },
     add_locations = function(locations) {
       self$data$groups <- lapply(locations,
-                                function(location) list(names = location))
+                                 function(location) {
+                                   assert_location(location)
+                                   list(name = location)
+                                 })
     },
     get_maintainer = function() {
       self$data$maintainer

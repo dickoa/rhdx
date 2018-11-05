@@ -57,6 +57,12 @@ assert_organization <- function(x)
   if (!inherits(x, "Organization"))
     stop("Not an HDX Organization object!", call. = FALSE)
 
+assert_location <- function(x) {
+  loc <- countrycode::codelist$iso3c
+  cond <- any(grepl(x, loc, ignore.case = TRUE))
+  if (!cond)
+    stop("Not a valid HDX condition!", call. = FALSE)
+}
 
 check_packages <- function(x) {
   if (!requireNamespace(x, quietly = TRUE)) {
