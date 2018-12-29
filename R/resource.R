@@ -312,8 +312,8 @@ get_layers <- function(resource, folder = NULL, quiet = TRUE) {
 #' @export
 #' @aliases Resource 
 get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
-  assert_resource(resource)
-  resource$get_sheets(folder = folder, quiet = quiet, ...)
+    assert_resource(resource)
+    resource$get_sheets(folder = folder, quiet = quiet, ...)
 }
 
 #' @export

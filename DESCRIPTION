@@ -23,5 +23,5 @@ Suggests:
     rmarkdown,
     testthat
 Remotes: github::dickoa/rhxl    
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8

@@ -404,8 +404,31 @@ count_datasets <- function(configuration = NULL) {
     ...)
 }
 
+#' Search datasets on HDX
+#'
+#' Sets the configuration settings for using rhdx.
+#'
+#' @param query Character Query (in Solr format). Defaults to ‘*:*’
+#' @param rows Number of matching rows to return. Defaults to 10.
+#' @param page_size Integer Size of page to return. Defaults to 1000.
+#' @param configuration Configuration object.
+#' 
+#'
+#' @rdname search_datasets
+#'
+#' @details Allow to search and find on HDX
+#'
+#' 
+#' @return A list of HDX datasets
 #' @export
-#' @aliases Dataset
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  search_datasets("displaced nigeria", rows = 3L)
+#' }
+#'
 search_datasets <- memoise::memoise(.search_datasets)
 
 #' @aliases Dataset 
@@ -430,12 +453,6 @@ delete_dataset <- function(dataset) {
 browse.Dataset <- function(x, ...)
   x$browse()
 
-#' @export
-#' @aliases Dataset
-get_formats <- function(dataset) {
-  assert_dataset(dataset)
-  vapply(dataset$get_resources(), function(resource) resource$get_format(), character(1))
-}
 
 #' @export
 #' @aliases Dataset
@@ -508,4 +525,51 @@ get_tags_name <- function(dataset) {
 get_organization_name <- function(dataset) {
   assert_dataset(dataset)
   dataset$get_organization()[["name"]]
+}
+
+#' @export
+#' @aliases Dataset
+get_formats <- function(dataset) {
+  assert_dataset(dataset)
+  vapply(dataset$get_resources(), function(resource) resource$get_format(), character(1))
+}
+
+
+#' @export
+#' @rdname dataset_date
+get_dataset_date <- function(dataset) {
+  assert_dataset(dataset)
+  dataset$get_dataset_date()
+}
+
+
+
+
+#' Dataset date utilies
+#'
+#' Sets and gets date Dataset
+#'
+#' @param dataset Dataset 
+#' @param date Date the date to add the metadata
+#' 
+#'
+#' @rdname dataset_date
+#'
+#' @details Allow to add/modify the dataset dates
+#'
+#' 
+#' @return Dataset dates or dataset date ranges
+#' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_dataset_date()
+#' }
+#' 
+set_dataset_date <- function(dataset, date) {
+    assert_dataset(dataset)
+    stopifnot(is.Date(date))
+    dataset$set_dataset_date(date, format = "%m/%d/%Y")
 }

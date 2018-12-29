@@ -200,8 +200,37 @@ Configuration$read <- function() {
   configuration$read()
 }
 
+
+#' Set rhdx config
+#'
+#' Sets the configuration settings for using rhdx.
+#'
+#' @param hdx_site Character to specify which HDX server you want to use. Default to "prod".
+#' @param hdx_key Character for the CKAN API key, it is required to push data into HDX
+#' @param read_only Logical if `FALSE` and hdx_key provided is correct you can push metdata and data to HDX
+#' @param hdx_config_file Character config file path, it can either a `JSON` or a `YAML`.
+#' @param configuration Configuration object.
+#' 
+#'
+#' @rdname set_rhdx_config
+#'
+#' @details Setting up a configuration will help you access and push data into HDX
+#'
+#' 
+#' @return Invisibly returns the rhdx config object
 #' @export
-#' @aliases Configuration
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#' set_rhdx_config(hdx_site = "prod")
+#'
+#'
+#' # You can check your configuration using \code{get_rhdx_config}
+#' config <- get_rhdx_config()
+#' }
+#'
 set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, hdx_config_file = NULL, configuration = NULL) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     .rhdx_env$configuration <- configuration
@@ -209,7 +238,7 @@ set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
 }
 
 #' @export
-#' @aliases Configuration
+#' @aliases set_rhdx_config
 get_rhdx_config <- function() {
   configuration <- .rhdx_env$configuration
   assert_configuration(configuration)

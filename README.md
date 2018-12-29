@@ -19,18 +19,12 @@ platform.
 
 This package is not on yet on CRAN and to install it, you will need the
 [`devtools`](https://github.com/r-lib/devtools) package. You can
-download it from Github
+download it from Github or Gitlab
 
 ``` r
-## install.packages("devtools") 
-devtools::install_github("dickoa/rhdx")
-```
-
-or Gitlab
-
-``` r
-## install.packages("devtools") 
-devtools::install_git("https://gitlab.com/dickoa/rhdx")
+## install.packages("remotes") 
+remotes::install_github("dickoa/rhdx")
+remotes::install_gitlab("dickoa/rhdx")
 ```
 
 ## rhdx tutorial
