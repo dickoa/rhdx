@@ -93,32 +93,32 @@ Now that we are connected to HDX, we can search for dataset pages using `search_
 
 ```{r}
 library(tidyverse)
-search_datasets("ACLED", rows = 2) %>% ## search dataset in HDX, limit the results to two rows
+search_datasets("ACLED Mali", rows = 2) %>% ## search dataset in HDX, limit the results to two rows
   pluck(1) %>% ## select the first dataset
   get_resource(1) %>% ## list all resources in the dataset page
-  read_session() ## read it into R
-## reading sheet:  Sheet1 
-## # A tibble: 3,698 x 25
-##     GWNO EVENT_ID_CNTY EVENT_ID_NO_CNTY EVENT_DATE         
-##    <dbl> <chr>                    <dbl> <dttm>             
-##  1  615. 1ALG                        1. 1997-01-04 00:00:00
-##  2  615. 2ALG                        2. 1997-01-05 00:00:00
-##  3  615. 3ALG                        3. 1997-01-06 00:00:00
-##  4  615. 4ALG                        4. 1997-01-07 00:00:00
-##  5  615. 5ALG                        5. 1997-01-11 00:00:00
-##  6  615. 6ALG                        6. 1997-01-12 00:00:00
-##  7  615. 7ALG                        7. 1997-01-17 00:00:00
-##  8  615. 8ALG                        8. 1997-01-19 00:00:00
-##  9  615. 9ALG                        9. 1997-01-21 00:00:00
-## 10  615. 11ALG                      10. 1997-01-22 00:00:00
-## # ... with 3,688 more rows, and 21 more variables: YEAR <dbl>,
-## #   TIME_PRECISION <dbl>, EVENT_TYPE <chr>, ACTOR1 <chr>,
-## #   ALLY_ACTOR_1 <chr>, INTER1 <dbl>, ACTOR2 <chr>,
-## #   ALLY_ACTOR_2 <chr>, INTER2 <dbl>, INTERACTION <dbl>,
-## #   COUNTRY <chr>, ADMIN1 <chr>, ADMIN2 <chr>, ADMIN3 <lgl>,
-## #   LOCATION <chr>, LATITUDE <dbl>, LONGITUDE <dbl>,
-## #   GEO_PRECISION <dbl>, SOURCE <chr>, NOTES <chr>,
-## #   FATALITIES <dbl>
+  read_session(hxl = TRUE) ## read this HXLated data into R
+## # A tibble: 2,516 x 30
+##    data_id   iso event_id_cnty event_id_no_cnty event_date  year
+##  *   <dbl> <dbl> <chr>                    <dbl> <date>     <dbl>
+##  1 2942561   466 MLI2605                   2605 2019-01-26  2019
+##  2 2942562   466 MLI2606                   2606 2019-01-26  2019
+##  3 2942557   466 MLI2601                   2601 2019-01-25  2019
+##  4 2942558   466 MLI2602                   2602 2019-01-25  2019
+##  5 2942559   466 MLI2603                   2603 2019-01-25  2019
+##  6 2942560   466 MLI2604                   2604 2019-01-25  2019
+##  7 2942555   466 MLI2599                   2599 2019-01-24  2019
+##  8 2942556   466 MLI2600                   2600 2019-01-24  2019
+##  9 2942553   466 MLI2597                   2597 2019-01-23  2019
+## 10 2942554   466 MLI2598                   2598 2019-01-23  2019
+## # … with 2,506 more rows, and 24 more variables:
+## #   time_precision <dbl>, event_type <chr>, actor1 <chr>,                                                                                                                                     
+## #   assoc_actor_1 <chr>, inter1 <dbl>, actor2 <chr>,                                                                                                                                          
+## #   assoc_actor_2 <chr>, inter2 <dbl>, interaction <dbl>,                                                                                                                                     
+## #   region <chr>, country <chr>, admin1 <chr>, admin2 <chr>,                                                                                                                                  
+## #   admin3 <chr>, location <chr>, latitude <dbl>,                                                                                                                                             
+## #   longitude <dbl>, geo_precision <dbl>, source <chr>,                                                                                                                                       
+## #   source_scale <chr>, notes <chr>, fatalities <dbl>,                                                                                                                                        
+## #   timestamp <dbl>, iso3 <chr>
 ```
 
 `read_session` will not work for all data in HDX, so far the following format are supported: `csv`, `xlsx`, `xls`, `json`, `geojson`, `zipped shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`.
@@ -162,7 +162,7 @@ list_of_ds
 ```
 ### Choose the dataset you want to manipulate in R, in this case we will take the first one.
 The result of `search_datasets` is a list of HDX datasets, you can manipulate this list like any other `list` in R.
-We can use `dplyr::first` to select the first element of our list.
+We can use `purrr::pluck` to select the element we want in our list, here it is the first.
 
 ```{r, eval = FALSE}
 ds <- pluck(list_of_ds, 1)
@@ -179,7 +179,7 @@ ds
 ### List all resources in the dataset
 
 With our dataset, the next step is to list all the resources. If you are not familiar with CKAN terminology, `resources` refer to the actual files shared in a 
-dataset page. Each dataset page contains one or more resources.
+dataset page and you can download. Each dataset page contains one or more resources.
 
 ```{r, eval = FALSE}
 get_resources(ds)
@@ -206,7 +206,8 @@ get_resources(ds)
 ```
 
 ### Choose a resource we need to download/read
-For this example, we are looking for the displacement data and it's the first resource in the dataset page.
+For this example, we are looking for the displacement data and it's the first resource in the dataset page. We can use `pluck` on the list of resources or the helper
+function `get_resource(resource, resource_index)` to select the resource we want to use.
 The selected resource can be then downloaded and store for further use or directly read into your R session using the `read_session` function.
 The resource is a `json` file and it can be read directly using `jsonlite` package, we added a `simplify_json` option to get a `vector` or a `data.frame` when possible instead of a `list`.
 
@@ -256,9 +257,9 @@ idp_nga_df
 ## [1] 0
 ```
     
-### Using `magrittr` pipes
+### Using `magrittr` pipe
 
-All these operations can be chained using pipes `%>%` and allow for a powerful grammar to easily get your data in R
+All these operations can be chained using pipes `%>%` and allow for a powerful grammar to easily get humanitarian data in R.
 
 ```{r, eval = FALSE}
 library(tidyverse)
@@ -269,7 +270,7 @@ idp_nga_df <-
   search_datasets("displaced Nigeria", rows = 2) %>%
   pluck(1) %>%
   get_resource(1) %>% ## get the first resource
-  read_session(simplify_json = TRUE, folder = tempdir())
+  read_session(simplify_json = TRUE, folder = tempdir()) ## the file will be downloaded in a temporary directory
 
 idp_nga_df
 ## $results
