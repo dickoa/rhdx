@@ -27,7 +27,9 @@ Allow to add/modify the dataset dates
 
 \dontrun{
 # Setting the config to use HDX default server
- set_dataset_date()
+ set_rhdx_config()
+ res <- search_dataset(rows = 3L)
+ set_dataset_date(res[[1]])
 }
 
 }

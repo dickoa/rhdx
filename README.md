@@ -18,23 +18,23 @@ platform.
 ## Installation
 
 This package is not on yet on CRAN and to install it, you will need the
-[`devtools`](https://github.com/r-lib/devtools) package. You can
-download it from Github or Gitlab
+[`remotes`](https://github.com/r-lib/remotes) package. You can get
+`rhdx` from Gitlab or Github
 
 ``` r
 ## install.packages("remotes") 
-remotes::install_github("dickoa/rhdx")
 remotes::install_gitlab("dickoa/rhdx")
+remotes::install_github("dickoa/rhdx")
 ```
 
-## rhdx tutorial
+## rhdx: A quick tutorial
 
 ``` r
 library("rhdx")
 ```
 
-The first step is to connect to an HDX server, we can use the `demo`
-server, we can use the `rhdx_config` function
+The first step is to connect to HDX using the `set_rhdx_config` function
+and check the config using `get_rhdx_config`
 
 ``` r
 set_rhdx_config(hdx_site = "prod")
@@ -45,15 +45,16 @@ get_rhdx_config()
 ##   HDX API key: 
 ```
 
-We can `search_datasets`, `get_resources` and `read_session` to get data
-from HDX to R directly
+Now that we are connected to HDX, we can search for dataset pages using
+`search_datasets`, access resources on the dataset pages with the
+`get_resources` function and finally read the data directly into the R
+session using `read_session`. `magrittr` pipes operator are supported
 
 ``` r
 library(tidyverse)
-search_datasets("ACLED", rows = 2) %>% ## search dataset in HDX
-  first() %>% ## select the first dataset
-  get_resources() %>% ## get all resources in the datasets
-  first() %>% ## select the first resource
+search_datasets("ACLED", rows = 2) %>% ## search dataset in HDX, limit the results to two rows
+  pluck(1) %>% ## select the first dataset
+  get_resource(1) %>% ## list all resources in the dataset page
   read_session() ## read it into R
 ## reading sheet:  Sheet1 
 ## # A tibble: 3,698 x 25
@@ -81,7 +82,8 @@ search_datasets("ACLED", rows = 2) %>% ## search dataset in HDX
 
 `read_session` will not work for all data in HDX, so far the following
 format are supported: `csv`, `xlsx`, `xls`, `json`, `geojson`, `zipped
-shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`
+shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`. I will
+consider adding more data types in the future.
 
 ## Getting data in R a short tutorial
 
@@ -128,7 +130,7 @@ manipulate this list like any other `list` in R. We can use
 `dplyr::first` to select the first element of our list.
 
 ``` r
-ds <- first(list_of_ds)
+ds <- pluck(list_of_ds, 1)
 ds
 ## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
 ##   Title: Nigeria - Internally displaced persons - IDPs
@@ -147,8 +149,7 @@ files shared in a dataset page. Each dataset page contains one or more
 resources.
 
 ``` r
-list_of_rs <- get_resources(ds)
-list_of_rs
+get_resources(ds)
 ## [[1]]
 ## <HDX Resource> f57be018-116e-4dd9-a7ab-8002e7627f36 
 ##   Name: displacement_data
@@ -174,14 +175,15 @@ list_of_rs
 ### Choose a resource we need to download/read
 
 For this example, we are looking for the displacement data and it’s the
-first resource in our list `list_of_rs`. The selected resource can be
-then downloaded and store or directly read into your R session using the
-`read_session` function. The resource is a `json` file and it can be
-read directly with some options like `simplify_json` (get a `vector` or
-a `data.frame` when possible instead of a `list`)
+first resource in the dataset page. The selected resource can be then
+downloaded and store for further use or directly read into your R
+session using the `read_session` function. The resource is a `json` file
+and it can be read directly using `jsonlite` package, we added a
+`simplify_json` option to get a `vector` or a `data.frame` when possible
+instead of a `list`.
 
 ``` r
-idp_nga_rs <- first(list_of_rs)
+idp_nga_rs <- get_resource(ds, 1)
 idp_nga_df <- read_session(idp_nga_rs, simplify_json = TRUE, folder = tempdir())
 idp_nga_df
 ## $results
@@ -236,11 +238,11 @@ library(tidyverse)
 
 set_rhdx_config(hdx_site = "prod")
 
-search_datasets("displaced Nigeria", rows = 2) %>%
- first() %>%
- get_resources() %>%
- first() %>%
- read_session(simplify_json = TRUE, folder = tempdir()) -> idp_nga_df
+idp_nga_df <- 
+  search_datasets("displaced Nigeria", rows = 2) %>%
+  pluck(1) %>%
+  get_resource(1) %>% ## get the first resource
+  read_session(simplify_json = TRUE, folder = tempdir())
 
 idp_nga_df
 ## $results
@@ -285,20 +287,10 @@ idp_nga_df
 ## [1] 0
 ```
 
-## Read data with HXL tags
-
-The `rhxl` package is used to manipulate HXLated dataset
-
-## Create a dataset in HDX
-
-### Connect to a server
-
-### Get an API key
-
 ## Meta
 
   - Please [report any issues or
-    bugs](https://gitlab.dickoa/rhdx/issues).
+    bugs](https://gitlab.com/dickoa/rhdx/issues).
   - License: MIT
   - Please note that this project is released with a [Contributor Code
     of Conduct](CONDUCT.md). By participating in this project you agree

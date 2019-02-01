@@ -28,7 +28,7 @@ Allow to search and find on HDX
 \examples{
 
 \dontrun{
-# Setting the config to use HDX default server
+ # Setting the config to use HDX default server
  search_datasets("displaced nigeria", rows = 3L)
 }
 

@@ -173,7 +173,8 @@ Resource <- R6::R6Class(
     check_required_field = function(check_dataset_id = FALSE) {
       n2 <- names(self$data)
       n1 <- private$configuration$data$resource$required_fields
-      if (check_datasetid) n1 <- setdiff(n1, "package_id")
+      if (check_dataset_id)
+          n1 <- setdiff(n1, "package_id")
       if (!all(n1 %in% n2))
         stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
     },
@@ -212,32 +213,26 @@ Resource <- R6::R6Class(
       if (is.null(resource_id))
         stop("Resource not on HDX use `create_in_hdx` method")
       rs <- drop_nulls(self$data)
-      h <- curl::new_handle(http_version = 2, useragent = get_user_agent())
-      curl::handle_setheaders(h,
-                              `X-CKAN-API-Key` = configuration$get_hdx_key(),
-                              `Content-Type` = "multipart/form-data")
-      curl::handle_setform(h, .list = rs)
-      url <- paste0(configuration$get_hdx_site_url(), "api/action/resource_update")
-      res <- curl::curl_fetch_memory(url, handle = h)
+      res <- configuration$call_remoteclient("resource_update",
+                                             rs,
+                                             verb = "post",
+                                             encode = "multipart")
       if (res$status_code != 200L)
-        stop("Resources not created check the parameters")
+        stop("Resources not updated check the parameters")
       invisible(res)
     },
     create_in_hdx = function(dataset_id = NULL) {
       configuration <- private$configuration
       rs <- self$data
       rs$package_id <- dataset_id
-      h <- curl::new_handle(http_version = 2, useragent = get_user_agent())
-      curl::handle_setheaders(h,
-                              `X-CKAN-API-Key` = configuration$get_hdx_key(),
-                              `Content-Type` =  "multipart/form-data") 
-      curl::handle_setform(h, .list = rs)
-      url <- paste0(configuration$get_hdx_site_url(), "api/action/resource_create")
-      res <- curl::curl_fetch_memory(url, handle = h)
+      res <- configuration$call_remoteclient("resource_create",
+                                             data = rs,
+                                             verb = "post",
+                                             encode = "multipart")
       if (res$status_code == 200L) {
-        message("All resources uploaded")
+          message("All resources uploaded")
       } else {
-        stop("Resources not created check the parameters")
+          stop("Resources not created check the parameters")
       }
       invisible(res)
     },

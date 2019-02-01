@@ -64,16 +64,15 @@ Configuration <- R6::R6Class(
       hdx_site <- paste0("hdx_", hdx_site, "_site")
       self$data$hdx_key <- hdx_key
       self$data$read_only <- read_only
-      headers <- list(`Content-Type` = "application/json")
+      ## headers <- list(`Content-Type` = "application/json")
 
       if (!read_only)
-        headers <- drop_nulls(list(`X-CKAN-API-Key` = hdx_key, `Content-Type` = "application/json"))
+        headers <- drop_nulls(list(`X-CKAN-API-Key` = hdx_key))
 
       if (is.null(user_agent))
         user_agent <- get_user_agent()
       
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
-                                                    headers = headers,
                                                     opts = list(http_version = 2L, useragent = user_agent)) ## http 1.1
       private$shared$configuration <- self
     },
@@ -83,11 +82,9 @@ Configuration <- R6::R6Class(
     },
     set_read_only = function(read_only = TRUE) {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
-      headers <- list(`Content-Type` = "application/json")
       if (!read_only)
-        headers <- drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key, `Content-Type` = "application/json"))
+        headers <- drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key))
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
-                                                    headers = headers,
                                                     opts = list(http_version = 2, useragent = get_user_agent())) ## http 1.1
     },
     set_hdx_key = function(hdx_key) {
@@ -107,7 +104,7 @@ Configuration <- R6::R6Class(
       self$data$hdx_site <-  hdx_site
       hdx_site <- paste0("hdx_", hdx_site, "_site")
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
-                                                    headers = drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key, `Content-Type` = "application/json")),
+                                                    headers = drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key)),
                                                     opts = list(http_version = 2, useragent = get_user_agent()))
     },
     get_hdx_site = function() {

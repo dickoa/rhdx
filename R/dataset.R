@@ -236,16 +236,16 @@ Dataset <- R6::R6Class(
       configuration <- private$configuration
       dataset_id <- self$data$id
       if (is.null(dataset_id))
-        stop("Dataset not on HDX use `create_in_hdx` to create a Dataset")
+        warning("Dataset not on HDX use `create_in_hdx` to create a Dataset", call. = FALSE)
       rs <- self$get_all_resources()
       ds <- drop_nulls(self$data)
       res1 <- configuration$call_remoteclient("package_update",
-                                             ds,
-                                             verb = "post",
-                                             encode = "json")
-      if (res1$status_code != 200L)
-        stop("Dataset not created check the parameters")
-      
+                                              ds,
+                                              verb = "post",
+                                              encode = "json")
+      if (res1$status_code != 200L) {
+          warning("Dataset not created check the parameters", call. = FALSE)
+      }
       if (update_resources) {
         res2 <- lapply(rs, function(r) r$update_in_hdx(dataset_id))
       } else {
@@ -266,7 +266,7 @@ Dataset <- R6::R6Class(
                                              ds,
                                              verb = "post")
       if (res1$status_code != 200L)
-        stop("Dataset not created, check the parameters!")
+          warning("Dataset not created, check the parameters!", call. = FALSE)
       res2 <- lapply(rs, function(r) r$create_in_hdx(res1$result$id))
       invisible(list(dataset = res1, resources = res2))
     },
@@ -368,8 +368,27 @@ add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
   dataset
 }
 
+
+#' Delete delete resource
+#'
+#' Sets the configuration settings for using rhdx.
+#'
+#' @param dataset
+#' 
+#'
+#' @details Delete resource from dataset
+#'
+#' 
+#' @return A list of HDX datasets
 #' @export
-#' @aliases Dataset 
+#'
+#' @examples
+#'
+#' \dontrun{
+#'  # Setting the config to use HDX default server
+#'  delete_resource(dataset, 1) # first resource
+#' }
+#'
 delete_resource <- function(dataset, index) {
   assert_dataset(dataset)
   dataset$delete_resource(index)
@@ -425,7 +444,7 @@ count_datasets <- function(configuration = NULL) {
 #' @examples
 #'
 #' \dontrun{
-#' # Setting the config to use HDX default server
+#'  # Setting the config to use HDX default server
 #'  search_datasets("displaced nigeria", rows = 3L)
 #' }
 #'
@@ -437,12 +456,49 @@ search_datasets <- memoise::memoise(.search_datasets)
   ds$read_from_hdx(identifier, configuration = configuration, ...)
 }
 
+
+#' Read dataset
+#'
+#' Read dataset 
+#'
+#' @param dataset Dataset 
+#' 
+#'
+#' 
+#' @return Dataset the dataset
 #' @export
-#' @aliases Dataset
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_dataset("mali-3wop")
+#'  res
+#' }
+#' 
 read_dataset <- memoise::memoise(.read_dataset)
 
+
+#' Delete dataset
+#' 
+#' Dataset delete
+#'
+#' @param dataset Dataset 
+#' 
+#' 
+#' @return "None"
 #' @export
-#' @aliases Dataset
+#'
+#' @examples
+#'
+#' \dontrun{
+#'  #Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  delete_dataset(res[[1]])
+#' }
+#' 
 delete_dataset <- function(dataset) {
   assert_dataset(dataset)
   dataset$delete_from_hdx()
@@ -509,26 +565,105 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
   datasets_list[lgl]
 }
 
-#' @aliases Dataset
+
+#' Dataset locations
+#'
+#' Gets locations from the datasets
+#'
+#' @param dataset Dataset 
+#' 
+#' 
+#' @return Character locations of the dataset
+#' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  get_locations_name(res[[1]])
+#' }
+#' 
 get_locations_name <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_locations(), function(location) location$name, character(1))
 }
 
-#' @aliases Dataset
+
+
+#' Dataset tags name
+#'
+#' Gets dataset tags name
+#'
+#' @param dataset Dataset 
+#' 
+#'
+#' 
+#' @return Character Tags of the dataset
+#' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  get_tags_name(res[[1]])
+#' }
+#' 
 get_tags_name <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_tags(), function(tag) tag$name, character(1))
 }
 
-#' @aliases Dataset
+
+#' Dataset organization name
+#'
+#' Get the organization sharing the data
+#'
+#' @param dataset Dataset 
+#' 
+#' 
+#' @return Character The name of the organization sharing the data
+#' @export
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  get_organization_name(res[[1]])
+#' }
+#' 
+#'
 get_organization_name <- function(dataset) {
   assert_dataset(dataset)
   dataset$get_organization()[["name"]]
 }
 
+
+#' Dataset resources format
+#'
+#' Gets format of all resources from the datasets
+#'
+#' @param dataset Dataset 
+#' 
+#'
+#' 
+#' @return Character Format of the resources
 #' @export
-#' @aliases Dataset
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  get_formats(res[[1]])
+#' }
+#' 
 get_formats <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_resources(), function(resource) resource$get_format(), character(1))
@@ -565,7 +700,9 @@ get_dataset_date <- function(dataset) {
 #'
 #' \dontrun{
 #' # Setting the config to use HDX default server
-#'  set_dataset_date()
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  set_dataset_date(res[[1]])
 #' }
 #' 
 set_dataset_date <- function(dataset, date) {
