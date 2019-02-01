@@ -2,10 +2,10 @@
 ##'
 ##' R client for the Humanitarian Data Exchange platform
 ##'
-##' @name rhdx-package
-##' @aliases rhdx
+##' @name rhdx
+##' @aliases rhdx-package
 ##' @docType package
-##' @author \email{dicko.ahmadou@gmail.com}
+##' @author \email{mail@ahmadoudicko.com}
 ##' @keywords package
 NULL
 

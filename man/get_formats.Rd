@@ -16,7 +16,6 @@ Character Format of the resources
 Gets format of all resources from the datasets
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()

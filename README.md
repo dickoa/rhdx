@@ -15,6 +15,11 @@ platform.
 
 ![](https://gitlab.com/dickoa/rhdx/raw/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif)
 
+## Introduction
+
+The Humanitarian Data Exchange platform is the open platform to easily
+find and analyze humanitarian data.
+
 ## Installation
 
 This package is not on yet on CRAN and to install it, you will need the

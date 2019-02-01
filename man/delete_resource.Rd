@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataset.R
 \name{delete_resource}
 \alias{delete_resource}
-\title{Delete delete resource}
+\title{Delete resource from dataset}
 \usage{
 delete_resource(dataset, index)
 }
@@ -10,19 +10,18 @@ delete_resource(dataset, index)
 \item{dataset}{}
 }
 \value{
-A list of HDX datasets
+A Dataset
 }
 \description{
-Sets the configuration settings for using rhdx.
+Delete resource from dataset
 }
 \details{
 Delete resource from dataset
 }
 \examples{
-
 \dontrun{
  # Setting the config to use HDX default server
- delete_resource(dataset, 1) # first resource
+ delete_resource(dataset, 1) # remove first resource
 }
 
 }

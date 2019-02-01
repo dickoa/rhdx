@@ -31,32 +31,26 @@
 #'
 #' @format NULL
 #' @usage NULL
-#' @details Possible parameters (not all are allowed in each HTTP verb):
-#' \itemize{
-#'  \item read_from_hdx - query terms, as a named list
-#'  \item search_in_hdx  - body as an R list
-#'  \item update_from_yaml - one of form, multipart, json, or raw
-#'  \item add_update_resource 
-#'  \item add_update_resources - one of form, multipart, json, or raw
-#' }
 #'
 #' @examples
 #' \dontrun{
-#' # ---------------------------------------------------------
-#' Configuration$create(hdx_site = "demo")
-#' resource <- Resource$read_from_hdx("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+#' set_rhdx_config()
+#' read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #' resource
 #' }
 #' 
 #'
 Resource <- R6::R6Class(
   "Resource",
+
   private = list(
     configuration = NULL,
     download_folder_ = NULL
   ),
+
   public = list(
     data = NULL,
+
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
@@ -67,17 +61,21 @@ Resource <- R6::R6Class(
       initial_data <- drop_nulls(initial_data)
       self$data <- initial_data
     },
+    
     update_from_yaml = function(hdx_resource_static_yaml) {
-      self$data <- yaml::yaml.load_file(hdx_resource_static_yaml)
+      self$data <- yaml::read_yaml(hdx_resource_static_yaml)
     },
+    
     update_from_json = function(hdx_resource_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_resource_static_json,
-                                     simplifyVector = TRUE)
+      self$data <- jsonlite::read_json(hdx_resource_static_json,
+                                       simplifyVector = TRUE)
     },
+    
     touch = function() {
       private$configuration$call_remoteclient("resource_patch",
                                               list(id = self$data$id))
     },
+    
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
       if (is.null(folder))
@@ -95,55 +93,51 @@ Resource <- R6::R6Class(
       private$download_folder_ <- tools::file_path_as_absolute(folder)
       invisible(tools::file_path_as_absolute(path))
     },
+    
     download_folder = function() {
       tools::file_path_as_absolute(private$download_folder_)
     },
+    
     read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, hxl = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet, ...)
       format <- self$get_file_type()
+      hxl_tags <- grepl("hxl", get_tags_name(self$get_dataset()), ignore.case = TRUE) 
       switch(
         format,
-        csv = {
-          check_packages("readr")
-          df <- readr::read_csv(path)
-          if (isTRUE(hxl))
-            df <- rhxl::as_hxl(df)
-          df
-        },
-        excel = read_sheet(path = path, sheet = sheet, hxl = hxl),
-        xlsx = read_sheet(path = path, sheet = sheet, hxl = hxl),
-        xls = read_sheet(path = path, sheet = sheet, hxl = hxl),
-        json = {
-          check_packages("jsonlite")
-          jsonlite::fromJSON(path, simplifyVector = simplify_json)
-        },
+        csv = read_hdx_csv(path),
+        excel = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
+        xlsx = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
+        xls = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
+        json = read_hdx_json(path, simplify_json = simplify_json),
         geojson = read_vector(path, layer),
-        `zipped shapefile` = read_vector(path = path, layer = layer),
-        `zipped geodatabase` = read_vector(path = path, layer = layer, zipped = FALSE),
-        `zipped geopackage` = read_vector(path = path, layer = layer),
-        `zipped geotiff` = read_raster(path = path, layer = layer),
-        kmz = read_vector(path = path, layer = layer),
-        `zipped kml` = read_vector(path = path, layer = layer))
+        `zipped shapefile` = read_hdx_vector(path = path, layer = layer),
+        `zipped geodatabase` = read_hdx_vector(path = path, layer = layer, zipped = FALSE),
+        kmz = read_hdx_vector(path = path, layer = layer),
+        `zipped kml` = read_hdx_vector(path = path, layer = layer),
+        `zipped geopackage` = read_hdx_vector(path = path, layer = layer),
+        `zipped geotiff` = read_hdx_raster(path = path, layer = layer))
     },
+
     get_layers = function(folder = NULL, quiet = TRUE) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet)
       format <- self$get_file_type()
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
-                               "zipped geopackage", "zipped geotiff", "kmz", "zipped kml")
+                                "zipped geopackage", "zipped geotiff", "kmz", "zipped kml")
       if (!format %in% supported_geo_format) stop("This (spatial) data format is not yet supported", call. = FALSE)
       switch(
         format,
-        geojson = get_layers_(path, zipped = FALSE),
-        `zipped shapefile` = get_layers_(path),
-        `zipped geodatabase` = get_layers_(path, zipped = FALSE),
-        `zipped geopackage` = get_layers_(path),
-        kmz = get_layers_(path),
-        `zipped kml` = get_layers_(path))
+        geojson = get_hdx_layers_(path, zipped = FALSE),
+        `zipped shapefile` = get_hdx_layers_(path),
+        `zipped geodatabase` = get_hdx_layers_(path, zipped = FALSE),
+        `zipped geopackage` = get_hdx_layers_(path),
+        kmz = get_hdx_layers_(path),
+        `zipped kml` = get_hdx_layers_(path))
     },
+
     get_sheets = function(folder = NULL, quiet = TRUE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
@@ -152,10 +146,11 @@ Resource <- R6::R6Class(
       if (!format %in% c("xlsx", "xls", "excel")) stop("`get_sheets work only with Excel file", call. = FALSE)
       switch(
         format,
-        excel = get_sheets_(path = path),
-        xlsx = get_sheets_(path = path),
-        xls = get_sheets_(path = path))
+        excel = get_hdx_sheets_(path = path),
+        xlsx = get_hdx_sheets_(path = path),
+        xls = get_hdx_sheets_(path = path))
     },
+
     get_dataset = function() {
       package_id <- self$data$package_id
       if (is.null(package_id)) {
@@ -164,12 +159,15 @@ Resource <- R6::R6Class(
         Dataset$read_from_hdx(package_id)      
       }
     },
+    
     get_file_to_upload = function() {
       self$data$file_to_upload
     },
+
     set_file_to_upload = function(file_to_upload) {
       self$data$file_to_upload <- crul::upload(file_to_upload)
     },
+
     check_required_field = function(check_dataset_id = FALSE) {
       n2 <- names(self$data)
       n1 <- private$configuration$data$resource$required_fields
@@ -178,12 +176,14 @@ Resource <- R6::R6Class(
       if (!all(n1 %in% n2))
         stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
     },
+
     read_from_hdx = function(identifier, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_show", list(id = identifier))
       Resource$new(initial_data = res$result, configuration = configuration)
     },
+
     search_in_hdx = function(query = "*:*", configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
@@ -192,21 +192,27 @@ Resource <- R6::R6Class(
       class(list_of_rs) <- "resources_list"
       list_of_rs
     },
+
     get_file_type = function() {
       tolower(self$data$format)
     },
+
     get_format = function() {
       tolower(self$data$format)
     },
+
     set_file_type = function(file_type) {
       self$data$format <- file_type
     },
+
     set_format = function(format) {
       self$data$format <- format
     },
+
     as_list = function() {
       self$data
     },
+
     update_in_hdx = function() {
       configuration <- private$configuration
       resource_id <- self$data$id
@@ -221,6 +227,7 @@ Resource <- R6::R6Class(
         stop("Resources not updated check the parameters")
       invisible(res)
     },
+    
     create_in_hdx = function(dataset_id = NULL) {
       configuration <- private$configuration
       rs <- self$data
@@ -236,18 +243,14 @@ Resource <- R6::R6Class(
       }
       invisible(res)
     },
-    create_datastore = function() {
-    },
-    delete_datastore = function() {
-    },
-    update_datastore = function() {
-    },
+        
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       dataset_id <- self$data$package_id
       resource_id <- self$data$id
       browseURL(url = paste0(url, "dataset/", dataset_id, "/resource/", resource_id))
     },
+    
     print = function() {
       cat(paste0("<HDX Resource> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -346,8 +349,26 @@ search_resources <- memoise::memoise(.search_resources)
   rs$read_from_hdx(identifier = identifier, configuration = configuration, ...)
 }
 
+#' Read an HDX resource
+#'
+#' Read an HDX resource 
+#'
+#' @param identifier character resource uuid
+#' @param configuration an HDX configuration object
+#' 
+#'
+#' 
+#' @return Resource
 #' @export
-#' @aliases Resource
+#'
+#' @examples
+#' \dontrun{
+#' #Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+#'  res
+#' }
+#' 
 read_resource <- memoise::memoise(.read_resource)
 
 #' @export

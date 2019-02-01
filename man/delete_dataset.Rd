@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataset.R
 \name{delete_dataset}
 \alias{delete_dataset}
-\title{Delete dataset}
+\title{Delete dataset in HDX}
 \usage{
 delete_dataset(dataset)
 }
@@ -16,10 +16,9 @@ delete_dataset(dataset)
 Dataset delete
 }
 \examples{
-
 \dontrun{
  #Setting the config to use HDX default server
- set_rhdx_config()
+ set_rhdx_config(read_only = FALSE, hdx_key = "xxxx")
  res <- search_dataset(rows = 3L)
  delete_dataset(res[[1]])
 }

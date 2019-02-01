@@ -32,15 +32,6 @@ packages.
       Make a HEAD request
     }
   }
-
-Possible parameters (not all are allowed in each HTTP verb):
-\itemize{
- \item read_from_hdx - query terms, as a named list
- \item search_in_hdx  - body as an R list
- \item update_from_yaml - one of form, multipart, json, or raw
- \item add_update_resource 
- \item add_update_resources - one of form, multipart, json, or raw
-}
 }
 \examples{
 \dontrun{

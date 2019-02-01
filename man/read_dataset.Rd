@@ -7,7 +7,9 @@
 read_dataset(identifier, configuration = NULL, ...)
 }
 \arguments{
-\item{dataset}{Dataset}
+\item{identifier}{character dataset keyword}
+
+\item{configuration}{an HDX configuration object}
 }
 \value{
 Dataset the dataset
@@ -16,7 +18,6 @@ Dataset the dataset
 Read dataset
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()

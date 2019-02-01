@@ -9,12 +9,9 @@ pages:
     - apt-get install -t unstable --yes libssl-dev libssh2-1-dev libxml2-dev libcurl4-gnutls-dev libgit2-dev libmagick++-dev pandoc pandoc-citeproc
 
   script:
-    - Rscript -e 'install.packages("devtools")'
-    - Rscript -e 'install.packages("tibble")'
-    - Rscript -e 'install.packages("testthat")'
-    - Rscript -e 'devtools::install_github("r-lib/pkgdown")'
-    - Rscript -e 'devtools::install_github("ropensci/crul")'
-    - Rscript -e 'devtools::install_git("https://gitlab.com/dickoa/rhdx")'
+    - Rscript -e 'install.packages(c("devtools", "remotes", "pkgdown", "testthat"))'
+    - Rscript -e 'devtools::install_deps(dependencies = TRUE)'
+    - Rscript -e 'remotes::install_gitlab("dickoa/rhdx")'
     - Rscript -e 'pkgdown::build_site()'
     - mv docs public
     

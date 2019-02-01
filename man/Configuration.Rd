@@ -5,8 +5,7 @@
 \alias{Configuration}
 \title{Configuration for HDX}
 \description{
-HDX Configuration allow to connect to a HDX server and setup project where you interact with Humanitarian Data Exchange
-platfom.
+HDX Configuration allow to connect to an HDX server and setup project where you can interact with the HDX platform
 }
 \details{
 **Methods**
@@ -24,14 +23,6 @@ platfom.
       Delete configuration
     }
   }
-
-Possible parameters (not all are allowed in each HTTP verb):
-\itemize{
- \item create - URL path, appended to the base URL
- \item setup - one of form, multipart, json, or raw
- \item read - query terms, as a named list
- \item delete - body as an R list
-}
 }
 \examples{
 \dontrun{

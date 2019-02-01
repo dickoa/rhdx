@@ -16,7 +16,6 @@ Character Tags of the dataset
 Gets dataset tags name
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()

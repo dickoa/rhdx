@@ -3,8 +3,7 @@ output:
   github_document
 ---
 
-rhdx
-============
+# rhdx
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -16,39 +15,7 @@ knitr::opts_chunk$set(
   eval = FALSE,
   fig.width = 10,
   fig.path = "inst/img/",
-  comment = "#> ")
-
-hook_output <- knitr::knit_hooks$get("output")
-knitr::knit_hooks$set(output = function(x, options) {
-   lines <- options$output.lines
-   if (is.null(lines)) {
-     return(hook_output(x, options))  # pass to default hook
-   }
-   x <- unlist(strsplit(x, "\n"))
-   more <- "..."
-   if (length(lines)==1) {        # first n lines
-     if (length(x) > lines) {
-       # truncate the output, but add ....
-       x <- c(head(x, lines), more)
-     }
-   } else {
-     x <- c(if (abs(lines[1])>1) more else NULL,
-            x[lines],
-            if (length(x)>lines[abs(length(lines))]) more else NULL
-           )
-   }
-   # paste these lines together
-   x <- paste(c(x, ""), collapse = "\n")
-   hook_output(x, options)
- })
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  echo = TRUE,
-  collapse = TRUE,
-  eval = FALSE,
-  warning = FALSE,
-  message = FALSE
+  comment = "#> "
 )
 ```
 
@@ -59,6 +26,9 @@ knitr::opts_chunk$set(
 `rhdx` is an R client for the Humanitarian Exchange Data platform.
 
 ![](https://gitlab.com/dickoa/rhdx/raw/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif)
+
+## Introduction
+The Humanitarian Data Exchange platform is the open platform to easily find and analyze humanitarian data.
 
 ## Installation
 

@@ -1,10 +1,10 @@
 Package: rhdx
 Title: R client for the Humanitarian Data Exchange platform
-Description: R client for the Humanitarian Data Exchange platform
+Description: R client for the Humanitarian Data Exchange platform <https://data.humdata.org/>
 Version: 0.0.1.9000
 Authors@R: person("Dicko", "Ahmadou", email="mail@ahmadoudicko.com", role = c("aut", "cre"))
 License: MIT + file LICENSE
-LazyData: true
+LazyData: TRUE
 URL: https://gitlab.com/dickoa/rhdx
 BugReports: https://gitlab.com/dickoa/rhdx/issues
 VignetteBuilder: knitr
@@ -22,6 +22,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-Remotes: github::dickoa/rhxl    
+Remotes: gitlab::dickoa/rhxl    
 RoxygenNote: 6.1.1
 Encoding: UTF-8

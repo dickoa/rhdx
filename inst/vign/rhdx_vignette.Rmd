@@ -1,0 +1,155 @@
+---
+title: "R client to the Humanitarian Data Exchange"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tidy data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Humanitarian Data Exchange platform
+
+The Humanitarian Data Exchange is the UN OCHA platform for share 
+
+Development version from GitLab
+
+```{r, eval = FALSE}
+devtools::install_github("ropensci/crul")
+devtools::install_git("https://gitlab.com/dickoa/rhdx")
+```
+
+
+```{r, eval = FALSE}
+library("rhdx")
+set_rhdx_config(hdx_site = "prod", read_only = TRUE)
+```
+
+## Get data from HDX using an OOP approach
+### Connect to a server
+
+You need to use the `Configuration` class to select a server 
+
+```{r, eval = FALSE}
+conf <- Configuration$setup(hdx_site = "prod")
+conf
+## <HDX Configuration> 
+##   HDX site: prod
+##   HDX site url: https://data.humdata.org/
+##   HDX API key: 
+```
+
+### Search datasets
+
+Once we selected a server, we can now search from dataset using the `search_in_hdx` method from the `Dataset` class.
+In this case we will limit just to two results.
+
+```{r, eval = FALSE}
+list_of_ds <- Dataset$search_in_hdx("displaced Nigeria", rows = 2)
+list_of_ds
+## [[1]]
+## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
+##   Title: Nigeria - Internally displaced persons - IDPs
+##   Name: idmc-idp-data-for-nigeria
+##   Date: 01/01/2009-12/31/2016
+##   Tags (up to 5): displacement, idmc, population
+##   Locations (up to 5): nga
+##   Resources (up to 5): displacement_data, conflict_data, disaster_data
+
+## [[2]]
+## <HDX Dataset> 4adf7874-ae01-46fd-a442-5fc6b3c9dff1 
+##   Title: Nigeria Baseline Assessment Data [IOM DTM]
+##   Name: nigeria-baseline-data-iom-dtm
+##   Date: 01/31/2018
+##   Tags (up to 5): adamawa, assessment, baseline-data, baseline-dtm, bauchi
+##   Locations (up to 5): nga
+##   Resources (up to 5): DTM Nigeria Baseline Assessment Round 21, DTM Nigeria Baseline Assessment Round 20, DTM Nigeria Baseline Assessment Round 19, DTM Nigeria Baseline Assessment Round 18, DTM Nigeria Baseline Assessment Round 17
+```
+### Choose the dataset you want to manipulate in R, in this case we will take the first one.
+
+```{r, eval = FALSE}
+ds <- list_of_ds[[1]]
+ds
+## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
+##   Title: Nigeria - Internally displaced persons - IDPs
+##   Name: idmc-idp-data-for-nigeria
+##   Date: 01/01/2009-12/31/2016
+##   Tags (up to 5): displacement, idmc, population
+##   Locations (up to 5): nga
+##   Resources (up to 5): displacement_data, conflict_data, disaster_data
+```
+
+### List all resources in the dataset
+
+```{r, eval = FALSE}
+list_of_rs <- ds$get_resources()
+list_of_rs
+## [[1]]
+## <HDX Resource> f57be018-116e-4dd9-a7ab-8002e7627f36 
+##   Name: displacement_data
+##   Description: Internally displaced persons - IDPs (new displacement associated with conflict and violence)
+##   Size: 
+##   Format: JSON
+
+## [[2]]
+## <HDX Resource> 6261856c-afb9-4746-b340-9cf531cbd38f 
+##   Name: conflict_data
+##   Description: Internally displaced persons - IDPs (people displaced by conflict and violence)
+##   Size: 
+##   Format: JSON
+
+## [[3]]
+## <HDX Resource> b8ff1f4b-105c-4a6c-bf54-a543a486ab7e 
+##   Name: disaster_data
+##   Description: Internally displaced persons - IDPs (new displacement associated with disasters)
+##   Size: 
+##   Format: JSON
+```
+
+### Choose a resource we need to download/read
+We are looking for the displacement data, it's the first resource in our list `list_of_rs`
+
+```{r, eval = FALSE}
+idp_nga_rs <- list_of_rs[[1]]
+idp_nga_df <- idp_nga_rs$read_session(simplify_json = TRUE, folder = tempdir())
+idp_nga_df
+## $results
+##   iso iso3 geo_name year conflict_new_displacements
+## 1  NG  NGA  Nigeria 2009                       5000
+## 2  NG  NGA  Nigeria 2010                       5000
+## 3  NG  NGA  Nigeria 2011                      65000
+## 4  NG  NGA  Nigeria 2012                      63000
+## 5  NG  NGA  Nigeria 2013                     471000
+## 6  NG  NGA  Nigeria 2014                     975000
+## 7  NG  NGA  Nigeria 2015                     737000
+## 8  NG  NGA  Nigeria 2016                     501000
+##   disaster_new_displacements conflict_stock_displacement
+## 1                     140000                          NA
+## 2                     560000                          NA
+## 3                       6300                          NA
+## 4                    6112000                          NA
+## 5                     117000                     3300000
+## 6                       3000                     1075000
+## 7                     100000                     2096000
+## 8                      78000                     1955000
+
+## $lookups
+## named list()
+
+## $errors
+## list()
+
+## $success
+## [1] TRUE
+
+## $params
+## [1] "/api/displacement_data?iso3=NGA&ci=HDX00AKEYJUl17"
+
+## $total
+## [1] 8
+
+## $limit
+## [1] 0
+
+## $offset
+## [1] 0
+```

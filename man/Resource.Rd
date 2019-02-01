@@ -32,21 +32,11 @@ packages.
       Make a HEAD request
     }
   }
-
-Possible parameters (not all are allowed in each HTTP verb):
-\itemize{
- \item read_from_hdx - query terms, as a named list
- \item search_in_hdx  - body as an R list
- \item update_from_yaml - one of form, multipart, json, or raw
- \item add_update_resource 
- \item add_update_resources - one of form, multipart, json, or raw
-}
 }
 \examples{
 \dontrun{
-# ---------------------------------------------------------
-Configuration$create(hdx_site = "demo")
-resource <- Resource$read_from_hdx("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+set_rhdx_config()
+read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 resource
 }
 

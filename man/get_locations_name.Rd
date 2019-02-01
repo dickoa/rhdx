@@ -16,7 +16,6 @@ Character locations of the dataset
 Gets locations from the datasets
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()

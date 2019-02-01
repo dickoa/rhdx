@@ -31,14 +31,6 @@
 #'
 #' @format NULL
 #' @usage NULL
-#' @details Possible parameters (not all are allowed in each HTTP verb):
-#' \itemize{
-#'  \item read_from_hdx - query terms, as a named list
-#'  \item search_in_hdx  - body as an R list
-#'  \item update_from_yaml - one of form, multipart, json, or raw
-#'  \item add_update_resource 
-#'  \item add_update_resources - one of form, multipart, json, or raw
-#' }
 #'
 #' @examples
 #' \dontrun{
@@ -51,11 +43,14 @@
 #' @export
 Organization <- R6::R6Class(
   "Organization",
+  
   private = list(
     configuration = NULL
   ),
+  
   public = list(
     data = NULL,
+    
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
@@ -66,12 +61,14 @@ Organization <- R6::R6Class(
       initial_data <- nc(initial_data)
       self$data <- initial_data
     },
+    
     read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
       Organization$new(initial_data = res$result, configuration = configuration)
     },
+    
     list_all_organizations = function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
@@ -81,18 +78,22 @@ Organization <- R6::R6Class(
         unlist(res$result)
       res$result
     },
+    
     get_datasets = function() {
       if (!"packages" %in% names(self$data)) stop("No datasets available, please run Organization$read_from_hdx with `include_datasets = TRUE` and try again!", call. = FALSE)
       list_of_ds <- lapply(self$data$packages, function(x) Dataset$new(initial_data = x))
       list_of_ds
     },
+    
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "organization/", self$data$name))
     },
+    
     as_list = function() {
       self$data
     },
+    
     print = function() {
       cat(paste0("<HDX Organization> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -154,8 +155,26 @@ as.list.Organization <- function(x) {
   org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
 
+#' Read an HDX resource
+#'
+#' Read an HDX resource 
+#'
+#' @param identifier character resource uuid
+#' @param configuration an HDX configuration object
+#' 
+#'
+#' 
+#' @return HDX organization
 #' @export
-#' @aliases Organization
+#'
+#' @examples
+#' \dontrun{
+#' #Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_organization("wfp")
+#'  res
+#' }
+#' 
 read_organization <- memoise::memoise(.read_organization)
 
 #' @export

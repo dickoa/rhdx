@@ -3,7 +3,7 @@
 \name{get_dataset_date}
 \alias{get_dataset_date}
 \alias{set_dataset_date}
-\title{Dataset date utilies}
+\title{Dataset date utilities}
 \usage{
 get_dataset_date(dataset)
 
@@ -24,7 +24,6 @@ Sets and gets date Dataset
 Allow to add/modify the dataset dates
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()

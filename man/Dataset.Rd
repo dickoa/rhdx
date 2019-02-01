@@ -8,17 +8,37 @@
 Dataset class containing all logic for accessing, creating, and updating datasets and associated resources.
 }
 \details{
-Possible parameters (not all are allowed in each HTTP verb):
+**Methods**
+  \describe{
+    \item{`get(path, query, disk, stream, ...)`}{
+      make async GET requests for all URLs
+    }
+    \item{`post(path, query, body, encode, disk, stream, ...)`}{
+      make async POST requests for all URLs
+    }
+    \item{`put(path, query, body, encode, disk, stream, ...)`}{
+      make async PUT requests for all URLs
+    }
+    \item{`patch(path, query, body, encode, disk, stream, ...)`}{
+      make async PATCH requests for all URLs
+    }
+    \item{`delete(path, query, body, encode, disk, stream, ...)`}{
+      make async DELETE requests for all URLs
+    }
+    \item{`head(path, ...)`}{
+      make async HEAD requests for all URLs
+    }
+    \item{`verb(verb, ...)`}{
+      make async requests with an arbitrary HTTP verb
+    }
+  }
 }
 \examples{
 # ---------------------------------------------------------
 \dontrun{
 set_rhdx_config(hdx_site = "prod")
-acled_mali <- read_dataset("acled-conflict-data-for-africa-realtime-2016")
-acled_mali
-
-search_datasets("3W Somalia", rows = 5)
-
+acled_mali_rs <- read_dataset("acled-data-for-mali")
+ 
 }
 
 }

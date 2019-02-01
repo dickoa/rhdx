@@ -16,7 +16,6 @@ Character The name of the organization sharing the data
 Get the organization sharing the data
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()

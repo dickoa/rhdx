@@ -23,10 +23,9 @@ A list of HDX datasets
 Sets the configuration settings for using rhdx.
 }
 \details{
-Allow to search and find on HDX
+Search and find datasets on HDX
 }
 \examples{
-
 \dontrun{
  # Setting the config to use HDX default server
  search_datasets("displaced nigeria", rows = 3L)
