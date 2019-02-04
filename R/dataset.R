@@ -265,6 +265,10 @@ Dataset <- R6::R6Class(
                                    list(name = location)
                                  })
     },
+
+    add_organization = function(organization) {
+      self$data$owner_org <- organization
+    },
     
     get_maintainer = function() {
       self$data$maintainer
@@ -361,16 +365,17 @@ Dataset <- R6::R6Class(
                                                 verb = "post",
                                                 verbose = verbose)
       if (ds_req$status_code == 200L) {
+        ## Replace message by logger
         message(paste0("Dataset created with id: ", ds_req$result$id))
         self$data <- ds_req$result
         res <- invisible(list(dataset = ds_req))
       } else {
-        ## replace message by logger
+        ## Replace message by logger
         warning("Dataset not created, check the parameters!", call. = FALSE)
         message(paste0(ds_req$error[[1]], ": ", ds_req$error[[2]]))
       }
       if (isTRUE(upload_resources) && length(rs) > 0) {
-        ## use logger
+        ## Use logger
         rs_req <- lapply(rs, function(r) r$create_in_hdx(dataset_id = self$data$id, verbose = verbose))
         res <- invisible(list(dataset = ds_req, resources = rs_req))
       }

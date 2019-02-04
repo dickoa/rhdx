@@ -145,10 +145,33 @@ as.list.Organization <- function(x) {
 #' @examples
 #' \dontrun{
 #' }
-#' 
 read_organization <- memoise::memoise(.read_organization)
 
 #' @export
 #' @aliases Organization 
 browse.Organization <- function(x, ...)
   x$browse()
+
+
+#' List HDX organization
+#'
+#' List HDX organization 
+#'
+#' @param sort character resource uuid
+#' @param all_fields an HDX configuration object
+#' @param include_dataset_count Logical include count in the result
+#' @param include_groups Logical, whether or not to include locations
+#' @param include_user Logical, whether or not to include user
+#' @param include_tags Logical whether or not to include tags
+#' @param configuration Configuration
+#'
+#' @return A list of organization
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' }
+list_organizations <- function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
+    org <- Organization$new()
+    org$list_organizations(sort = sort, all_fields = all_fields, include_user = include_user, include_groups = include_groups, include_tags = include_tags, include_dataset_count = include_dataset_count, configuration = configuration, ...)
+}

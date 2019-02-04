@@ -21,5 +21,4 @@ Read an HDX organization
 \examples{
 \dontrun{
 }
-
 }
