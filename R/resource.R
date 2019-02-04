@@ -204,19 +204,22 @@ Resource <- R6::R6Class(
       self$data
     },
 
-    update_in_hdx = function() {
+    update_in_hdx = function(verbose = FALSE) {
       configuration <- private$configuration
       resource_id <- self$data$id
       if (is.null(resource_id))
         stop("Resource not on HDX use `create_in_hdx` method")
       rs <- drop_nulls(self$data)
-      res <- configuration$call_remoteclient("resource_update",
-                                             rs,
-                                             verb = "post",
-                                             encode = "multipart")
-      if (res$status_code != 200L)
-        stop("Resources not updated check the parameters")
-      invisible(res)
+      rs_req <- configuration$call_remoteclient("resource_update",
+                                                rs,
+                                                verb = "post",
+                                                encode = "multipart",
+                                                verbose = verbose)
+      if (rs_req$status_code != 200L) {
+        warning("Resources not updated check the parameters", call. = FALSE)
+        message(paste0(ds_req$error[[1]], ": ", ds_req$error[[2]]))
+      }
+      invisible(rs_req)
     },
     
     create_in_hdx = function(dataset_id = NULL, verbose = FALSE) {
@@ -363,6 +366,44 @@ search_resources <- memoise::memoise(.search_resources)
 #' }
 #' 
 read_resource <- memoise::memoise(.read_resource)
+
+
+#' Create resource from list
+#'
+#' Create resource from list
+#'
+#' @param initial_data List, list of data
+#'
+#' 
+#' @return Resource the resource
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' } 
+create_resource <- function(initial_data) {
+  Resource$new(initial_data)
+}
+
+
+#' Create resource in HDX
+#'
+#' Create resource in HDX
+#'
+#' @param resource Resource
+#'
+#' 
+#' @return an HDX resource
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' } 
+create_in_hdx.Resource <- function(resource, verbose = FALSE) {
+  assert_resource(resource)
+  resource$create_in_hdx(verbose = FALSE)
+}
+
 
 #' @export
 #' @aliases Resource 

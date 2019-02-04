@@ -203,3 +203,11 @@ browse <- function(x, ...)
 #' @export
 browse.default <- function(x, ...)
   x$browse()
+
+#' @export
+create_in_hdx <- function(x, ...)
+  UseMethod("create_in_hdx", x)
+
+#' @export
+create_in_hdx.default <- function(x, ...)
+  cat("Not an HDX object")

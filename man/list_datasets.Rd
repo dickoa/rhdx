@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataset.R
 \name{list_datasets}
 \alias{list_datasets}
-\title{Read dataset}
+\title{List datasets}
 \usage{
 list_datasets(limit = NULL, offset = NULL, configuration = NULL)
 }
@@ -15,7 +15,7 @@ list_datasets(limit = NULL, offset = NULL, configuration = NULL)
 Dataset the dataset
 }
 \description{
-Read dataset
+List datasets
 }
 \examples{
 \dontrun{

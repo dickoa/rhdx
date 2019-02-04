@@ -329,41 +329,52 @@ Dataset <- R6::R6Class(
       self$data
     },
     
-    update_in_hdx = function(field = NULL, update_resources = FALSE) {
+    update_in_hdx = function(field = NULL, update_resources = FALSE, verbose = FALSE) {
       configuration <- private$configuration
       dataset_id <- self$data$id
       if (is.null(dataset_id))
         warning("Dataset not on HDX use `create_in_hdx` to create a Dataset", call. = FALSE)
-      rs <- self$get_all_resources()
+      rs <- self$get_resources()
       ds <- drop_nulls(self$data)
-      res1 <- configuration$call_remoteclient("package_update",
-                                              ds,
-                                              verb = "post",
-                                              encode = "json")
-      if (res1$status_code != 200L) {
-          warning("Dataset not created check the parameters", call. = FALSE)
-      }
-      if (update_resources) {
-        res2 <- lapply(rs, function(r) r$update_in_hdx(dataset_id))
+      ds_req <- configuration$call_remoteclient("package_update",
+                                                ds,
+                                                verb = "post",
+                                                encode = "json",
+                                                verbose = verbose)
+
+      if (ds_req$status_code == 200L) {
+        ## Replace message by logger
+        message(paste0("Dataset updated with id: ", ds_req$result$id))
+        res <- invisible(list(dataset = ds_req))
       } else {
-        res2 <- NULL
+        ## Replace message by logger
+        warning("Dataset not updated, check the parameters!", call. = FALSE)
+        message(paste0(ds_req$error[[1]], ": ", ds_req$error[[2]]))
       }
-      invisible(drop_nulls(list(dataset = res1, resources = res2)))
+      if (isTRUE(upload_resources) && length(rs) > 0) {
+        ## Use logger
+        rs_req <- lapply(rs, function(r) r$update_in_hdx(dataset_id = self$data$id, verbose = verbose))
+        res <- invisible(list(dataset = ds_req, resources = rs_req))
+      }
+      res
     },
     
-    create_in_hdx = function(upload_resources = TRUE, verbose = verbose) {
+    create_in_hdx = function(upload_resources = TRUE, verbose = FALSE) {
       invisible(self$check_required_fields())
       configuration <- private$configuration
       rs <- self$get_resources()
       ds <- self$data
       ds$resources <- NULL
       ds$num_resources <- NULL
+
       if (!is.null(self$data$id))
-        stop("Dataset already exists on HDX use `update_in_hdx`")
+        stop("Dataset already exists on HDX use `update_in_hdx`", call. = FALSE)
+      
       ds_req <- configuration$call_remoteclient(action = "package_create",
                                                 data = ds,
                                                 verb = "post",
                                                 verbose = verbose)
+      
       if (ds_req$status_code == 200L) {
         ## Replace message by logger
         message(paste0("Dataset created with id: ", ds_req$result$id))
@@ -486,10 +497,77 @@ get_resources <- function(dataset) {
 #'  # Setting the config to use HDX default server
 #'  delete_resource(dataset, 1) # first resource
 #' }
-#'
 add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
   assert_dataset(dataset)
   dataset$add_resource(resource, ignore_dataset_id = ignore_dataset_id)
+  dataset
+}
+
+
+#' Add tags to dataset
+#'
+#' Add tags to dataset
+#'
+#' @param dataset Dataset
+#' @param tags Charater, tags
+#'
+#' @details Add tags to dataset
+#'
+#' 
+#' @return A Dataset
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' }
+add_tags <- function(dataset, tags) {
+  assert_dataset(dataset)  
+  dataset$add_tags(tags)
+  dataset
+}
+
+
+#' Add locations to dataset
+#'
+#' Add locations to dataset
+#'
+#' @param dataset Dataset
+#' @param locations Charater, valid HDX locations
+#'
+#' @details Add locations to dataset
+#'
+#' 
+#' @return A Dataset
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' }
+add_locations <- function(dataset, locations) {
+  assert_dataset(dataset)
+  dataset$add_locations(locations)
+  dataset
+}
+
+#' Add organization to dataset
+#'
+#' Add organization to dataset
+#'
+#' @param dataset Dataset
+#' @param organization Charater, valid HDX organization
+#'
+#' @details Add locations to dataset
+#'
+#' 
+#' @return A Dataset
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' }
+add_organization <- function(dataset, organization) {
+  assert_dataset(dataset)
+  dataset$add_organization(organization)
   dataset
 }
 
@@ -618,9 +696,9 @@ search_datasets <- memoise::memoise(.search_datasets)
 read_dataset <- memoise::memoise(.read_dataset)
 
 
-#' Read dataset
+#' List datasets
 #'
-#' Read dataset 
+#' List datasets 
 #'
 #' @param identifier character dataset keyword
 #' @param configuration an HDX configuration object 
@@ -642,7 +720,51 @@ list_datasets <- function(limit = NULL, offset = NULL, configuration = NULL) {
 }
 
 
-#' Delete dataset in HDX
+#' Create dataset from list
+#'
+#' Create dataset from list
+#'
+#' @param initial_data List, list of data
+#'
+#' 
+#' @return Dataset the dataset
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_dataset("mali-3wop")
+#'  res
+#' } 
+create_dataset <- function(initial_data) {
+  Dataset$new(initial_data)
+}
+
+
+#' Create dataset in HDX
+#'
+#' Create dataset in HDX
+#'
+#' @param dataset Dataset
+#'
+#' 
+#' @return an HDX dataset
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_dataset("mali-3wop")
+#'  res
+#' } 
+create_in_hdx.Dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
+  assert_dataset(dataset)
+  dataset$create_in_hdx(upload_resources = upload_resources, verbose = verbose)
+}
+
+#' Delete dataset from HDX
 #' 
 #' Dataset delete
 #'
@@ -660,7 +782,7 @@ list_datasets <- function(limit = NULL, offset = NULL, configuration = NULL) {
 #'  delete_dataset(res[[1]])
 #' }
 #' 
-delete_dataset <- function(dataset) {
+delete_from_hdx <- function(dataset) {
   assert_dataset(dataset)
   dataset$delete_from_hdx()
 }

@@ -41,6 +41,56 @@ Organization <- R6::R6Class(
       res <- configuration$call_remoteclient("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
       Organization$new(initial_data = res$result, configuration = configuration)
     },
+
+    update_in_hdx = function(verbose = FALSE) {
+      invisible(self$check_required_fields())
+      configuration <- private$configuration
+      org <- self$data
+
+      if (!is.null(self$data$id))
+        stop("Organization already exists on HDX use `update_in_hdx`", call. = FALSE)
+      
+      org_req <- configuration$call_remoteclient(action = "organization_update",
+                                                 data = org,
+                                                 verb = "post",
+                                                 verbose = verbose)
+      
+      if (org_req$status_code == 200L) {
+        ## Replace message by logger
+        message(paste0("Organization updated with id: ", ds_req$result$id))
+        self$data <- org_req$result
+      } else {
+        ## Replace message by logger
+        warning("Organization not updated, check the parameters!", call. = FALSE)
+        message(paste0(org_req$error[[1]], ": ", org_req$error[[2]]))
+      }
+      invisible(list(organization = org_req))
+    },
+    
+    create_in_hdx = function(verbose = FALSE) {
+      invisible(self$check_required_fields())
+      configuration <- private$configuration
+      org <- self$data
+
+      if (!is.null(self$data$id))
+        stop("Organization already exists on HDX use `update_in_hdx`", call. = FALSE)
+      
+      org_req <- configuration$call_remoteclient(action = "organization_create",
+                                                data = org,
+                                                verb = "post",
+                                                verbose = verbose)
+      
+      if (org_req$status_code == 200L) {
+        ## Replace message by logger
+        message(paste0("Organization created with id: ", ds_req$result$id))
+        self$data <- org_req$result
+      } else {
+        ## Replace message by logger
+        warning("Organization not created, check the parameters!", call. = FALSE)
+        message(paste0(org_req$error[[1]], ": ", org_req$error[[2]]))
+      }
+      invisible(list(organization = org_req))
+    },
     
     list_organizations = function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title"))
@@ -174,4 +224,23 @@ browse.Organization <- function(x, ...)
 list_organizations <- function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
     org <- Organization$new()
     org$list_organizations(sort = sort, all_fields = all_fields, include_user = include_user, include_groups = include_groups, include_tags = include_tags, include_dataset_count = include_dataset_count, configuration = configuration, ...)
+}
+
+
+#' Create organization in HDX
+#'
+#' Create organization in HDX
+#'
+#' @param organization Organization
+#'
+#' 
+#' @return an HDX organization
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' } 
+create_in_hdx.Organization <- function(organization, verbose = FALSE) {
+  assert_resource(organization)
+  organization$create_in_hdx(verbose = FALSE)
 }
