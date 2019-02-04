@@ -1,55 +1,31 @@
 #' Create and manipulate HDX User
 #'
-#' HDX user mostly countries
+#' HDX user
 #'
 #' @export
 #' @details
 #' **Methods**
 #'   \describe{
-#'     \item{`create(path, query, disk, stream, ...)`}{
-#'       Make a GET request
-#'     }
-#'     \item{`read(path, query, body, disk, stream, ...)`}{
-#'       Make a POST request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a PUT request
-#'     }
-#'     \item{`setup(path, query, body, disk, stream, ...)`}{
-#'       Make a PATCH request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a DELETE request
-#'     }
-#'     \item{`head(path, query, ...)`}{
-#'       Make a HEAD request
-#'     }
 #'   }
 #'
 #' @format NULL
 #' @usage NULL
-#' @details Possible parameters (not all are allowed in each HTTP verb):
-#' \itemize{
-#'  \item read_from_hdx - query terms, as a named list
-#'  \item search_in_hdx  - body as an R list
-#'  \item update_from_yaml - one of form, multipart, json, or raw
-#'  \item add_update_resource 
-#'  \item add_update_resources - one of form, multipart, json, or raw
-#' }
 #'
 #' @examples
-#' # ---------------------------------------------------------
 #' Configuration$create(hdx_site = "demo")
 #' User$list_all_users()
 #' 
 #' @export
 User <- R6::R6Class(
   "User",
+  
   private = list(
     configuration = NULL
   ),
+  
   public = list(
     data = NULL,
+    
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
@@ -60,19 +36,23 @@ User <- R6::R6Class(
       initial_data <- nc(initial_data)
       self$data <- initial_data
     },
+    
     update_from_yaml = function(hdx_user_static_yaml) {
       self$data <- yaml::yaml.load_file(hdx_user_static_yaml)
     },
+    
     update_from_json = function(hdx_user_static_json) {
       self$data <- jsonlite::fromJSON(hdx_user_static_json, simplifyVector = TRUE)
     },
+    
     read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("user_show", list(id = identifier, include_datasets = include_datasets, ...))
       User$new(initial_data = res$result, configuration = configuration)
     },
-    list_all_users = function(order_by = "number_created_packages", configuration = NULL, ...) {
+    
+    list_users = function(order_by = "number_created_packages", configuration = NULL, ...) {
       if (!sort %in% c("name", "number_of_edits", "number_created_packages")) stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`")
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
@@ -81,9 +61,11 @@ User <- R6::R6Class(
         unlist(res$result)
       res$result
     },
+    
     as_list = function() {
       self$data
     },
+    
     print = function() {
       cat(paste0("<HDX User> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")

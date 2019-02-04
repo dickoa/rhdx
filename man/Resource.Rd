@@ -13,24 +13,6 @@ packages.
 \details{
 **Methods**
   \describe{
-    \item{`create(path, query, disk, stream, ...)`}{
-      Make a GET request
-    }
-    \item{`read(path, query, body, disk, stream, ...)`}{
-      Make a POST request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a PUT request
-    }
-    \item{`setup(path, query, body, disk, stream, ...)`}{
-      Make a PATCH request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a DELETE request
-    }
-    \item{`head(path, query, ...)`}{
-      Make a HEAD request
-    }
   }
 }
 \examples{

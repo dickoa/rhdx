@@ -28,7 +28,6 @@ Sets the configuration settings for using rhdx.
 Setting up a configuration will help you access and push data into HDX
 }
 \examples{
-
 \dontrun{
 # Setting the config to use HDX default server
 set_rhdx_config(hdx_site = "prod")
@@ -37,5 +36,4 @@ set_rhdx_config(hdx_site = "prod")
 # You can check your configuration using \\code{get_rhdx_config}
 config <- get_rhdx_config()
 }
-
 }

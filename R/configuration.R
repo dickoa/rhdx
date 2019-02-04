@@ -9,23 +9,65 @@
 #'     \item{`create(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config, hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)`}{
 #'       Create a HDX Configuration 
 #'     }
-#'     \item{`setup(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config, hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)`}{
+#'     \item{`get_credentials()`}{
 #'       Setup a HDX Configuration object
 #'     }
-#'     \item{`read()`}{
+#'     \item{`set_read_only(read_only)`}{
 #'       Read a Configuration object
 #'     }
-#'     \item{`delete()`}{
-#'       Delete configuration
+#' 
+#'     \item{`set_hdx_key(hdx_key)`}{
+#'       Provides an API key
 #'     }
-#'   }
+#' 
+#'     \item{`load_hdx_key(path)`}{
+#'       Provides an API key from path
+#'     }
+#' 
+#'     \item{`get_hdx_key()`}{
+#'       Get the HDX server site in use.
+#'     }
+#'
+#'     \item{`set_hdx_key(hdx_site)`}{
+#'       Set the HDX server site to use.
+#'     }
+#' 
+#'    \item{`get_hdx_key()`}{
+#'      Get the API key
+#'    }
+#' 
+#'    \item{`get_hdx_key_url()`}{
+#'      Get the HDX server URL
+#'    }
+#'
+#'   \item{`remoteclient()`}{
+#'      Remote API client
+#'    }
+#' 
+#'   \item{`call_remoteclient()`}{
+#'      Call remote API client
+#'    }
+#' 
+#'   \item{`setup()`}{
+#'      Setup configuration i.e HDX server, API and read only status.
+#'    }
+#' 
+#'   \item{`delete()`}{
+#'      Delete actual configuration.
+#'    }
+#' 
+#'   \item{`general_statistics()`}{
+#'      Some statistics about HDX
+#'    }
+#' 
+#' }
 #'
 #' @format NULL
 #' @usage NULL
 #'
 #' @examples
 #' \dontrun{
-#' set_rhdx_config(hdx_site = "demo")
+#' set_rhdx_config(hdx_site = "prod")
 #' get_rhd_config()
 #' }
 #' 
@@ -36,33 +78,38 @@ Configuration <- R6::R6Class(
     data = list(),
     
     initialize = function(hdx_site = "prod", hdx_key = NULL, hdx_config = NULL, hdx_config_file = NULL, read_only = TRUE, user_agent = NULL) {
-
       check_config_params(hdx_site = hdx_site, hdx_key = hdx_key, hdx_config_file = hdx_config_file, read_only = read_only, user_agent = user_agent)
 
       if (!is.null(hdx_config_file) & !is.null(hdx_config))
         stop("You need to have just one config parameter, either `hdx_config_file` or `hdx_config`", call. = FALSE)
       
       if (is.null(hdx_config_file) & is.null(hdx_config))
-        hdx_config <- yaml::read_yaml(system.file("config", "hdx_configuration.yml", package = "rhdx"))
+        hdx_config <- yaml::read_yaml(system.file("config", "hdx_base_configuration.yml", package = "rhdx"))
       
-      if (!is.null(hdx_config_file) & is.null(hdx_config))
+      if (!is.null(hdx_config_file) & is.null(hdx_config)) {
+        file_ext <- tools::file_ext(hdx_config)
+        if (!file_ext %in% c("yml", "json"))
+          stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
         hdx_config <- switch(file_ext,
                              yml = yaml::read_yaml(hdx_config_file),
-                             json = jsonlite::fromJSON(hdx_config_file, simplifyVector = FALSE))
-      
+                             json = jsonlite::read_json(hdx_config_file, simplifyVector = FALSE))
+      }
+        
       self$data$hdx_config <- hdx_config
       self$data$hdx_site <- hdx_site
       hdx_site <- paste0("hdx_", hdx_site, "_site")
       self$data$hdx_key <- hdx_key
       self$data$read_only <- read_only
+      headers <- NULL
       
-      if (!read_only)
-        headers <- drop_nulls(list(`X-CKAN-API-Key` = hdx_key))
-
+      if (isFALSE(read_only))
+        headers <- list(`X-CKAN-API-Key` = hdx_key)
+      
       if (is.null(user_agent))
         user_agent <- get_user_agent()
       
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
+                                                     headers = headers,
                                                      opts = list(http_version = 2L, useragent = user_agent)) ## http 1.1
       private$shared$configuration <- self
     },
@@ -74,13 +121,19 @@ Configuration <- R6::R6Class(
     
     set_read_only = function(read_only = TRUE) {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
-      if (!read_only)
-        headers <- drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key))
+      headers <- NULL
+
+      if (isFALSE(read_only))
+        headers <- list(`X-CKAN-API-Key` = self$data$hdx_key)
+      
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
+                                                     headers = headers,
                                                      opts = list(http_version = 2, useragent = get_user_agent())) ## http 1.1
     },
     
     set_hdx_key = function(hdx_key) {
+      if (!is_valid_uuid(key))
+        stop("key not valid!", call. = FALSE)
       self$data$hdx_key <- hdx_key
     },
     
@@ -96,11 +149,13 @@ Configuration <- R6::R6Class(
     },
 
     set_hdx_site = function(hdx_site = "prod") {
-      if (!hdx_site %in% c("prod", "test", "feature", "demo")) stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
+      if (!hdx_site %in% c("prod", "test", "feature", "demo"))
+        stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
       self$data$hdx_site <-  hdx_site
       hdx_site <- paste0("hdx_", hdx_site, "_site")
+      headers <- drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key))
       self$data$remoteclient <- crul::HttpClient$new(url = self$data$hdx_config[[hdx_site]]$url,
-                                                     headers = drop_nulls(list(`X-CKAN-API-Key` = self$data$hdx_key)),
+                                                     headers = headers,
                                                      opts = list(http_version = 2, useragent = get_user_agent()))
     },
     
@@ -112,6 +167,7 @@ Configuration <- R6::R6Class(
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
       self$data$hdx_config[[hdx_site]]$url
     },
+    
     remoteclient = function() {
       self$data$remoteclient
     },
@@ -122,21 +178,22 @@ Configuration <- R6::R6Class(
       res <- switch(verb,
                     get = {
                       res <- self$data$remoteclient$get(path = paste0("/api/3/action/", action), query = data, ...)
-                      list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
                     },
                     post = {
                       res <- self$data$remoteclient$post(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
-                      list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
                     },
                     put = {
                       res <- self$data$remoteclient$put(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
-                      list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
                     },
                     patch = {
                       res <- self$data$remoteclient$patch(path = paste0("/api/3/action/", action), body = data, encode = encode, ...)
-                      list(status_code = res$status_code, result = jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result)
                     })
-      res
+
+      
+      status_code <- res$status_code
+      result <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result
+      error <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$error
+      drop_nulls(list(status_code = status_code, error = error, result = result))
     },
 
     read = function() {
@@ -193,7 +250,7 @@ Configuration$delete <- function() {
   configuration <- .rhdx_env$configuration
   if (is.null(configuration) | !inherits(configuration, "Configuration"))
     configuration <- Configuration$new()
-  conf$delete()
+  configuration$delete()
 }
 
 #' @aliases Configuration
@@ -224,7 +281,6 @@ Configuration$read <- function() {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' # Setting the config to use HDX default server
 #' set_rhdx_config(hdx_site = "prod")
@@ -233,12 +289,12 @@ Configuration$read <- function() {
 #' # You can check your configuration using \code{get_rhdx_config}
 #' config <- get_rhdx_config()
 #' }
-#'
 set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, hdx_config_file = NULL, configuration = NULL) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     .rhdx_env$configuration <- configuration
   .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, hdx_config_file = hdx_config_file)
 }
+
 
 #' @export
 #' @aliases set_rhdx_config
@@ -247,3 +303,43 @@ get_rhdx_config <- function() {
   assert_configuration(configuration)
   configuration$read()
 }
+
+
+#' Delete rhdx config
+#'
+#' Delete the configuration settings for using rhdx.
+#' 
+#'
+#' @rdname delete_rhdx_config
+#'
+#' @details Delete HDX config
+#'
+#' 
+#' @return None
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#' set_rhdx_config(hdx_site = "prod")
+#' get_rhdx_config()
+#' 
+#' delete_rhdx_config()
+#' get_rhdx_config()
+#' 
+#' }
+delete_rhdx_config <- function() {
+  configuration <- .rhdx_env$configuration
+  assert_configuration(configuration)
+  configuration$delete()
+}
+
+
+#' @export
+#' @aliases Configuration
+hdx_general_statistics <- function() {
+  configuration <- .rhdx_env$configuration
+  assert_configuration(configuration)
+  configuration$general_statistics()
+}
+

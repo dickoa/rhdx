@@ -1,32 +1,10 @@
 #' Create and manipulate HDX Organization
 #'
-#' R6 objects are essentially environments, structured in a way that makes them
-#' look like an object in a more typical object-oriented language than R. They
-#' support public and private members, as well as inheritance across different
-#' packages.
 #'
 #' @export
 #' @details
 #' **Methods**
 #'   \describe{
-#'     \item{`create(path, query, disk, stream, ...)`}{
-#'       Make a GET request
-#'     }
-#'     \item{`read(path, query, body, disk, stream, ...)`}{
-#'       Make a POST request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a PUT request
-#'     }
-#'     \item{`setup(path, query, body, disk, stream, ...)`}{
-#'       Make a PATCH request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a DELETE request
-#'     }
-#'     \item{`head(path, query, ...)`}{
-#'       Make a HEAD request
-#'     }
 #'   }
 #'
 #' @format NULL
@@ -34,13 +12,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' # ---------------------------------------------------------
-#' Configuration$create(hdx_site = "demo")
-#' org <- Organization$read_from_hdx("ocha-mali", include_dataset = TRUE)
-#' org
 #' }
 #' 
-#' @export
 Organization <- R6::R6Class(
   "Organization",
   
@@ -69,12 +42,15 @@ Organization <- R6::R6Class(
       Organization$new(initial_data = res$result, configuration = configuration)
     },
     
-    list_all_organizations = function(sort = "name asc", all_fields = FALSE, include_groups = FALSE, configuration = NULL, ...) {
-      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
+    list_organizations = function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
+      if (!sort %in% c("name asc", "name", "package_count", "title"))
+        stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("organization_list", list(sort = sort, all_fields = all_fields, include_groups = include_groups, ...))
-      if (!all_fields)
+      data <- drop_nulls(list(sort = sort, all_fields = all_fields, include_dataset_count = include_dataset_count,
+                              include_groups = include_groups, include_user = include_user, include_tags = include_tags))
+      res <- configuration$call_remoteclient("organization_list", data)
+      if (isFALSE(all_fields))
         unlist(res$result)
       res$result
     },
@@ -155,24 +131,19 @@ as.list.Organization <- function(x) {
   org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
 
-#' Read an HDX resource
+#' Read an HDX organization
 #'
-#' Read an HDX resource 
+#' Read an HDX organization 
 #'
 #' @param identifier character resource uuid
 #' @param configuration an HDX configuration object
 #' 
 #'
-#' 
 #' @return HDX organization
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' #Setting the config to use HDX default server
-#'  set_rhdx_config()
-#'  res <- read_organization("wfp")
-#'  res
 #' }
 #' 
 read_organization <- memoise::memoise(.read_organization)

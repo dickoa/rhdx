@@ -6,37 +6,10 @@
 #' @details
 #' **Methods**
 #'   \describe{
-#'     \item{`create(path, query, disk, stream, ...)`}{
-#'       Make a GET request
-#'     }
-#'     \item{`read(path, query, body, disk, stream, ...)`}{
-#'       Make a POST request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a PUT request
-#'     }
-#'     \item{`setup(path, query, body, disk, stream, ...)`}{
-#'       Make a PATCH request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a DELETE request
-#'     }
-#'     \item{`head(path, query, ...)`}{
-#'       Make a HEAD request
-#'     }
 #'   }
 #'
 #' @format NULL
 #' @usage NULL
-#' @details Possible parameters (not all are allowed in each HTTP verb):
-#' \itemize{
-#'  \item read_from_hdx - query terms, as a named list
-#'  \item search_in_hdx  - body as an R list
-#'  \item update_from_yaml - one of form, multipart, json, or raw
-#'  \item add_update_resource 
-#'  \item add_update_resources - one of form, multipart, json, or raw
-#' }
-#'
 #' @examples
 #' # ---------------------------------------------------------
 #' \dontrun{
@@ -48,11 +21,14 @@
 #' @export
 Location <- R6::R6Class(
   "Location",
+  
   private = list(
     configuration = NULL
   ),
+  
   public = list(
     data = NULL,
+    
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- Configuration$read()
@@ -63,18 +39,22 @@ Location <- R6::R6Class(
       initial_data <- nc(initial_data)
       self$data <- initial_data
     },
+    
     update_from_yaml = function(hdx_location_static_yaml) {
-      self$data <- yaml::yaml.load_file(hdx_location_static_yaml)
+      self$data <- yaml::read_yaml(hdx_location_static_yaml)
     },
+    
     update_from_json = function(hdx_location_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_location_static_json, simplifyVector = TRUE)
+      self$data <- jsonlite::read_json(hdx_location_static_json, simplifyVector = TRUE)
     },
+    
     read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("group_show", list(id = identifier, include_datasets = include_datasets, ...))
       Location$new(initial_data = res$result, configuration = configuration)
     },
+    
     list_all_locations = function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration))
@@ -84,15 +64,19 @@ Location <- R6::R6Class(
         unlist(res$result)
       res$result
     },
+    
     valid_locations = function() {
     },
+    
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "group/", self$data$name))
     },
+    
     as_list = function() {
       self$data
     },
+    
     print = function(x, ...) {
     cat(paste0("<HDX Location> ", self$data$id), "\n")
     cat("  Name: ", self$data$name, "\n", sep = "")

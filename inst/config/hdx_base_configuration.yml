@@ -1,8 +1,6 @@
 # HDX configuration
 hdx_prod_site:
   url: "https://data.humdata.org/"
-  username: ~
-  password: ~
 hdx_demo_site:
   url: "https://demo-data.humdata.org/"
   username: "ZGVtbzE3OQ=="
@@ -50,7 +48,6 @@ resource:
     - package_id
     - name
     - format
-    - url
     - description
     - url_type
     - resource_type
@@ -75,3 +72,9 @@ organization:
     - name
     - title
     - description
+"resource view":
+  required_fields:
+    - resource_id
+    - title
+    - view_type
+tags_cleanup_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTyUP_oS878LihWM7iR0qry0OZP44BKyVXc1P_SoM0FEvbVGdOQxxlQvBWT_vwwGNaAbmuSeTg1FwuP/pub?gid=346948259&single=true&output=csv"

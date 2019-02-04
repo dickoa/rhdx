@@ -10,34 +10,7 @@ HDX location mostly countries
 \details{
 **Methods**
   \describe{
-    \item{`create(path, query, disk, stream, ...)`}{
-      Make a GET request
-    }
-    \item{`read(path, query, body, disk, stream, ...)`}{
-      Make a POST request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a PUT request
-    }
-    \item{`setup(path, query, body, disk, stream, ...)`}{
-      Make a PATCH request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a DELETE request
-    }
-    \item{`head(path, query, ...)`}{
-      Make a HEAD request
-    }
   }
-
-Possible parameters (not all are allowed in each HTTP verb):
-\itemize{
- \item read_from_hdx - query terms, as a named list
- \item search_in_hdx  - body as an R list
- \item update_from_yaml - one of form, multipart, json, or raw
- \item add_update_resource 
- \item add_update_resources - one of form, multipart, json, or raw
-}
 }
 \examples{
 # ---------------------------------------------------------

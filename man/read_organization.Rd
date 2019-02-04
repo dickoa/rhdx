@@ -2,7 +2,7 @@
 % Please edit documentation in R/organization.R
 \name{read_organization}
 \alias{read_organization}
-\title{Read an HDX resource}
+\title{Read an HDX organization}
 \usage{
 read_organization(identifier = NULL, include_datasets = FALSE,
   configuration = NULL, ...)
@@ -16,14 +16,10 @@ read_organization(identifier = NULL, include_datasets = FALSE,
 HDX organization
 }
 \description{
-Read an HDX resource
+Read an HDX organization
 }
 \examples{
 \dontrun{
-#Setting the config to use HDX default server
- set_rhdx_config()
- res <- read_organization("wfp")
- res
 }
 
 }

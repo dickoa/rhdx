@@ -9,24 +9,6 @@
 #' @details
 #' **Methods**
 #'   \describe{
-#'     \item{`create(path, query, disk, stream, ...)`}{
-#'       Make a GET request
-#'     }
-#'     \item{`read(path, query, body, disk, stream, ...)`}{
-#'       Make a POST request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a PUT request
-#'     }
-#'     \item{`setup(path, query, body, disk, stream, ...)`}{
-#'       Make a PATCH request
-#'     }
-#'     \item{`delete(path, query, body, disk, stream, ...)`}{
-#'       Make a DELETE request
-#'     }
-#'     \item{`head(path, query, ...)`}{
-#'       Make a HEAD request
-#'     }
 #'   }
 #'
 #' @format NULL
@@ -57,8 +39,17 @@ Resource <- R6::R6Class(
       } else {
         private$configuration <- configuration
       }
-      if (is.null(initial_data)) initial_data <- list()
-      initial_data <- drop_nulls(initial_data)
+      if (is.null(initial_data))
+        initial_data <- list()
+
+      class <- vapply(initial_data, class, character(1))
+      form_file_index <- class == "form_file"
+
+      if (any(form_file_index)) {
+        initial_data <- c(drop_nulls(initial_data[!form_file_index]), initial_data[form_file_index])
+      } else {
+        initial_data <- drop_nulls(initial_data)
+      }
       self$data <- initial_data
     },
     
@@ -228,20 +219,22 @@ Resource <- R6::R6Class(
       invisible(res)
     },
     
-    create_in_hdx = function(dataset_id = NULL) {
+    create_in_hdx = function(dataset_id = NULL, verbose = FALSE) {
       configuration <- private$configuration
       rs <- self$data
       rs$package_id <- dataset_id
-      res <- configuration$call_remoteclient("resource_create",
-                                             data = rs,
-                                             verb = "post",
-                                             encode = "multipart")
-      if (res$status_code == 200L) {
-          message("All resources uploaded")
+      rs_req <- configuration$call_remoteclient("resource_create",
+                                                data = rs,
+                                                verb = "post",
+                                                encode = "multipart",
+                                                verbose = verbose)
+      if (rs_req$status_code == 200L) {
+        message("All resources uploaded")
       } else {
-          stop("Resources not created check the parameters")
+        warning("Resources not created check the parameters")
+        message(paste0(rs_req$error[[1]], ": ", rs_req$error[[2]]))
       }
-      invisible(res)
+      invisible(rs_req)
     },
         
     browse = function() {

@@ -1,5 +1,8 @@
 {
-  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "rhdx",
   "description": "R client for the Humanitarian Data Exchange platform <https://data.humdata.org/>",
@@ -85,22 +88,9 @@
   "softwareRequirements": [
     {
       "@type": "SoftwareApplication",
-      "identifier": "curl",
-      "name": "curl",
-      "version": ">= 3.1.0",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=curl"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "crul",
       "name": "crul",
-      "version": "> 0.5",
+      "version": ">= 0.7",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -171,6 +161,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "logger",
+      "name": "logger",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=logger"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "countrycode",
       "name": "countrycode",
       "provider": {
@@ -184,6 +186,6 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "81.196KB",
+  "fileSize": "48.339KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx"
 }

@@ -5,40 +5,15 @@
 \alias{Organization}
 \title{Create and manipulate HDX Organization}
 \description{
-R6 objects are essentially environments, structured in a way that makes them
-look like an object in a more typical object-oriented language than R. They
-support public and private members, as well as inheritance across different
-packages.
+Create and manipulate HDX Organization
 }
 \details{
 **Methods**
   \describe{
-    \item{`create(path, query, disk, stream, ...)`}{
-      Make a GET request
-    }
-    \item{`read(path, query, body, disk, stream, ...)`}{
-      Make a POST request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a PUT request
-    }
-    \item{`setup(path, query, body, disk, stream, ...)`}{
-      Make a PATCH request
-    }
-    \item{`delete(path, query, body, disk, stream, ...)`}{
-      Make a DELETE request
-    }
-    \item{`head(path, query, ...)`}{
-      Make a HEAD request
-    }
   }
 }
 \examples{
 \dontrun{
-# ---------------------------------------------------------
-Configuration$create(hdx_site = "demo")
-org <- Organization$read_from_hdx("ocha-mali", include_dataset = TRUE)
-org
 }
 
 }

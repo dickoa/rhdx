@@ -10,34 +10,65 @@ Dataset class containing all logic for accessing, creating, and updating dataset
 \details{
 **Methods**
   \describe{
-    \item{`get(path, query, disk, stream, ...)`}{
-      make async GET requests for all URLs
+    \item{`Dataset$new(initial_data, configuration)`}{
+      Dataset class enabling operations on datasets and associated resources
     }
-    \item{`post(path, query, body, encode, disk, stream, ...)`}{
-      make async POST requests for all URLs
+
+   \item{`add_resource(resource, ignore_datasetid = FALSE)`}{
+      Add new resource in dataset with new metadata
     }
-    \item{`put(path, query, body, encode, disk, stream, ...)`}{
-      make async PUT requests for all URLs
+
+  \item{`check_required_fields()`}{
+     Check that metadata for dataset and its resources is complete.
     }
-    \item{`patch(path, query, body, encode, disk, stream, ...)`}{
-      make async PATCH requests for all URLs
+
+   \item{`create_in_hdx(upload_resources)`}{
+    Check if dataset exists in HDX and if so, update it, otherwise create it
     }
-    \item{`delete(path, query, body, encode, disk, stream, ...)`}{
-      make async DELETE requests for all URLs
+
+   \item{`delete_from_hdx(identifier, configuration)`}{
+      Reads the dataset given by identifier from HDX and returns Dataset object
     }
-    \item{`head(path, ...)`}{
-      make async HEAD requests for all URLs
+
+   \item{`get_configuration(identifier, configuration)`}{
+      Returns the actual config used to get the dataset
     }
-    \item{`verb(verb, ...)`}{
-      make async requests with an arbitrary HTTP verb
+
+   \item{`get_dataset_date()`}{
+      Get dataset date as string.
     }
+
+    \item{`read_from_hdx(identifier, configuration)`}{
+      Reads the dataset given by identifier from HDX and returns Dataset object
+    }
+
+    \item{`get_resource(index)`}{
+      Get one resource from dataset by index
+    }
+
+    \item{`get_resources()`}{
+      Get dataset’s resources
+    }
+
+    \item{`get_update_frequency()`}{
+      Get expected update frequency.
+    }
+
+    \item{`set_update_frequency()`}{
+      Set expected update frequency.
+    }
+
+
   }
 }
+\section{Details}{
+
+}
+
 \examples{
-# ---------------------------------------------------------
 \dontrun{
-set_rhdx_config(hdx_site = "prod")
-acled_mali_rs <- read_dataset("acled-data-for-mali")
+ set_rhdx_config(hdx_site = "prod")
+ acled_mali_rs <- read_dataset("acled-data-for-mali")
  
 }
 
