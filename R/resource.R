@@ -289,11 +289,31 @@ as.list.Resource <- function(x) {
   x$as_list()
 }
 
+
+#' Download an HDX resource
+#'
+#' Download an HDX resource into a specific folder 
+#'
+#' @param resource Resource, an HDX resource
+#' @param folder Character, path of the directory where you will store the data
+#' @param filename Character, name of the file you will download
+#' @param quiet Logical, no progress bar from download (default = FALSE)
+#' @param force Logical, force download (default = FALSE)
+#'
+#' 
+#' @return Resource
 #' @export
-#' @aliases Resource 
-download <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, ...) {
+#'
+#' @examples
+#' \dontrun{
+#' #Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+#'  download_resource(res, folder = "/tmp")
+#' }
+download_resource <- function(resource, folder = NULL, filename = NULL, quiet = FALSE, force = FALSE, ...) {
   assert_resource(resource)
-  resource$download(folder = folder, filename = filename, quiet = quiet, ...)
+  resource$download(folder = folder, filename = filename, quiet = quiet, force = force, ...)
 }
 
 #' @export
@@ -364,7 +384,6 @@ search_resources <- memoise::memoise(.search_resources)
 #'  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #'  res
 #' }
-#' 
 read_resource <- memoise::memoise(.read_resource)
 
 
