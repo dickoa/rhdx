@@ -64,10 +64,22 @@ Location <- R6::R6Class(
         unlist(res$result)
       res$result
     },
-    
-    valid_locations = function() {
+
+    get_required_fields = function() {
+      private$configuration$data$hdx_config$resource$required_fields
     },
-    
+   
+    check_required_fields = function() {
+      n2 <- names(self$data)
+      n1 <- self$get_required_fields()
+      if (!all(n1 %in% n2)) {
+        stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)),
+             call. = FALSE)
+      } else {
+        TRUE
+      }
+    },
+   
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "group/", self$data$name))
@@ -90,13 +102,17 @@ Location <- R6::R6Class(
 #' @aliases Location
 Location$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   org <- Location$new()
-  org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+  org$read_from_hdx(identifier = identifier,
+                    include_datasets = include_datasets,
+                    configuration = configuration, ...)
 }
 
 #' @aliases Location
 Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
   org <- Location$new()
-  org$lists_all_location(sort = sort, all_fields = all_fields, configuration = configuration, ...)
+  org$list_all_location(sort = sort,
+                        all_fields = all_fields,
+                        configuration = configuration, ...)
 }
 
  

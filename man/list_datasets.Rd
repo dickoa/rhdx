@@ -7,12 +7,14 @@
 list_datasets(limit = NULL, offset = NULL, configuration = NULL)
 }
 \arguments{
-\item{configuration}{an HDX configuration object}
+\item{limit}{Integer limit}
 
-\item{identifier}{character dataset keyword}
+\item{offset}{Integer offset}
+
+\item{configuration}{a Configuration}
 }
 \value{
-Dataset the dataset
+A list of datasets names
 }
 \description{
 List datasets
@@ -21,7 +23,6 @@ List datasets
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()
- res <- read_dataset("mali-3wop")
- res
-} 
+ list_datasets(limit = 10L)
+}
 }

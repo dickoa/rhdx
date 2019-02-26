@@ -22,5 +22,4 @@ Gets format of all resources from the datasets
  res <- search_dataset(rows = 3L)
  get_formats(res[[1]])
 }
-
 }

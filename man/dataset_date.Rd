@@ -30,5 +30,4 @@ Allow to add/modify the dataset dates
  res <- search_dataset(rows = 3L)
  set_dataset_date(res[[1]])
 }
-
 }

@@ -10,7 +10,8 @@ HDX Configuration allow to connect to an HDX server and setup project where you 
 \details{
 **Methods**
   \describe{
-    \item{`create(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config, hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)`}{
+    \item{`create(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config,
+           hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)`}{
       Create a HDX Configuration 
     }
     \item{`get_credentials()`}{

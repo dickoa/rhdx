@@ -1,8 +1,9 @@
 #' HDX Dataset
 #'
-#' Dataset class containing all logic for accessing, creating, and updating datasets and associated resources.
+#' Dataset class containing all logic for accessing,
+#' creating, and updating datasets and associated resources.
 #'
-#' 
+#'
 #' @section Details:
 #' @details
 #' **Methods**
@@ -10,7 +11,7 @@
 #'     \item{`Dataset$new(initial_data, configuration)`}{
 #'       Dataset class enabling operations on datasets and associated resources
 #'     }
-#' 
+#'
 #'    \item{`add_resource(resource, ignore_datasetid = FALSE)`}{
 #'       Add new resource in dataset with new metadata
 #'     }
@@ -24,9 +25,10 @@
 #'     }
 #'
 #'    \item{`delete_from_hdx(identifier, configuration)`}{
-#'       Reads the dataset given by identifier from HDX and returns Dataset object
+#'       Reads the dataset given by identifier
+#'       from HDX and returns Dataset object
 #'     }
-#' 
+#'
 #'    \item{`get_configuration(identifier, configuration)`}{
 #'       Returns the actual config used to get the dataset
 #'     }
@@ -65,7 +67,7 @@
 #' \dontrun{
 #'  set_rhdx_config(hdx_site = "prod")
 #'  acled_mali_rs <- read_dataset("acled-data-for-mali")
-#'  
+#'
 #' }
 #' 
 #' @export
@@ -92,7 +94,7 @@ Dataset <- R6::R6Class(
       self$data <- initial_data
       if ("resources" %in% key)
         self$resources <- lapply(self$data$resources,
-                                function(x) Resource$new(initial_data = x, configuration = configuration))
+                                 function(x) Resource$new(initial_data = x, configuration = configuration))
     },
     
     read_from_hdx = function(identifier, configuration = NULL) {
@@ -112,7 +114,7 @@ Dataset <- R6::R6Class(
     get_all_resources = function() {
       self$resources
     },
-    
+
     get_resources = function() {
       self$resources
     },
@@ -170,11 +172,11 @@ Dataset <- R6::R6Class(
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       cc <- crul::Paginator$new(client = configuration$remoteclient(),
-                               by = "query_params",
-                               limit_param = "rows",
-                               offset_param = "start",
-                               limit = rows,
-                               limit_chunk = page_size)
+                                by = "query_params",
+                                limit_param = "rows",
+                                offset_param = "start",
+                                limit = rows,
+                                limit_chunk = page_size)
       suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"), list(q = query, ...)))
       list_of_ds <- unlist(lapply(cc$parse(),
                                   function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
@@ -214,8 +216,8 @@ Dataset <- R6::R6Class(
       if (!file_ext %in% c("yml", "json"))
         stop("Only YAML and JSON configuration file are supported for the moment!", call. = FALSE)
       self$data <- switch(file_ext,
-                         yml = yaml::read_yaml(hdx_dataset_static_file),
-                         json = jsonlite::read_json(hdx_dataset_static_file, simplifyVector = FALSE))
+                          yml = yaml::read_yaml(hdx_dataset_static_file),
+                          json = jsonlite::read_json(hdx_dataset_static_file, simplifyVector = FALSE))
       if ("resources" %in% names(self$data))
         self$resources <- lapply(self$data$resources,
                                  function(x) Resource$new(initial_data = x, configuration = configuration))
@@ -306,12 +308,13 @@ Dataset <- R6::R6Class(
       }
       fields
     },
-    
+   
     check_required_fields = function() {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
       if (!all(n1 %in% n2)) {
-        stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)))
+        stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)),
+             call. = FALSE)
       } else {
         TRUE
       }
@@ -321,7 +324,7 @@ Dataset <- R6::R6Class(
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("package_search",
-                                            list(q = "*:*", rows = 1L))
+                                             list(q = "*:*", rows = 1L))
       res$result$count
     },
     
@@ -337,7 +340,7 @@ Dataset <- R6::R6Class(
       rs <- self$get_resources()
       ds <- drop_nulls(self$data)
       ds_req <- configuration$call_remoteclient("package_update",
-                                                ds,
+                                                data = ds,
                                                 verb = "post",
                                                 encode = "json",
                                                 verbose = verbose)
@@ -353,7 +356,8 @@ Dataset <- R6::R6Class(
       }
       if (isTRUE(upload_resources) && length(rs) > 0) {
         ## Use logger
-        rs_req <- lapply(rs, function(r) r$update_in_hdx(dataset_id = self$data$id, verbose = verbose))
+        rs_req <- lapply(rs, function(r)
+          r$update_in_hdx(dataset_id = self$data$id, verbose = verbose))
         res <- invisible(list(dataset = ds_req, resources = rs_req))
       }
       res
@@ -387,7 +391,8 @@ Dataset <- R6::R6Class(
       }
       if (isTRUE(upload_resources) && length(rs) > 0) {
         ## Use logger
-        rs_req <- lapply(rs, function(r) r$create_in_hdx(dataset_id = self$data$id, verbose = verbose))
+        rs_req <- lapply(rs, function(r)
+          r$create_in_hdx(dataset_id = self$data$id, verbose = verbose))
         res <- invisible(list(dataset = ds_req, resources = rs_req))
       }
       res
@@ -427,7 +432,6 @@ Dataset$search_in_hdx <- memoise::memoise(function(query = "*:*", rows = 10L, pa
   ds$search_in_hdx(query = query, rows = rows,
                    page_size = page_size, configuration = configuration, ...)
 })
-
 
 #' @aliases Dataset 
 Dataset$update_from_file <- function(hdx_dataset_static_file) {
@@ -590,7 +594,6 @@ add_organization <- function(dataset, organization) {
 #'  # Setting the config to use HDX default server
 #'  delete_resource(dataset, 1) # remove first resource
 #' }
-#'
 delete_resource <- function(dataset, index) {
   assert_dataset(dataset)
   dataset$delete_resource(index)
@@ -616,7 +619,6 @@ delete_resource <- function(dataset, index) {
 #'  # Setting the config to use HDX default server
 #'  delete_all_resources(dataset) # remove first resource
 #' }
-#' 
 delete_resources <- function(dataset) {
   assert_dataset(dataset)
   invisible(lapply(seq(dataset$data$num_resources),
@@ -642,7 +644,7 @@ count_datasets <- function(configuration = NULL) {
 
 #' Search datasets on HDX
 #'
-#' Sets the configuration settings for using rhdx.
+#' Find dataset on HDX using Solr query
 #'
 #' @param query Character Query (in Solr format). Defaults to ‘*:*’
 #' @param rows Number of matching rows to return. Defaults to 10.
@@ -663,7 +665,6 @@ count_datasets <- function(configuration = NULL) {
 #'  # Setting the config to use HDX default server
 #'  search_datasets("displaced nigeria", rows = 3L)
 #' }
-#'
 search_datasets <- memoise::memoise(.search_datasets)
 
 
@@ -677,10 +678,10 @@ search_datasets <- memoise::memoise(.search_datasets)
 
 #' Read dataset
 #'
-#' Read dataset 
+#' Read an HDX dataset from its name or id
 #'
 #' @param identifier character dataset keyword
-#' @param configuration an HDX configuration object 
+#' @param configuration a Configuration object
 #'
 #' 
 #' @return Dataset the dataset
@@ -692,37 +693,38 @@ search_datasets <- memoise::memoise(.search_datasets)
 #'  set_rhdx_config()
 #'  res <- read_dataset("mali-3wop")
 #'  res
-#' } 
+#' }
 read_dataset <- memoise::memoise(.read_dataset)
 
 
 #' List datasets
 #'
-#' List datasets 
+#' List datasets
 #'
-#' @param identifier character dataset keyword
-#' @param configuration an HDX configuration object 
-#'
+#' @param limit  Integer limit
+#' @param offset Integer offset
+#' @param configuration a Configuration
 #' 
-#' @return Dataset the dataset
+#' @return A list of datasets names
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Setting the config to use HDX default server
 #'  set_rhdx_config()
-#'  res <- read_dataset("mali-3wop")
-#'  res
-#' } 
+#'  list_datasets(limit = 10L)
+#' }
 list_datasets <- function(limit = NULL, offset = NULL, configuration = NULL) {
   ds <- Dataset$new()
-  ds$list_datasets(limit = limit, offset = offset, configuration = configuration)
+  ds$list_datasets(limit = limit,
+                   offset = offset,
+                   configuration = configuration)
 }
 
 
 #' Create dataset from list
 #'
-#' Create dataset from list
+#' Create dataset from list with required fields
 #'
 #' @param initial_data List, list of data
 #'
@@ -734,9 +736,10 @@ list_datasets <- function(limit = NULL, offset = NULL, configuration = NULL) {
 #' \dontrun{
 #' # Setting the config to use HDX default server
 #'  set_rhdx_config()
-#'  res <- read_dataset("mali-3wop")
+#'  metadata <- list(name = "hum-dataset", date = "09/25/2018", title = "Humanitarian dataset")
+#'  create_data(metdata)
 #'  res
-#' } 
+#' }
 create_dataset <- function(initial_data) {
   Dataset$new(initial_data)
 }
@@ -781,7 +784,6 @@ create_in_hdx.Dataset <- function(dataset, upload_resources = TRUE, verbose = FA
 #'  res <- search_dataset(rows = 3L)
 #'  delete_dataset(res[[1]])
 #' }
-#' 
 delete_from_hdx <- function(dataset) {
   assert_dataset(dataset)
   dataset$delete_from_hdx()
@@ -817,7 +819,6 @@ browse.Dataset <- function(x, ...)
 #'  res <- read_dataset("mali-3wop")
 #'  res
 #' }
-#' 
 refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = FALSE, tags = NULL, organization = NULL, cod = FALSE, requestable = FALSE) {
   
   assert_datasets_list(datasets_list)
@@ -866,7 +867,7 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
     lgl_locs <- vapply(lgl_locs, function(x) Reduce(`|`, x), logical(1))
     lgl <- lgl & lgl_locs
   }
- 
+  
   datasets_list[lgl]
 }
 
@@ -888,7 +889,6 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
 #'  res <- search_dataset(rows = 3L)
 #'  get_locations_name(res[[1]])
 #' }
-#' 
 get_locations_name <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_locations(), function(location) location$name, character(1))
@@ -914,7 +914,6 @@ get_locations_name <- function(dataset) {
 #'  res <- search_dataset(rows = 3L)
 #'  get_tags_name(res[[1]])
 #' }
-#' 
 get_tags_name <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_tags(), function(tag) tag$name, character(1))
@@ -938,8 +937,6 @@ get_tags_name <- function(dataset) {
 #'  res <- search_dataset(rows = 3L)
 #'  get_organization_name(res[[1]])
 #' }
-#' 
-#'
 get_organization_name <- function(dataset) {
   assert_dataset(dataset)
   dataset$get_organization()[["name"]]
@@ -964,7 +961,6 @@ get_organization_name <- function(dataset) {
 #'  res <- search_dataset(rows = 3L)
 #'  get_formats(res[[1]])
 #' }
-#' 
 get_formats <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_resources(), function(resource) resource$get_format(), character(1))
@@ -1002,9 +998,9 @@ get_dataset_date <- function(dataset) {
 #'  res <- search_dataset(rows = 3L)
 #'  set_dataset_date(res[[1]])
 #' }
-#' 
 set_dataset_date <- function(dataset, date) {
-    assert_dataset(dataset)
-    stopifnot(is.Date(date))
-    dataset$set_dataset_date(date, format = "%m/%d/%Y")
+  assert_dataset(dataset)
+  stopifnot(is.Date(date))
+  dataset$set_dataset_date(date, format = "%m/%d/%Y")
 }
+

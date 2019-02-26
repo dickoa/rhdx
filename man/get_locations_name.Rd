@@ -22,5 +22,4 @@ Gets locations from the datasets
  res <- search_dataset(rows = 3L)
  get_locations_name(res[[1]])
 }
-
 }

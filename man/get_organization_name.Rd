@@ -22,6 +22,4 @@ Get the organization sharing the data
  res <- search_dataset(rows = 3L)
  get_organization_name(res[[1]])
 }
-
-
 }

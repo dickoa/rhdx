@@ -38,5 +38,4 @@ Filter a list of HDX datasets
  res <- read_dataset("mali-3wop")
  res
 }
-
 }

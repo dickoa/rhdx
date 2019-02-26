@@ -20,7 +20,7 @@ search_datasets(query = "*:*", rows = 10L, page_size = 1000L,
 A list of HDX datasets
 }
 \description{
-Sets the configuration settings for using rhdx.
+Find dataset on HDX using Solr query
 }
 \details{
 Search and find datasets on HDX
@@ -30,5 +30,4 @@ Search and find datasets on HDX
  # Setting the config to use HDX default server
  search_datasets("displaced nigeria", rows = 3L)
 }
-
 }

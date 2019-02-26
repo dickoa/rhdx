@@ -17,5 +17,5 @@ Create resource from list
 }
 \examples{
 \dontrun{
-} 
+}
 }

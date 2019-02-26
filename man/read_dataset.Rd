@@ -9,13 +9,13 @@ read_dataset(identifier, configuration = NULL, ...)
 \arguments{
 \item{identifier}{character dataset keyword}
 
-\item{configuration}{an HDX configuration object}
+\item{configuration}{a Configuration object}
 }
 \value{
 Dataset the dataset
 }
 \description{
-Read dataset
+Read an HDX dataset from its name or id
 }
 \examples{
 \dontrun{
@@ -23,5 +23,5 @@ Read dataset
  set_rhdx_config()
  res <- read_dataset("mali-3wop")
  res
-} 
+}
 }

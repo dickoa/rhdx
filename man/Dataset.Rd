@@ -5,7 +5,8 @@
 \alias{Dataset}
 \title{HDX Dataset}
 \description{
-Dataset class containing all logic for accessing, creating, and updating datasets and associated resources.
+Dataset class containing all logic for accessing,
+creating, and updating datasets and associated resources.
 }
 \details{
 **Methods**
@@ -27,7 +28,8 @@ Dataset class containing all logic for accessing, creating, and updating dataset
     }
 
    \item{`delete_from_hdx(identifier, configuration)`}{
-      Reads the dataset given by identifier from HDX and returns Dataset object
+      Reads the dataset given by identifier
+      from HDX and returns Dataset object
     }
 
    \item{`get_configuration(identifier, configuration)`}{
@@ -69,7 +71,7 @@ Dataset class containing all logic for accessing, creating, and updating dataset
 \dontrun{
  set_rhdx_config(hdx_site = "prod")
  acled_mali_rs <- read_dataset("acled-data-for-mali")
- 
+
 }
 
 }

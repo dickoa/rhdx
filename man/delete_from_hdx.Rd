@@ -22,5 +22,4 @@ Dataset delete
  res <- search_dataset(rows = 3L)
  delete_dataset(res[[1]])
 }
-
 }

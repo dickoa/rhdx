@@ -55,19 +55,25 @@ assert_dataset <- function(x, requestable = NULL) {
 }
 
 #' @noRd
-assert_datasets_list <- function(x)
+assert_datasets_list <- function(x) {
   if (!inherits(x, "datasets_list"))
     stop("Not a list of HDX Datasets!", call. = FALSE)
+  invisible(x)
+}
 
 #' @noRd
-assert_resource <- function(x)
+assert_resource <- function(x) {
   if (!inherits(x, "Resource"))
     stop("Not an HDX Resource object!", call. = FALSE)
+  invisible(x)
+}
 
 #' @noRd
-assert_organization <- function(x)
+assert_organization <- function(x) {
   if (!inherits(x, "Organization"))
     stop("Not an HDX Organization object!", call. = FALSE)
+  invisible(x)
+}
 
 #' @noRd
 assert_location <- function(x) {
@@ -75,6 +81,7 @@ assert_location <- function(x) {
   cond <- any(grepl(x, loc, ignore.case = TRUE))
   if (!cond)
     stop("Not a valid HDX condition!", call. = FALSE)
+  invisible(x)
 }
 
 #' @noRd
@@ -86,13 +93,13 @@ check_packages <- function(x) {
 
 #' @noRd
 `[.datasets_list` <- function(x, i, ...) {
-    structure(NextMethod("["), class = class(x))
- }
+  structure(NextMethod("["), class = class(x))
+}
 
 #' @noRd
 `[.resources_list` <- function(x, i, ...) {
-    structure(NextMethod("["), class = class(x))
- }
+  structure(NextMethod("["), class = class(x))
+}
 
 #' @noRd
 is_valid_uuid <- function(x) {
@@ -102,14 +109,16 @@ is_valid_uuid <- function(x) {
 
 #' @noRd
 get_user_agent <- function(x) {
-    rhdx_version <- packageVersion("rhdx")
-    os <- Sys.info()[["sysname"]]
-    os_version <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
-    r_version <- paste0(R.version$major, ".", R.version$minor, 
-        ifelse(R.version$status == "", "", paste0("-", R.version$status)))
-    header <- paste0("rhdx/", rhdx_version, " (", os, "/",
-                    os_version, "; ", "R/", r_version, ")")
-    header
+  rhdx_version <- packageVersion("rhdx")
+  os <- Sys.info()[["sysname"]]
+  os_version <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
+  r_version <- paste0(R.version$major, ".",
+                      R.version$minor,
+                      ifelse(R.version$status == "", "",
+                             paste0("-", R.version$status)))
+  header <- paste0("rhdx/", rhdx_version, " (", os, "/",
+                   os_version, "; ", "R/", r_version, ")")
+  header
 }
 
 #' @noRd
@@ -122,7 +131,7 @@ read_hdx_json <- function(path, simplify_json = FALSE, ...) {
 read_hdx_csv <- function(path, hxl = FALSE, ...) {
   check_packages("readr")
   df <- readr::read_csv(path, ...)
-  if (isTRUE(hxl) | hxl_tags)
+  if (isTRUE(hxl))
     df <- rhxl::as_hxl(df)
   df
 }
@@ -136,7 +145,7 @@ read_hdx_excel <- function(path = NULL, sheet = NULL, hxl = FALSE, ...) {
     cat("Reading sheet: ", sheet, "\n")
   }
   df <- readxl::read_excel(path, sheet = sheet, ...)
-  if (isTRUE(hxl) | hxl_tags)
+  if (isTRUE(hxl))
     df <- rhxl::as_hxl(df)
   df
 }
@@ -156,7 +165,7 @@ get_hdx_sheets_ <- function(path = NULL) {
 }
 
 #' @noRd
-read_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
+read_hdx_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
   check_packages("sf")
   if (zipped)
     path <- file.path("/vsizip", path)
@@ -168,7 +177,7 @@ read_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
 }
 
 #' @noRd
-read_raster <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
+read_hdx_raster <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
   check_packages("raster")
   if (zipped)
     path <- file.path("/vsizip", path, layer)
@@ -179,22 +188,14 @@ read_raster <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
 sift_res <- function(z, key = "name") {
   if (!is.null(z) && length(z) > 0) {
     if (!key %in% names(z)) key <- "name"
-    r <- na.omit(vapply(z, function(x) if (length(x) > 0 ) paste0(x[[key]], ", ") else "", FUN.VALUE = "character")[1:5])
+    r <- na.omit(vapply(z,
+                        function(x) if (length(x) > 0) paste0(x[[key]], ", ") else "",
+                        FUN.VALUE = "character")[1:5])
     gsub(", $", "", paste0(r, collapse = ""))
   } else {
     ""
   }
 }
-
-#' @noRd
-check_required_fields <- function(data, configuration = NULL, type = "dataset") {
-  if (is.null(configuration))
-    config <- yaml::read_yaml(system.file("config", "hdx_configuration.yml", package = "rhdx"))
-  n2 <- names(data)
-  n1 <- config$data$dataset$required_fields
-  if (!all(n1 %in% n2)) stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2), "\n"))
-}
-
 
 #' @export
 browse <- function(x, ...)

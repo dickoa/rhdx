@@ -3,7 +3,7 @@
 \docType{data}
 \name{User}
 \alias{User}
-\title{Create and manipulate HDX User}
+\title{HDX User}
 \description{
 HDX user
 }

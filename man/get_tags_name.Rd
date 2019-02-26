@@ -22,5 +22,4 @@ Gets dataset tags name
  res <- search_dataset(rows = 3L)
  get_tags_name(res[[1]])
 }
-
 }

@@ -1,4 +1,4 @@
-#' Create and manipulate HDX User
+#' HDX User
 #'
 #' HDX user
 #'
@@ -38,11 +38,12 @@ User <- R6::R6Class(
     },
     
     update_from_yaml = function(hdx_user_static_yaml) {
-      self$data <- yaml::yaml.load_file(hdx_user_static_yaml)
+      self$data <- yaml::read_yaml(hdx_user_static_yaml)
     },
     
     update_from_json = function(hdx_user_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_user_static_json, simplifyVector = TRUE)
+      self$data <- jsonlite::read_json(hdx_user_static_json,
+                                       simplifyVector = TRUE)
     },
     
     read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
@@ -79,14 +80,14 @@ User <- R6::R6Class(
 
 #' @aliases User
 User$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-  org <- User$new()
-  org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+  user <- User$new()
+  user$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
 
 #' @aliases User
 User$list_all_users <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-  org <- User$new()
-  org$lists_all_user(sort = sort, all_fields = all_fields, configuration = configuration, ...)
+  user <- User$new()
+  user$lists_all_user(sort = sort, all_fields = all_fields, configuration = configuration, ...)
 }
 
  
@@ -106,3 +107,32 @@ as_tibble.User <- function(x, ...) {
 as.list.User <- function(x) {
   x$as_list()
 }
+
+
+#' @aliases Dataset
+#' @noRd
+.read_user <- function(identifier, include_datasets = FALSE, configuration = NULL, ...) {
+  user <- User$new()
+  user$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+}
+
+
+#' Read user
+#'
+#' Read an HDX user from its name or id
+#'
+#' @param identifier character user keyword
+#' @param configuration a Configuration object
+#'
+#' 
+#' @return User the user
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_user("mali-3wop")
+#'  res
+#' }
+read_user <- memoise::memoise(.read_user)

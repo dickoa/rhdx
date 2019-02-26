@@ -23,5 +23,4 @@ Delete resource from dataset
  # Setting the config to use HDX default server
  delete_resource(dataset, 1) # remove first resource
 }
-
 }

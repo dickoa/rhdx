@@ -94,15 +94,15 @@ Resource <- R6::R6Class(
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet, ...)
       format <- self$get_file_type()
-      hxl_tags <- grepl("hxl", get_tags_name(self$get_dataset()), ignore.case = TRUE) 
+      hxl <- any(grepl("hxl", get_tags_name(self$get_dataset()), ignore.case = TRUE))
       switch(
         format,
-        csv = read_hdx_csv(path),
+        csv = read_hdx_csv(path, hxl = hxl),
         excel = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
         xlsx = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
         xls = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
         json = read_hdx_json(path, simplify_json = simplify_json),
-        geojson = read_vector(path, layer),
+        geojson = read_hdx_vector(path, layer),
         `zipped shapefile` = read_hdx_vector(path = path, layer = layer),
         `zipped geodatabase` = read_hdx_vector(path = path, layer = layer, zipped = FALSE),
         kmz = read_hdx_vector(path = path, layer = layer),
@@ -134,7 +134,8 @@ Resource <- R6::R6Class(
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet, ...)
       format <- self$get_file_type()
-      if (!format %in% c("xlsx", "xls", "excel")) stop("`get_sheets work only with Excel file", call. = FALSE)
+      if (!format %in% c("xlsx", "xls", "excel"))
+        stop("`get_sheets work only with Excel file", call. = FALSE)
       switch(
         format,
         excel = get_hdx_sheets_(path = path),
@@ -147,7 +148,7 @@ Resource <- R6::R6Class(
       if (is.null(package_id)) {
         stop("Resource has no package id!", call. = FALSE)
       } else {
-        Dataset$read_from_hdx(package_id)      
+        Dataset$read_from_hdx(package_id)     
       }
     },
     
@@ -159,13 +160,17 @@ Resource <- R6::R6Class(
       self$data$file_to_upload <- crul::upload(file_to_upload)
     },
 
+    get_required_fields = function() {
+      private$configuration$data$hdx_config$resource$required_fields
+    },
+    
     check_required_field = function(check_dataset_id = FALSE) {
       n2 <- names(self$data)
-      n1 <- private$configuration$data$resource$required_fields
+      n1 <- self$get_required_fields()
       if (check_dataset_id)
           n1 <- setdiff(n1, "package_id")
       if (!all(n1 %in% n2))
-        stop(sprintf("Field %s is missing in the dataset!", setdiff(n1, n2)), call. = FALSE)
+        stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)), call. = FALSE)
     },
 
     read_from_hdx = function(identifier, configuration = NULL) {
@@ -211,7 +216,7 @@ Resource <- R6::R6Class(
         stop("Resource not on HDX use `create_in_hdx` method")
       rs <- drop_nulls(self$data)
       rs_req <- configuration$call_remoteclient("resource_update",
-                                                rs,
+                                                data = rs,
                                                 verb = "post",
                                                 encode = "multipart",
                                                 verbose = verbose)
@@ -399,7 +404,7 @@ read_resource <- memoise::memoise(.read_resource)
 #'
 #' @examples
 #' \dontrun{
-#' } 
+#' }
 create_resource <- function(initial_data) {
   Resource$new(initial_data)
 }
