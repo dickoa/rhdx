@@ -111,7 +111,7 @@ as.list.User <- function(x) {
 
 #' @aliases Dataset
 #' @noRd
-.read_user <- function(identifier, include_datasets = FALSE, configuration = NULL, ...) {
+.pull_user <- function(identifier, include_datasets = FALSE, configuration = NULL, ...) {
   user <- User$new()
   user$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
@@ -135,4 +135,8 @@ as.list.User <- function(x) {
 #'  res <- read_user("mali-3wop")
 #'  res
 #' }
-read_user <- memoise::memoise(.read_user)
+pull_user <- memoise::memoise(.pull_user)
+
+#' @aliases read_user
+#' @export
+read_user <- pull_user

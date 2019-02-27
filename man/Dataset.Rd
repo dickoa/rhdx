@@ -70,8 +70,8 @@ creating, and updating datasets and associated resources.
 \examples{
 \dontrun{
  set_rhdx_config(hdx_site = "prod")
- acled_mali_rs <- read_dataset("acled-data-for-mali")
-
+ acled_mali_rs <- pull_dataset("acled-data-for-mali")
+ acled_mali_rs
 }
 
 }

@@ -32,7 +32,7 @@
 #'    \item{`get_configuration(identifier, configuration)`}{
 #'       Returns the actual config used to get the dataset
 #'     }
-#' 
+#'
 #'    \item{`get_dataset_date()`}{
 #'       Get dataset date as string.
 #'     }
@@ -66,8 +66,8 @@
 #' @examples
 #' \dontrun{
 #'  set_rhdx_config(hdx_site = "prod")
-#'  acled_mali_rs <- read_dataset("acled-data-for-mali")
-#'
+#'  acled_mali_rs <- pull_dataset("acled-data-for-mali")
+#'  acled_mali_rs
 #' }
 #' 
 #' @export
@@ -397,7 +397,7 @@ Dataset <- R6::R6Class(
       }
       res
     },
-    
+   
     print = function() {
       if (!is.null(self$is_requestable()) && self$is_requestable()) {
         cat(paste0("<HDX Requestable Dataset> ", self$data$id), "\n")
@@ -444,6 +444,28 @@ Dataset$update_from_file <- function(hdx_dataset_static_file) {
 Dataset$count <- function(configuration = NULL) {
   ds <- Dataset$new()
   ds$count(configuration = configuration)
+}
+
+#' Create dataset in HDX
+#'
+#' Create dataset in HDX
+#'
+#' @param dataset Dataset
+#'
+#' 
+#' @return an HDX dataset
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_dataset("mali-3wop")
+#'  res
+#' }
+create_in_hdx.Dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
+  assert_dataset(dataset)
+  dataset$create_in_hdx(upload_resources = upload_resources, verbose = verbose)
 }
 
 
@@ -670,11 +692,10 @@ search_datasets <- memoise::memoise(.search_datasets)
 
 #' @aliases Dataset
 #' @noRd
-.read_dataset <- function(identifier, configuration = NULL, ...) {
+.pull_dataset <- function(identifier, configuration = NULL, ...) {
   ds <- Dataset$new()
   ds$read_from_hdx(identifier, configuration = configuration, ...)
 }
-
 
 #' Read dataset
 #'
@@ -694,8 +715,11 @@ search_datasets <- memoise::memoise(.search_datasets)
 #'  res <- read_dataset("mali-3wop")
 #'  res
 #' }
-read_dataset <- memoise::memoise(.read_dataset)
+pull_dataset <- memoise::memoise(.pull_dataset)
 
+#' @aliases read_dataset
+#' @export
+read_dataset <- pull_dataset
 
 #' List datasets
 #'
@@ -744,28 +768,27 @@ create_dataset <- function(initial_data) {
   Dataset$new(initial_data)
 }
 
-
 #' Create dataset in HDX
 #'
 #' Create dataset in HDX
 #'
 #' @param dataset Dataset
 #'
-#' 
 #' @return an HDX dataset
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Setting the config to use HDX default server
-#'  set_rhdx_config()
+#'  set_rhdx_config(hdx_site = "demo", hdx_key = "xxxxxxxxxxxxxx", read_only = FALSE)
 #'  res <- read_dataset("mali-3wop")
-#'  res
-#' } 
-create_in_hdx.Dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
+#'  push_dataset(res)
+#' }
+push_dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
   assert_dataset(dataset)
   dataset$create_in_hdx(upload_resources = upload_resources, verbose = verbose)
 }
+
 
 #' Delete dataset from HDX
 #' 

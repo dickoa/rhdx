@@ -224,3 +224,6 @@ as.list.Showcase <- function(x) {
 #'  delete_resource(dataset, 1) # first resource
 #' }
 read_showcase <- memoise::memoise(.read_showcase)
+
+#' @aliases read_showcase
+pull_showcase <- read_showcase

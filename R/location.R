@@ -101,21 +101,52 @@ Location <- R6::R6Class(
 
 #' @aliases Location
 Location$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-  org <- Location$new()
-  org$read_from_hdx(identifier = identifier,
+  loc <- Location$new()
+  loc$read_from_hdx(identifier = identifier,
                     include_datasets = include_datasets,
                     configuration = configuration, ...)
 }
 
 #' @aliases Location
 Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-  org <- Location$new()
-  org$list_all_location(sort = sort,
+  loc <- Location$new()
+  loc$list_all_location(sort = sort,
                         all_fields = all_fields,
                         configuration = configuration, ...)
 }
 
- 
+#' @aliases Location
+.pull_location <- function(identifier = NULL, configuration = NULL, ...) {
+  loc <- Location$new()
+  loc$read_from_hdx(identifier = identifier, configuration = configuration, ...)
+}
+
+#' Read an HDX location
+#'
+#' Read an HDX location
+#'
+#' @param identifier character location uuid
+#' @param configuration an HDX configuration object
+#' 
+#'
+#' 
+#' @return Location
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' #Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- read_location("mli")
+#'  res
+#' }
+pull_location <- memoise::memoise(.pull_location)
+
+#' @aliases read_location
+#' @export
+read_location <- pull_location
+
+
 #' @export
 #' @aliases Location 
 #' @importFrom tibble as_tibble

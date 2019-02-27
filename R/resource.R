@@ -89,10 +89,10 @@ Resource <- R6::R6Class(
       tools::file_path_as_absolute(private$download_folder_)
     },
     
-    read_session = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, quiet = TRUE, hxl = FALSE, ...) {
+    read_resource = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet = TRUE, hxl = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet, ...)
+      path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
       format <- self$get_file_type()
       hxl <- any(grepl("hxl", get_tags_name(self$get_dataset()), ignore.case = TRUE))
       switch(
@@ -344,14 +344,15 @@ get_format <- function(resource) {
 
 #' @export
 #' @aliases Resource 
-read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, hxl = FALSE, ...) {
+read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE,  hxl = FALSE, ...) {
   assert_resource(resource)
-  resource$read_session(sheet = sheet,
-                        layer = layer,
-                        folder = folder,
-                        simplify_json = simplify_json,
-                        hxl = hxl,
-                        ...)
+  resource$read_resource(sheet = sheet,
+                         layer = layer,
+                         folder = folder,
+                         simplify_json = simplify_json,
+                         force_download = force_download,
+                         hxl = hxl,
+                         ...)
 }
 
 #' @aliases Resource
@@ -365,14 +366,14 @@ read_session <- function(resource, sheet = NULL, layer = NULL, folder = NULL, si
 search_resources <- memoise::memoise(.search_resources)
 
 #' @aliases Resource
-.read_resource <- function(identifier = NULL, configuration = NULL, ...) {
+.pull_resource <- function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
   rs$read_from_hdx(identifier = identifier, configuration = configuration, ...)
 }
 
 #' Read an HDX resource
 #'
-#' Read an HDX resource 
+#' Read an HDX resource
 #'
 #' @param identifier character resource uuid
 #' @param configuration an HDX configuration object
@@ -389,8 +390,7 @@ search_resources <- memoise::memoise(.search_resources)
 #'  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #'  res
 #' }
-read_resource <- memoise::memoise(.read_resource)
-
+pull_resource <- memoise::memoise(.pull_resource)
 
 #' Create resource from list
 #'

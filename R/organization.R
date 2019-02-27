@@ -176,14 +176,14 @@ as.list.Organization <- function(x) {
 }
 
 #' @aliases Organization
-.read_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+.pull_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   org <- Organization$new()
   org$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
 
 #' Read an HDX organization
 #'
-#' Read an HDX organization 
+#' Read an HDX organization
 #'
 #' @param identifier character resource uuid
 #' @param configuration an HDX configuration object
@@ -195,7 +195,11 @@ as.list.Organization <- function(x) {
 #' @examples
 #' \dontrun{
 #' }
-read_organization <- memoise::memoise(.read_organization)
+pull_organization <- memoise::memoise(.pull_organization)
+
+#' @aliases read_organization
+#' @export
+read_organization <- pull_organization
 
 #' @export
 #' @aliases Organization 
