@@ -60,7 +60,7 @@ library(tidyverse)
 search_datasets("ACLED Mali", rows = 2) %>% ## search dataset in HDX, limit the results to two rows
   pluck(1) %>% ## select the first dataset
   get_resource(1) %>% ## list all resources in the dataset page
-  read_session(hxl = TRUE) ## read this HXLated data into R
+  read_resource() ## read this HXLated data into R
 ## # A tibble: 2,516 x 30
 ##    data_id   iso event_id_cnty event_id_no_cnty event_date  year
 ##  *   <dbl> <dbl> <chr>                    <dbl> <date>     <dbl>
@@ -192,7 +192,7 @@ when possible instead of a `list`.
 
 ``` r
 idp_nga_rs <- get_resource(ds, 1)
-idp_nga_df <- read_session(idp_nga_rs, simplify_json = TRUE, folder = tempdir())
+idp_nga_df <- read_resource(idp_nga_rs, simplify_json = TRUE, folder = tempdir())
 idp_nga_df
 ## $results
 ##   iso iso3 geo_name year conflict_new_displacements
@@ -246,11 +246,11 @@ library(tidyverse)
 
 set_rhdx_config(hdx_site = "prod")
 
-idp_nga_df <- 
+idp_nga_df <-
   search_datasets("displaced Nigeria", rows = 2) %>%
   pluck(1) %>%
   get_resource(1) %>% ## get the first resource
-  read_session(simplify_json = TRUE, folder = tempdir()) ## the file will be downloaded in a temporary directory
+  read_resource(simplify_json = TRUE, folder = tempdir()) ## the file will be downloaded in a temporary directory
 
 idp_nga_df
 ## $results

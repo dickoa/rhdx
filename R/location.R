@@ -146,7 +146,6 @@ pull_location <- memoise::memoise(.pull_location)
 #' @export
 read_location <- pull_location
 
-
 #' @export
 #' @aliases Location 
 #' @importFrom tibble as_tibble
