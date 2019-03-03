@@ -17,7 +17,7 @@
     "version": "3.5.2",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.2 Patched (2019-01-14 r75994)",
+  "runtimePlatform": "R version 3.5.2 Patched (2019-02-05 r76078)",
   "author": [
     {
       "@type": "Person",
@@ -101,6 +101,12 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "rhxl",
+      "name": "rhxl",
+      "sameAs": "https://github.com/gitlab::dickoa/rhxl"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "magrittr",
       "name": "magrittr",
       "provider": {
@@ -122,6 +128,42 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=jsonlite"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "readr",
+      "name": "readr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=readr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "readxl",
+      "name": "readxl",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=readxl"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "sf",
+      "name": "sf",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sf"
     },
     {
       "@type": "SoftwareApplication",
@@ -161,18 +203,6 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "logger",
-      "name": "logger",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=logger"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "countrycode",
       "name": "countrycode",
       "provider": {
@@ -186,6 +216,6 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "48.81KB",
+  "fileSize": "51.064KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx"
 }
