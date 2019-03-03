@@ -10,12 +10,15 @@ BugReports: https://gitlab.com/dickoa/rhdx/issues
 VignetteBuilder: knitr
 Imports:
     crul (>= 0.7),
+    rhxl,
     magrittr,
     jsonlite,
+    readr,
+    readxl,
+    sf,
     yaml,
     memoise,
     tibble,
-    logger,
     countrycode
 Suggests:
     roxygen2 (>= 6.0.1),
