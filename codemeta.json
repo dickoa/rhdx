@@ -167,6 +167,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "stars",
+      "name": "stars",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=stars"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "yaml",
       "name": "yaml",
       "provider": {
@@ -216,6 +228,6 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "51.064KB",
+  "fileSize": "51.074KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx"
 }
