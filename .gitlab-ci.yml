@@ -9,7 +9,7 @@ pages:
     - apt-get install -t unstable --yes libssl-dev libssh2-1-dev libxml2-dev libcurl4-gnutls-dev libgit2-dev libmagick++-dev pandoc pandoc-citeproc libudunits2-dev libgdal-dev
 
   script:
-    - Rscript -e 'install.packages(c("devtools", "remotes", "pkgdown", "testthat"))'
+    - Rscript -e 'install.packages(c("devtools", "tidyverse", "remotes", "pkgdown", "testthat"))'
     - Rscript -e 'devtools::install_deps(dependencies = TRUE)'
     - Rscript -e 'remotes::install_gitlab("dickoa/rhdx")'
     - Rscript -e 'pkgdown::build_site()'
