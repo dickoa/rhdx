@@ -103,36 +103,37 @@ Resource <- R6::R6Class(
         xls = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
         json = read_hdx_json(path, simplify_json = simplify_json),
         geojson = read_hdx_vector(path, layer),
+        geotiff = read_hdx_raster(path = path, zipped = FALSE),
+        kmz = read_hdx_vector(path = path, layer = layer),
         `zipped shapefile` = read_hdx_vector(path = path, layer = layer),
         `zipped geodatabase` = read_hdx_vector(path = path, layer = layer, zipped = FALSE),
-        kmz = read_hdx_vector(path = path, layer = layer),
         `zipped kml` = read_hdx_vector(path = path, layer = layer),
         `zipped geopackage` = read_hdx_vector(path = path, layer = layer),
-        `zipped geotiff` = read_hdx_raster(path = path, layer = layer))
+        `zipped geotiff` = read_hdx_raster(path = path))
     },
-
-    get_layers = function(folder = NULL, quiet = TRUE) {
+   
+    get_layers = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet)
+      path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
       format <- self$get_file_type()
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
-                                "zipped geopackage", "zipped geotiff", "kmz", "zipped kml")
-      if (!format %in% supported_geo_format) stop("This (spatial) data format is not yet supported", call. = FALSE)
-      switch(
-        format,
-        geojson = get_hdx_layers_(path, zipped = FALSE),
-        `zipped shapefile` = get_hdx_layers_(path),
-        `zipped geodatabase` = get_hdx_layers_(path, zipped = FALSE),
-        `zipped geopackage` = get_hdx_layers_(path),
-        kmz = get_hdx_layers_(path),
-        `zipped kml` = get_hdx_layers_(path))
+                                "zipped geopackage", "kmz", "zipped kml")
+      if (!format %in% supported_geo_format)
+        stop("This (spatial) data format is not yet supported", call. = FALSE)
+      switch(format,
+             geojson = get_hdx_layers_(path, zipped = FALSE),
+             `zipped shapefile` = get_hdx_layers_(path),
+             `zipped geodatabase` = get_hdx_layers_(path, zipped = FALSE),
+             `zipped geopackage` = get_hdx_layers_(path),
+             kmz = get_hdx_layers_(path),
+             `zipped kml` = get_hdx_layers_(path))
     },
 
-    get_sheets = function(folder = NULL, quiet = TRUE, ...) {
+    get_sheets = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet, ...)
+      path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
       format <- self$get_file_type()
       if (!format %in% c("xlsx", "xls", "excel"))
         stop("`get_sheets work only with Excel file", call. = FALSE)

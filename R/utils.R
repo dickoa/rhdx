@@ -177,11 +177,11 @@ read_hdx_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
 }
 
 #' @noRd
-read_hdx_raster <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
-  check_packages("raster")
+read_hdx_raster <- function(path = NULL, zipped = TRUE, ...) {
+  check_packages("stars")
   if (zipped)
-    path <- file.path("/vsizip", path, layer)
-  raster::raster(path, ...)
+    path <- file.path("/vsizip", path)
+  stars::read_stars(path, ...)
 }
 
 #' @noRd
