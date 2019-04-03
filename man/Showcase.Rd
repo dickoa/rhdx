@@ -3,18 +3,17 @@
 \docType{data}
 \name{Showcase}
 \alias{Showcase}
-\title{Create and manipulate HDX Showcase}
+\title{HDX Showcase}
 \description{
-Create and manipulate HDX Showcase
+HDX Showcase
 }
 \details{
-**Methods**
-  \describe{
-  }
+\strong{Methods}
+\describe{
+}
 }
 \examples{
 \dontrun{
 }
-
 }
 \keyword{datasets}

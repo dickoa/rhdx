@@ -23,6 +23,5 @@ get_rhdx_config()
 
 delete_rhdx_config()
 get_rhdx_config()
-
 }
 }

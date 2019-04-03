@@ -7,9 +7,9 @@
 pull_location(identifier = NULL, configuration = NULL, ...)
 }
 \arguments{
-\item{identifier}{character location uuid}
+\item{identifier}{Character location uuid}
 
-\item{configuration}{an HDX configuration object}
+\item{configuration}{Configuration a configuration object}
 }
 \value{
 Location

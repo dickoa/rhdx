@@ -1,8 +1,7 @@
-#' Create and manipulate HDX Location
+#' HDX Location
 #'
 #' HDX location mostly countries
 #'
-#' @export
 #' @details
 #' **Methods**
 #'   \describe{
@@ -13,12 +12,7 @@
 #' @examples
 #' # ---------------------------------------------------------
 #' \dontrun{
-#' Configuration$create(hdx_site = "demo")
-#' org <- Location$read_from_hdx("ocha-mali", include_dataset = TRUE)
-#' org
 #' }
-#' 
-#' @export
 Location <- R6::R6Class(
   "Location",
   
@@ -31,7 +25,7 @@ Location <- R6::R6Class(
     
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- Configuration$read()
+        private$configuration <- configuration_read()
       } else {
         private$configuration <- configuration
       }
@@ -48,7 +42,7 @@ Location <- R6::R6Class(
       self$data <- jsonlite::read_json(hdx_location_static_json, simplifyVector = TRUE)
     },
     
-    read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+    pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("group_show", list(id = identifier, include_datasets = include_datasets, ...))
@@ -100,9 +94,9 @@ Location <- R6::R6Class(
 )
 
 #' @aliases Location
-Location$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+Location$pull <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   loc <- Location$new()
-  loc$read_from_hdx(identifier = identifier,
+  loc$pull(identifier = identifier,
                     include_datasets = include_datasets,
                     configuration = configuration, ...)
 }
@@ -118,18 +112,16 @@ Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, c
 #' @aliases Location
 .pull_location <- function(identifier = NULL, configuration = NULL, ...) {
   loc <- Location$new()
-  loc$read_from_hdx(identifier = identifier, configuration = configuration, ...)
+  loc$pull(identifier = identifier, configuration = configuration, ...)
 }
 
 #' Read an HDX location
 #'
 #' Read an HDX location
 #'
-#' @param identifier character location uuid
-#' @param configuration an HDX configuration object
-#' 
+#' @param identifier Character location uuid
+#' @param configuration Configuration a configuration object
 #'
-#' 
 #' @return Location
 #' @export
 #'
@@ -142,15 +134,11 @@ Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, c
 #' }
 pull_location <- memoise::memoise(.pull_location)
 
-#' @aliases read_location
-#' @export
-read_location <- pull_location
-
 #' @export
 #' @aliases Location 
 #' @importFrom tibble as_tibble
 as_tibble.Location <- function(x, ...) {
-  df <- tibble::data_frame(
+  df <- tibble::tibble(
     location_id = x$data$id,
     location_name = x$data$name)
   df$location <- list(x)

@@ -12,9 +12,9 @@ set_rhdx_config(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
 
 \item{hdx_key}{Character for the CKAN API key, it is required to push data into HDX}
 
-\item{read_only}{Logical if `FALSE` and hdx_key provided is correct you can push metdata and data to HDX}
+\item{read_only}{Logical if \code{FALSE} and hdx_key provided is correct you can push metdata and data to HDX}
 
-\item{hdx_config_file}{Character config file path, it can either a `JSON` or a `YAML`.}
+\item{hdx_config_file}{Character config file path, it can either a \code{JSON} or a \code{YAML}.}
 
 \item{configuration}{Configuration object.}
 }

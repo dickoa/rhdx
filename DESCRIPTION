@@ -1,31 +1,33 @@
 Package: rhdx
 Title: R client for the Humanitarian Data Exchange platform
 Description: R client for the Humanitarian Data Exchange platform <https://data.humdata.org/>
-Version: 0.0.1.9000
-Authors@R: person("Dicko", "Ahmadou", email="mail@ahmadoudicko.com", role = c("aut", "cre"))
+Version: 0.1.0.9000
+Authors@R: person("Dicko", "Ahmadou", email = "mail@ahmadoudicko.com", role = c("aut", "cre"))
 License: MIT + file LICENSE
 LazyData: TRUE
 URL: https://gitlab.com/dickoa/rhdx
 BugReports: https://gitlab.com/dickoa/rhdx/issues
 VignetteBuilder: knitr
 Imports:
-    crul (>= 0.7),
-    rhxl,
+    crul (>= 0.7.0),
     magrittr,
-    jsonlite,
+    jsonlite (>= 1.6.0),
+    yaml,
     readr,
     readxl,
     sf,
     stars,
-    yaml,
     memoise,
+    hoardr (>= 0.5.2),
     tibble,
     countrycode
 Suggests:
-    roxygen2 (>= 6.0.1),
+    roxygen2 (>= 6.1.1),
     knitr,
     rmarkdown,
-    testthat
-Remotes: gitlab::dickoa/rhxl    
+    testthat,
+    vcr (>= 0.2.2)
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Encoding: UTF-8
+Language: en-US

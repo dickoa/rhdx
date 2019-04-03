@@ -5,63 +5,62 @@
 \alias{Dataset}
 \title{HDX Dataset}
 \description{
+HDX Dataset
 Dataset class containing all logic for accessing,
 creating, and updating datasets and associated resources.
 }
 \details{
-**Methods**
-  \describe{
-    \item{`Dataset$new(initial_data, configuration)`}{
-      Dataset class enabling operations on datasets and associated resources
-    }
+\strong{Methods}
+\describe{
+\item{\code{Dataset$new(initial_data, configuration)}}{
+Dataset class enabling operations on datasets and associated resources
+}
 
-   \item{`add_resource(resource, ignore_datasetid = FALSE)`}{
-      Add new resource in dataset with new metadata
-    }
+\item{\code{add_resource(resource, ignore_datasetid = FALSE)}}{
+Add new resource in dataset with new metadata
+}
 
-  \item{`check_required_fields()`}{
-     Check that metadata for dataset and its resources is complete.
-    }
+\item{\code{check_required_fields()}}{
+Check that metadata for dataset and its resources is complete.
+}
 
-   \item{`create_in_hdx(upload_resources)`}{
-    Check if dataset exists in HDX and if so, update it, otherwise create it
-    }
+\item{\code{create(upload_resources)}}{
+Check if dataset exists in HDX and if so, update it, otherwise create it
+}
 
-   \item{`delete_from_hdx(identifier, configuration)`}{
-      Reads the dataset given by identifier
-      from HDX and returns Dataset object
-    }
+\item{\code{delete_from_hdx(identifier, configuration)}}{
+Reads the dataset given by identifier
+from HDX and returns Dataset object
+}
 
-   \item{`get_configuration(identifier, configuration)`}{
-      Returns the actual config used to get the dataset
-    }
+\item{\code{get_configuration(identifier, configuration)}}{
+Returns the actual config used to get the dataset
+}
 
-   \item{`get_dataset_date()`}{
-      Get dataset date as string.
-    }
+\item{\code{get_dataset_date()}}{
+Get dataset date as string.
+}\preformatted{\item{`pull(identifier, configuration)`}{
+  Reads the dataset given by identifier from HDX and returns Dataset object
+}
 
-    \item{`read_from_hdx(identifier, configuration)`}{
-      Reads the dataset given by identifier from HDX and returns Dataset object
-    }
+\item{`get_resource(index)`}{
+  Get one resource from dataset by index
+}
 
-    \item{`get_resource(index)`}{
-      Get one resource from dataset by index
-    }
+\item{`get_resources()`}{
+  Get dataset’s resources
+}
 
-    \item{`get_resources()`}{
-      Get dataset’s resources
-    }
+\item{`get_update_frequency()`}{
+  Get expected update frequency.
+}
 
-    \item{`get_update_frequency()`}{
-      Get expected update frequency.
-    }
+\item{`set_update_frequency()`}{
+  Set expected update frequency.
+}
+}
 
-    \item{`set_update_frequency()`}{
-      Set expected update frequency.
-    }
-
-
-  }
+}
 }
 \section{Details}{
 
@@ -73,6 +72,5 @@ creating, and updating datasets and associated resources.
  acled_mali_rs <- pull_dataset("acled-data-for-mali")
  acled_mali_rs
 }
-
 }
 \keyword{datasets}

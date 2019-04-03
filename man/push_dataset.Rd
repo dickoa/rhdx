@@ -5,17 +5,31 @@
 \title{Create dataset in HDX}
 \usage{
 push_dataset(dataset, upload_resources = TRUE, verbose = FALSE)
+
+push_dataset(dataset, upload_resources = TRUE, verbose = FALSE)
 }
 \arguments{
+\item{dataset}{Dataset the dataset we want to push online}
+
+\item{upload_resources}{Upload resources online}
+
+\item{verbose}{Logical Silent output if FALSE}
+
 \item{dataset}{Dataset}
 }
 \value{
 an HDX dataset
+
+Dataset the published dataset
 }
 \description{
 Create dataset in HDX
+
+Create dataset in HDX
 }
 \examples{
+\dontrun{
+}
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config(hdx_site = "demo", hdx_key = "xxxxxxxxxxxxxx", read_only = FALSE)

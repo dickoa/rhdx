@@ -1,6 +1,7 @@
-#' Create and manipulate HDX Showcase
+#' HDX Showcase
 #'
-#' @export
+#' HDX Showcase
+#'
 #' @details
 #' **Methods**
 #'   \describe{
@@ -12,8 +13,6 @@
 #' @examples
 #' \dontrun{
 #' }
-#' 
-#' @export
 Showcase <- R6::R6Class(
   "Showcase",
 
@@ -26,7 +25,7 @@ Showcase <- R6::R6Class(
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- Configuration$read()
+        private$configuration <- configuration_read()
       } else {
         private$configuration <- configuration
       }
@@ -40,7 +39,7 @@ Showcase <- R6::R6Class(
       
     },
     
-    read_from_hdx = function(identifier = NULL, configuration = NULL) {
+    pull = function(identifier = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("ckanext_showcase_show", list(id = identifier))
@@ -63,9 +62,9 @@ Showcase <- R6::R6Class(
     
     delete_dataset = function(dataset) {
       if (!inherits(dataset, "Dataset"))
-        stop("Not of class Dataset, use `Dataset$new`!")
+        stop("Not of class Dataset, use `create_dataset`!")
       if (is.null(self$data$id))
-        stop("Showcase not on HDX uses Showcase$create_in_hdx first")
+        stop("Showcase not on HDX uses Showcase$push first")
       configuration <- private$configuration
       dataset_id <- dataset$data$id
       showcase_id <- self$data$id
@@ -127,7 +126,7 @@ Showcase <- R6::R6Class(
       res$result
     },
     
-    create_in_hdx = function() {
+    push = function() {
       configuration <- private$configuration
       ds <- nc(self$data)
       res <- configuration$call_remoteclient("ckanext_showcase_create",
@@ -139,7 +138,7 @@ Showcase <- R6::R6Class(
       invisible(res1$result)
     },
     
-    delete_from_hdx = function(name = NULL) {
+    delete = function(name = NULL) {
       configuration <- private$configuration
       ds <- drop_nulls(self$data)
       res <- configuration$call_remoteclient("ckanext_showcase_delete",
@@ -170,25 +169,17 @@ Showcase <- R6::R6Class(
     }
   )
 )
-
-#' @aliases Showcase
-Showcase$read_from_hdx <- function(identifier = NULL, configuration = NULL) {
-  org <- Showcase$new()
-  org$read_from_hdx(identifier = identifier, configuration = configuration)
-}
-
  
 #' @export
 #' @aliases Showcase 
 #' @importFrom tibble as_tibble
 as_tibble.Showcase <- function(x) {
-  df <- tibble::data_frame(
+  df <- tibble::tibble(
     showcase_id = x$data$id,
     showcase_name = x$data$name)
   df$showcase <- list(x)
   df
 }
-
 
 #' @export
 #' @aliases Showcase 
@@ -197,9 +188,9 @@ as.list.Showcase <- function(x) {
 }
 
 #' @aliases Showcase
-.read_showcase <- function(identifier = NULL, configuration = NULL) {
+.pull_showcase <- function(identifier = NULL, configuration = NULL) {
   org <- Showcase$new()
-  org$read_from_hdx(identifier = identifier, configuration = configuration)
+  org$pull(identifier = identifier, configuration = configuration)
 }
 
 
@@ -207,11 +198,9 @@ as.list.Showcase <- function(x) {
 #'
 #' Read HDX Showcase
 #'
-#' @param identifier Showcase name or id
-#' @param configuration an HDX configuration object
+#' @param identifier Character Showcase name or id
+#' @param configuration Configuration an HDX configuration object
 #' 
-#' 
-#'
 #' @details Delete resource from dataset
 #'
 #' 
@@ -223,7 +212,4 @@ as.list.Showcase <- function(x) {
 #'  # Setting the config to use HDX default server
 #'  delete_resource(dataset, 1) # first resource
 #' }
-read_showcase <- memoise::memoise(.read_showcase)
-
-#' @aliases read_showcase
-pull_showcase <- read_showcase
+pull_showcase <- memoise::memoise(.pull_showcase)

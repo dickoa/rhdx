@@ -1,11 +1,7 @@
-#' Create HDX Resource
+#' HDX Resource
 #'
-#' R6 objects are essentially environments, structured in a way that makes them
-#' look like an object in a more typical object-oriented language than R. They
-#' support public and private members, as well as inheritance across different
-#' packages.
+#' HDX Resource
 #'
-#' @export
 #' @details
 #' **Methods**
 #'   \describe{
@@ -16,12 +12,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' set_rhdx_config()
-#' read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
-#' resource
+#'   set_rhdx_config()
+#'   resource <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+#'   resource
 #' }
-#' 
-#'
 Resource <- R6::R6Class(
   "Resource",
 
@@ -35,7 +29,7 @@ Resource <- R6::R6Class(
 
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- Configuration$read()
+        private$configuration <- configuration_read()
       } else {
         private$configuration <- configuration
       }
@@ -69,18 +63,20 @@ Resource <- R6::R6Class(
     
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
-      if (is.null(folder))
-        folder <- tempdir()
+      rhdx_cache$mkdir()
+      if (is.null(folder)) {
+        folder <- rhdx_cache$cache_path_get()
+      }
       if (is.null(filename)) {
         filename <- basename(self$data$url)
         if (!is.null(self$data$resource_type) && self$data$resource_type == "api")
           filename <- gsub("\\?.*", "", filename)
       }
       path <- file.path(folder, filename)
+      rhdx_cache$cache_path_set(path)
       if (!file.exists(path) | force)
         download.file(url = self$data$url, destfile = path,
-                      mode = "wb", quiet = quiet, ...)
-      
+                      mode = "wb", quiet = quiet, ...)      
       private$download_folder_ <- tools::file_path_as_absolute(folder)
       invisible(tools::file_path_as_absolute(path))
     },
@@ -111,7 +107,7 @@ Resource <- R6::R6Class(
         `zipped geopackage` = read_hdx_vector(path = path, layer = layer),
         `zipped geotiff` = read_hdx_raster(path = path))
     },
-   
+    
     get_layers = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
@@ -149,7 +145,7 @@ Resource <- R6::R6Class(
       if (is.null(package_id)) {
         stop("Resource has no package id!", call. = FALSE)
       } else {
-        Dataset$read_from_hdx(package_id)     
+        pull_dataset(package_id) 
       }
     },
     
@@ -169,19 +165,19 @@ Resource <- R6::R6Class(
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
       if (check_dataset_id)
-          n1 <- setdiff(n1, "package_id")
+        n1 <- setdiff(n1, "package_id")
       if (!all(n1 %in% n2))
         stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)), call. = FALSE)
     },
 
-    read_from_hdx = function(identifier, configuration = NULL) {
+    pull = function(identifier, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_show", list(id = identifier))
       Resource$new(initial_data = res$result, configuration = configuration)
     },
 
-    search_in_hdx = function(query = "*:*", configuration = NULL, ...) {
+    search = function(query = "*:*", configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("resource_search", list(query = query, ...))
@@ -210,11 +206,11 @@ Resource <- R6::R6Class(
       self$data
     },
 
-    update_in_hdx = function(verbose = FALSE) {
+    update = function(verbose = FALSE) {
       configuration <- private$configuration
       resource_id <- self$data$id
       if (is.null(resource_id))
-        stop("Resource not on HDX use `create_in_hdx` method")
+        stop("Resource not on HDX use `push` method")
       rs <- drop_nulls(self$data)
       rs_req <- configuration$call_remoteclient("resource_update",
                                                 data = rs,
@@ -227,8 +223,8 @@ Resource <- R6::R6Class(
       }
       invisible(rs_req)
     },
-    
-    create_in_hdx = function(dataset_id = NULL, verbose = FALSE) {
+   
+    push = function(dataset_id = NULL, verbose = FALSE) {
       configuration <- private$configuration
       rs <- self$data
       rs$package_id <- dataset_id
@@ -245,7 +241,7 @@ Resource <- R6::R6Class(
       }
       invisible(rs_req)
     },
-        
+    
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       dataset_id <- self$data$package_id
@@ -264,23 +260,11 @@ Resource <- R6::R6Class(
   )
 )
 
-#' @aliases Resource 
-Resource$read_from_hdx <- function(identifier, configuration = NULL) {
-  rs <- Resource$new()
-  rs$read_from_hdx(identifier = identifier, configuration = configuration)
-}
-
-#' @aliases Resource
-Resource$search_in_hdx <- function(query = "*:*", configuration = NULL, ...) {
-  rs <- Resource$new()
-  rs$search_in_hdx(query = query, configuratixson = configuration, ...)
-}
-
 #' @export
 #' @aliases Resource
 #' @importFrom tibble as_tibble
 as_tibble.Resource <- function(x, ...) {
-  df <- tibble::data_frame(
+  df <- tibble::tibble(
     resource_id = x$data$id,
     resource_name = x$data$name,
     resource_format = tolower(x$data$format),
@@ -290,15 +274,14 @@ as_tibble.Resource <- function(x, ...) {
 }
 
 #' @export
-#' @aliases Resource 
+#' @aliases Resource
 as.list.Resource <- function(x) {
   x$as_list()
 }
 
-
 #' Download an HDX resource
 #'
-#' Download an HDX resource into a specific folder 
+#' Download an HDX resource into a specific folder
 #'
 #' @param resource Resource, an HDX resource
 #' @param folder Character, path of the directory where you will store the data
@@ -306,7 +289,6 @@ as.list.Resource <- function(x) {
 #' @param quiet Logical, no progress bar from download (default = FALSE)
 #' @param force Logical, force download (default = FALSE)
 #'
-#' 
 #' @return Resource
 #' @export
 #'
@@ -332,8 +314,8 @@ get_layers <- function(resource, folder = NULL, quiet = TRUE) {
 #' @export
 #' @aliases Resource 
 get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
-    assert_resource(resource)
-    resource$get_sheets(folder = folder, quiet = quiet, ...)
+  assert_resource(resource)
+  resource$get_sheets(folder = folder, quiet = quiet, ...)
 }
 
 #' @export
@@ -359,7 +341,7 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, s
 #' @aliases Resource
 .search_resources <- function(query = "*:*", configuration = NULL, ...) {
   rs <- Resource$new()
-  rs$search_in_hdx(query = query, configuration = configuration, ...)
+  rs$search(query = query, configuration = configuration, ...)
 }
 
 #' @export
@@ -369,7 +351,7 @@ search_resources <- memoise::memoise(.search_resources)
 #' @aliases Resource
 .pull_resource <- function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
-  rs$read_from_hdx(identifier = identifier, configuration = configuration, ...)
+  rs$pull(identifier = identifier, configuration = configuration, ...)
 }
 
 #' Read an HDX resource
@@ -378,8 +360,6 @@ search_resources <- memoise::memoise(.search_resources)
 #'
 #' @param identifier character resource uuid
 #' @param configuration an HDX configuration object
-#' 
-#'
 #' 
 #' @return Resource
 #' @export
@@ -410,7 +390,6 @@ create_resource <- function(initial_data) {
   Resource$new(initial_data)
 }
 
-
 #' Create resource in HDX
 #'
 #' Create resource in HDX
@@ -423,12 +402,11 @@ create_resource <- function(initial_data) {
 #'
 #' @examples
 #' \dontrun{
-#' } 
-create_in_hdx.Resource <- function(resource, verbose = FALSE) {
+#' }
+create.Resource <- function(resource, verbose = FALSE) {
   assert_resource(resource)
-  resource$create_in_hdx(verbose = FALSE)
+  resource$create(verbose = FALSE)
 }
-
 
 #' @export
 #' @aliases Resource 

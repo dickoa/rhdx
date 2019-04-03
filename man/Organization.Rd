@@ -3,18 +3,17 @@
 \docType{data}
 \name{Organization}
 \alias{Organization}
-\title{Create and manipulate HDX Organization}
+\title{HDX Organization}
 \description{
-Create and manipulate HDX Organization
+HDX Organization
 }
 \details{
-**Methods**
-  \describe{
-  }
+\strong{Methods}
+\describe{
+}
 }
 \examples{
 \dontrun{
 }
-
 }
 \keyword{datasets}

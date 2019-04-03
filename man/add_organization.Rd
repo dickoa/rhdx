@@ -9,7 +9,7 @@ add_organization(dataset, organization)
 \arguments{
 \item{dataset}{Dataset}
 
-\item{organization}{Charater, valid HDX organization}
+\item{organization}{Charater, iso3 valid HDX organization}
 }
 \value{
 A Dataset

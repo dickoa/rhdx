@@ -1,8 +1,7 @@
-#' Configuration for HDX
+#' HDX Configuration
 #'
 #' HDX Configuration allow to connect to an HDX server and setup project where you can interact with the HDX platform
 #'
-#' @export
 #' @details
 #' **Methods**
 #'   \describe{
@@ -71,7 +70,6 @@
 #' set_rhdx_config(hdx_site = "prod")
 #' get_rhd_config()
 #' }
-#' 
 Configuration <- R6::R6Class(
   "Configuration",
   private = list(shared = .rhdx_env),
@@ -269,25 +267,11 @@ Configuration <- R6::R6Class(
 )
 
 
-#' @aliases Configuration
-Configuration$setup <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
-                                hdx_config = NULL, hdx_config_file = NULL, configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
-    .rhdx_env$configuration <- configuration
-  .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key,
-                                               read_only = read_only, hdx_config = hdx_config, hdx_config_file = hdx_config_file)
-}
-
-#' @aliases Configuration
-Configuration$delete <- function() {
-  configuration <- .rhdx_env$configuration
-  if (is.null(configuration) | !inherits(configuration, "Configuration"))
-    configuration <- Configuration$new()
-  configuration$delete()
-}
-
-#' @aliases Configuration
-Configuration$read <- function() {
+#' Read configuration
+#'
+#' Sets the configuration settings for using rhdx.
+#' 
+configuration_read <- function() {
   configuration <- .rhdx_env$configuration
   assert_configuration(configuration)
   configuration$read()
@@ -342,7 +326,6 @@ get_rhdx_config <- function() {
 #'
 #' Delete the configuration settings for using rhdx.
 #' 
-#'
 #' @rdname delete_rhdx_config
 #'
 #' @details Delete HDX config
@@ -359,7 +342,6 @@ get_rhdx_config <- function() {
 #' 
 #' delete_rhdx_config()
 #' get_rhdx_config()
-#' 
 #' }
 delete_rhdx_config <- function() {
   configuration <- .rhdx_env$configuration
@@ -375,4 +357,3 @@ hdx_general_statistics <- function() {
   assert_configuration(configuration)
   configuration$general_statistics()
 }
-

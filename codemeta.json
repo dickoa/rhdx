@@ -10,14 +10,14 @@
   "codeRepository": "https://gitlab.com/dickoa/rhdx",
   "issueTracker": "https://gitlab.com/dickoa/rhdx/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.0.1.9000",
+  "version": "0.1.0.9000",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.2",
+    "version": "3.5.3",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.2 Patched (2019-02-05 r76078)",
+  "runtimePlatform": "R version 3.5.3 Patched (2019-03-11 r76306)",
   "author": [
     {
       "@type": "Person",
@@ -39,7 +39,7 @@
       "@type": "SoftwareApplication",
       "identifier": "roxygen2",
       "name": "roxygen2",
-      "version": ">= 6.0.1",
+      "version": ">= 6.1.1",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -83,6 +83,19 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "vcr",
+      "name": "vcr",
+      "version": ">= 0.2.2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=vcr"
     }
   ],
   "softwareRequirements": [
@@ -90,7 +103,7 @@
       "@type": "SoftwareApplication",
       "identifier": "crul",
       "name": "crul",
-      "version": ">= 0.7",
+      "version": ">= 0.7.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -98,12 +111,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=crul"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "rhxl",
-      "name": "rhxl",
-      "sameAs": "https://github.com/gitlab::dickoa/rhxl"
     },
     {
       "@type": "SoftwareApplication",
@@ -121,6 +128,7 @@
       "@type": "SoftwareApplication",
       "identifier": "jsonlite",
       "name": "jsonlite",
+      "version": ">= 1.6.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -128,6 +136,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=jsonlite"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "yaml",
+      "name": "yaml",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=yaml"
     },
     {
       "@type": "SoftwareApplication",
@@ -179,18 +199,6 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "yaml",
-      "name": "yaml",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=yaml"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "memoise",
       "name": "memoise",
       "provider": {
@@ -200,6 +208,19 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=memoise"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "hoardr",
+      "name": "hoardr",
+      "version": ">= 0.5.2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=hoardr"
     },
     {
       "@type": "SoftwareApplication",
@@ -228,6 +249,9 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "51.074KB",
-  "contIntegration": "https://codecov.io/gl/dickoa/rhdx"
+  "fileSize": "52.448KB",
+  "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
+  "contributor": {},
+  "copyrightHolder": {},
+  "funder": {}
 }

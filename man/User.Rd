@@ -8,13 +8,12 @@
 HDX user
 }
 \details{
-**Methods**
-  \describe{
-  }
+\strong{Methods}
+\describe{
+}
 }
 \examples{
-Configuration$create(hdx_site = "demo")
-User$list_all_users()
-
+\dontrun{
+}
 }
 \keyword{datasets}

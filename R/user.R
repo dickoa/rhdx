@@ -2,7 +2,6 @@
 #'
 #' HDX user
 #'
-#' @export
 #' @details
 #' **Methods**
 #'   \describe{
@@ -12,10 +11,8 @@
 #' @usage NULL
 #'
 #' @examples
-#' Configuration$create(hdx_site = "demo")
-#' User$list_all_users()
-#' 
-#' @export
+#' \dontrun{
+#'}
 User <- R6::R6Class(
   "User",
   
@@ -28,7 +25,7 @@ User <- R6::R6Class(
     
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- Configuration$read()
+        private$configuration <- configuration_read()
       } else {
         private$configuration <- configuration
       }
@@ -46,7 +43,7 @@ User <- R6::R6Class(
                                        simplifyVector = TRUE)
     },
     
-    read_from_hdx = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+    pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("user_show", list(id = identifier, include_datasets = include_datasets, ...))
@@ -78,24 +75,12 @@ User <- R6::R6Class(
   )
 )
 
-#' @aliases User
-User$read_from_hdx <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-  user <- User$new()
-  user$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
-}
-
-#' @aliases User
-User$list_all_users <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-  user <- User$new()
-  user$lists_all_user(sort = sort, all_fields = all_fields, configuration = configuration, ...)
-}
-
  
 #' @export
 #' @aliases User 
 #' @importFrom tibble as_tibble
 as_tibble.User <- function(x, ...) {
-  df <- tibble::data_frame(
+  df <- tibble::tibble(
     user_id = x$data$id,
     user_name = x$data$name)
   df$user <- list(x)
@@ -113,7 +98,7 @@ as.list.User <- function(x) {
 #' @noRd
 .pull_user <- function(identifier, include_datasets = FALSE, configuration = NULL, ...) {
   user <- User$new()
-  user$read_from_hdx(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+  user$pull(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
 }
 
 
@@ -124,7 +109,6 @@ as.list.User <- function(x) {
 #' @param identifier character user keyword
 #' @param configuration a Configuration object
 #'
-#' 
 #' @return User the user
 #' @export
 #'
@@ -137,6 +121,13 @@ as.list.User <- function(x) {
 #' }
 pull_user <- memoise::memoise(.pull_user)
 
-#' @aliases read_user
-#' @export
-read_user <- pull_user
+
+#' List all users
+#' @param sort Logical user sorted is TRUE
+#' @param all_fields Logical if TRUE get all field
+#' @param configuration Configuration the configuration to use
+#' @param ... 
+list_all_users <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
+  user <- User$new()
+  user$lists_all_user(sort = sort, all_fields = all_fields, configuration = configuration, ...)
+}

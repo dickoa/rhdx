@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="HDX Dataset — Dataset" />
 
-<meta property="og:description" content="Dataset class containing all logic for accessing, creating, and updating datasets and associated resources." />
+<meta property="og:description" content="Dataset class containing all logic for accessing,
+creating, and updating datasets and associated resources." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -116,25 +117,40 @@
 
     <div class="ref-description">
     
-    <p>Dataset class containing all logic for accessing, creating, and updating datasets and associated resources.</p>
+    <p>Dataset class containing all logic for accessing,
+creating, and updating datasets and associated resources.</p>
     
     </div>
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Possible parameters (not all are allowed in each HTTP verb):</p>
+    <p>**Methods**</p><dl class='dl-horizontal'>
+    <dt>`Dataset$new(initial_data, configuration)`</dt><dd><p>Dataset class enabling operations on datasets and associated resources</p></dd>
+    <dt>`add_resource(resource, ignore_datasetid = FALSE)`</dt><dd><p>Add new resource in dataset with new metadata</p></dd>
+    <dt>`check_required_fields()`</dt><dd><p>Check that metadata for dataset and its resources is complete.</p></dd>
+    <dt>`create_in_hdx(upload_resources)`</dt><dd><p>Check if dataset exists in HDX and if so, update it, otherwise create it</p></dd>
+    <dt>`delete_from_hdx(identifier, configuration)`</dt><dd><p>Reads the dataset given by identifier
+      from HDX and returns Dataset object</p></dd>
+    <dt>`get_configuration(identifier, configuration)`</dt><dd><p>Returns the actual config used to get the dataset</p></dd>
+    <dt>`get_dataset_date()`</dt><dd><p>Get dataset date as string.</p></dd>
+    <dt>`read_from_hdx(identifier, configuration)`</dt><dd><p>Reads the dataset given by identifier from HDX and returns Dataset object</p></dd>
+    <dt>`get_resource(index)`</dt><dd><p>Get one resource from dataset by index</p></dd>
+    <dt>`get_resources()`</dt><dd><p>Get dataset’s resources</p></dd>
+    <dt>`get_update_frequency()`</dt><dd><p>Get expected update frequency.</p></dd>
+    <dt>`set_update_frequency()`</dt><dd><p>Set expected update frequency.</p></dd>
+    </dl>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># ---------------------------------------------------------
-</div><span class='co'># NOT RUN {</span>
-<span class='fu'>set_rhdx_config</span>(<span class='kw'>hdx_site</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)
-<span class='no'>acled_mali</span> <span class='kw'>&lt;-</span> <span class='fu'>read_dataset</span>(<span class='st'>"acled-conflict-data-for-africa-realtime-2016"</span>)
-<span class='no'>acled_mali</span>
-
-<span class='fu'>search_datasets</span>(<span class='st'>"3W Somalia"</span>, <span class='kw'>rows</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+ <span class='fu'><a href='set_rhdx_config.html'>set_rhdx_config</a></span>(<span class='kw'>hdx_site</span> <span class='kw'>=</span> <span class='st'>"prod"</span>)
+ <span class='no'>acled_mali_rs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pull_dataset.html'>pull_dataset</a></span>(<span class='st'>"acled-data-for-mali"</span>)
+ <span class='no'>acled_mali_rs</span>
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
@@ -142,6 +158,8 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
@@ -156,7 +174,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
    </div>

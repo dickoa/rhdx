@@ -3,67 +3,65 @@
 \docType{data}
 \name{Configuration}
 \alias{Configuration}
-\title{Configuration for HDX}
+\title{HDX Configuration}
 \description{
 HDX Configuration allow to connect to an HDX server and setup project where you can interact with the HDX platform
 }
 \details{
-**Methods**
-  \describe{
-    \item{`create(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config,
-           hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)`}{
-      Create a HDX Configuration 
-    }
-    \item{`get_credentials()`}{
-      Setup a HDX Configuration object
-    }
-    \item{`set_read_only(read_only)`}{
-      Read a Configuration object
-    }
+\strong{Methods}
+\describe{
+\item{\code{create(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config, hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)}}{
+Create a HDX Configuration
+}
+\item{\code{get_credentials()}}{
+Setup a HDX Configuration object
+}
+\item{\code{set_read_only(read_only)}}{
+Read a Configuration object
+}\preformatted{\item{`set_hdx_key(hdx_key)`}{
+  Provides an API key
+}
 
-    \item{`set_hdx_key(hdx_key)`}{
-      Provides an API key
-    }
+\item{`load_hdx_key(path)`}{
+  Provides an API key from path
+}
 
-    \item{`load_hdx_key(path)`}{
-      Provides an API key from path
-    }
+\item{`get_hdx_key()`}{
+  Get the HDX server site in use.
+}
 
-    \item{`get_hdx_key()`}{
-      Get the HDX server site in use.
-    }
+\item{`set_hdx_key(hdx_site)`}{
+  Set the HDX server site to use.
+}
+}
 
-    \item{`set_hdx_key(hdx_site)`}{
-      Set the HDX server site to use.
-    }
+\item{\code{get_hdx_key()}}{
+Get the API key
+}
 
-   \item{`get_hdx_key()`}{
-     Get the API key
-   }
+\item{\code{get_hdx_key_url()}}{
+Get the HDX server URL
+}
 
-   \item{`get_hdx_key_url()`}{
-     Get the HDX server URL
-   }
+\item{\code{remoteclient()}}{
+Remote API client
+}
 
-  \item{`remoteclient()`}{
-     Remote API client
-   }
+\item{\code{call_remoteclient()}}{
+Call remote API client
+}
 
-  \item{`call_remoteclient()`}{
-     Call remote API client
-   }
+\item{\code{setup()}}{
+Setup configuration i.e HDX server, API and read only status.
+}
 
-  \item{`setup()`}{
-     Setup configuration i.e HDX server, API and read only status.
-   }
+\item{\code{delete()}}{
+Delete actual configuration.
+}
 
-  \item{`delete()`}{
-     Delete actual configuration.
-   }
-
-  \item{`general_statistics()`}{
-     Some statistics about HDX
-   }
+\item{\code{general_statistics()}}{
+Some statistics about HDX
+}
 
 }
 }
@@ -72,6 +70,5 @@ HDX Configuration allow to connect to an HDX server and setup project where you 
 set_rhdx_config(hdx_site = "prod")
 get_rhd_config()
 }
-
 }
 \keyword{datasets}

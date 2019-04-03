@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataset.R
 \name{get_locations_name}
 \alias{get_locations_name}
-\title{Dataset locations}
+\title{Dataset locations name}
 \usage{
 get_locations_name(dataset)
 }
@@ -13,7 +13,7 @@ get_locations_name(dataset)
 Character locations of the dataset
 }
 \description{
-Gets locations from the datasets
+Gets locations name from the datasets
 }
 \examples{
 \dontrun{

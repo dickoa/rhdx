@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="R client for the Humanitarian Data Exchange platform">
-<meta property="og:description" content="R client for the Humanitarian Data Exchange platform">
+<meta property="og:description" content="R client for the Humanitarian Data Exchange platform &lt;https://data.humdata.org/&gt;">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -71,7 +71,11 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
+    
+
+    
+    
 <div id="rhdx" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#rhdx" class="anchor"></a>rhdx</h1></div>
@@ -79,57 +83,59 @@
 
 <p><code>rhdx</code> is an R client for the Humanitarian Exchange Data platform.</p>
 <p><img src="https://gitlab.com/dickoa/rhdx/raw/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif"></p>
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p>The Humanitarian Data Exchange platform is the open platform to easily find and analyze humanitarian data.</p>
+</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>This package is not on yet on CRAN and to install it, you will need the <a href="https://github.com/r-lib/devtools"><code>devtools</code></a> package. You can download it from Github</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co">## install.packages("devtools") </span></a>
-<a class="sourceLine" id="cb1-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"dickoa/rhdx"</span>)</a></code></pre></div>
-<p>or Gitlab</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co">## install.packages("devtools") </span></a>
-<a class="sourceLine" id="cb2-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_git</a></span>(<span class="st">"https://gitlab.com/dickoa/rhdx"</span>)</a></code></pre></div>
+<p>This package is not on yet on CRAN and to install it, you will need the <a href="https://github.com/r-lib/remotes"><code>remotes</code></a> package. You can get <code>rhdx</code> from Gitlab or Github</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co">## install.packages("remotes") </span></a>
+<a class="sourceLine" id="cb1-2" title="2">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_gitlab">install_gitlab</a></span>(<span class="st">"dickoa/rhdx"</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"dickoa/rhdx"</span>)</a></code></pre></div>
 </div>
-<div id="rhdx-tutorial" class="section level2">
+<div id="rhdx-a-quick-tutorial" class="section level2">
 <h2 class="hasAnchor">
-<a href="#rhdx-tutorial" class="anchor"></a>rhdx tutorial</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"rhdx"</span>)</a></code></pre></div>
-<p>The first step is to connect to an HDX server, we can use the <code>demo</code> server, we can use the <code>rhdx_config</code> function</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">set_rhdx_config</span>(<span class="dt">hdx_site =</span> <span class="st">"prod"</span>)</a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="kw">get_rhdx_config</span>()</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">## &lt;HDX Configuration&gt; </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">##   HDX site: prod</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">##   HDX site url: https://data.humdata.org/</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">##   HDX API key: </span></a></code></pre></div>
-<p>We can <code>search_datasets</code>, <code>get_resources</code> and <code>read_session</code> to get data from HDX to R directly</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidyverse)</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="kw">search_datasets</span>(<span class="st">"ACLED"</span>, <span class="dt">rows =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## search dataset in HDX</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">first</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## select the first dataset</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw">get_resources</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## get all resources in the datasets</span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="st">  </span><span class="kw">first</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## select the first resource</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="st">  </span><span class="kw">read_session</span>() <span class="co">## read it into R</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="co">## reading sheet:  Sheet1 </span></a>
-<a class="sourceLine" id="cb5-8" title="8"><span class="co">## # A tibble: 3,698 x 25</span></a>
-<a class="sourceLine" id="cb5-9" title="9"><span class="co">##     GWNO EVENT_ID_CNTY EVENT_ID_NO_CNTY EVENT_DATE         </span></a>
-<a class="sourceLine" id="cb5-10" title="10"><span class="co">##    &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt; &lt;dttm&gt;             </span></a>
-<a class="sourceLine" id="cb5-11" title="11"><span class="co">##  1  615. 1ALG                        1. 1997-01-04 00:00:00</span></a>
-<a class="sourceLine" id="cb5-12" title="12"><span class="co">##  2  615. 2ALG                        2. 1997-01-05 00:00:00</span></a>
-<a class="sourceLine" id="cb5-13" title="13"><span class="co">##  3  615. 3ALG                        3. 1997-01-06 00:00:00</span></a>
-<a class="sourceLine" id="cb5-14" title="14"><span class="co">##  4  615. 4ALG                        4. 1997-01-07 00:00:00</span></a>
-<a class="sourceLine" id="cb5-15" title="15"><span class="co">##  5  615. 5ALG                        5. 1997-01-11 00:00:00</span></a>
-<a class="sourceLine" id="cb5-16" title="16"><span class="co">##  6  615. 6ALG                        6. 1997-01-12 00:00:00</span></a>
-<a class="sourceLine" id="cb5-17" title="17"><span class="co">##  7  615. 7ALG                        7. 1997-01-17 00:00:00</span></a>
-<a class="sourceLine" id="cb5-18" title="18"><span class="co">##  8  615. 8ALG                        8. 1997-01-19 00:00:00</span></a>
-<a class="sourceLine" id="cb5-19" title="19"><span class="co">##  9  615. 9ALG                        9. 1997-01-21 00:00:00</span></a>
-<a class="sourceLine" id="cb5-20" title="20"><span class="co">## 10  615. 11ALG                      10. 1997-01-22 00:00:00</span></a>
-<a class="sourceLine" id="cb5-21" title="21"><span class="co">## # ... with 3,688 more rows, and 21 more variables: YEAR &lt;dbl&gt;,</span></a>
-<a class="sourceLine" id="cb5-22" title="22"><span class="co">## #   TIME_PRECISION &lt;dbl&gt;, EVENT_TYPE &lt;chr&gt;, ACTOR1 &lt;chr&gt;,</span></a>
-<a class="sourceLine" id="cb5-23" title="23"><span class="co">## #   ALLY_ACTOR_1 &lt;chr&gt;, INTER1 &lt;dbl&gt;, ACTOR2 &lt;chr&gt;,</span></a>
-<a class="sourceLine" id="cb5-24" title="24"><span class="co">## #   ALLY_ACTOR_2 &lt;chr&gt;, INTER2 &lt;dbl&gt;, INTERACTION &lt;dbl&gt;,</span></a>
-<a class="sourceLine" id="cb5-25" title="25"><span class="co">## #   COUNTRY &lt;chr&gt;, ADMIN1 &lt;chr&gt;, ADMIN2 &lt;chr&gt;, ADMIN3 &lt;lgl&gt;,</span></a>
-<a class="sourceLine" id="cb5-26" title="26"><span class="co">## #   LOCATION &lt;chr&gt;, LATITUDE &lt;dbl&gt;, LONGITUDE &lt;dbl&gt;,</span></a>
-<a class="sourceLine" id="cb5-27" title="27"><span class="co">## #   GEO_PRECISION &lt;dbl&gt;, SOURCE &lt;chr&gt;, NOTES &lt;chr&gt;,</span></a>
-<a class="sourceLine" id="cb5-28" title="28"><span class="co">## #   FATALITIES &lt;dbl&gt;</span></a></code></pre></div>
-<p><code>read_session</code> will not work for all data in HDX, so far the following format are supported: <code>csv</code>, <code>xlsx</code>, <code>xls</code>, <code>json</code>, <code>geojson</code>, <code>zipped shapefile</code>, <code>kmz</code>, <code>zipped geodatabase</code> and <code>zipped geopackage</code></p>
+<a href="#rhdx-a-quick-tutorial" class="anchor"></a>rhdx: A quick tutorial</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"rhdx"</span>)</a></code></pre></div>
+<p>The first step is to connect to HDX using the <code>set_rhdx_config</code> function and check the config using <code>get_rhdx_config</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="reference/set_rhdx_config.html">set_rhdx_config</a></span>(<span class="dt">hdx_site =</span> <span class="st">"prod"</span>)</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">get_rhdx_config</span>()</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">## &lt;HDX Configuration&gt; </span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">##   HDX site: prod</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">##   HDX site url: https://data.humdata.org/</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">##   HDX API key: </span></a></code></pre></div>
+<p>Now that we are connected to HDX, we can search for dataset pages using <code>search_datasets</code>, access resources on the dataset pages with the <code>get_resources</code> function and finally read the data directly into the R session using <code>read_session</code>. <code>magrittr</code> pipes operator are supported</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidyverse)</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="kw"><a href="reference/search_datasets.html">search_datasets</a></span>(<span class="st">"ACLED Mali"</span>, <span class="dt">rows =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## search dataset in HDX, limit the results to two rows</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="st">  </span><span class="kw">pluck</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## select the first dataset</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">  </span><span class="kw">get_resource</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## list all resources in the dataset page</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="st">  </span><span class="kw">read_resource</span>() <span class="co">## read this HXLated data into R</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">## # A tibble: 2,516 x 30</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">##    data_id   iso event_id_cnty event_id_no_cnty event_date  year</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">##  *   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt; &lt;date&gt;     &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">##  1 2942561   466 MLI2605                   2605 2019-01-26  2019</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">##  2 2942562   466 MLI2606                   2606 2019-01-26  2019</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">##  3 2942557   466 MLI2601                   2601 2019-01-25  2019</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">##  4 2942558   466 MLI2602                   2602 2019-01-25  2019</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">##  5 2942559   466 MLI2603                   2603 2019-01-25  2019</span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="co">##  6 2942560   466 MLI2604                   2604 2019-01-25  2019</span></a>
+<a class="sourceLine" id="cb4-15" title="15"><span class="co">##  7 2942555   466 MLI2599                   2599 2019-01-24  2019</span></a>
+<a class="sourceLine" id="cb4-16" title="16"><span class="co">##  8 2942556   466 MLI2600                   2600 2019-01-24  2019</span></a>
+<a class="sourceLine" id="cb4-17" title="17"><span class="co">##  9 2942553   466 MLI2597                   2597 2019-01-23  2019</span></a>
+<a class="sourceLine" id="cb4-18" title="18"><span class="co">## 10 2942554   466 MLI2598                   2598 2019-01-23  2019</span></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="co">## # … with 2,506 more rows, and 24 more variables:</span></a>
+<a class="sourceLine" id="cb4-20" title="20"><span class="co">## #   time_precision &lt;dbl&gt;, event_type &lt;chr&gt;, actor1 &lt;chr&gt;,                                                                                                                                     </span></a>
+<a class="sourceLine" id="cb4-21" title="21"><span class="co">## #   assoc_actor_1 &lt;chr&gt;, inter1 &lt;dbl&gt;, actor2 &lt;chr&gt;,                                                                                                                                          </span></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">## #   assoc_actor_2 &lt;chr&gt;, inter2 &lt;dbl&gt;, interaction &lt;dbl&gt;,                                                                                                                                     </span></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="co">## #   region &lt;chr&gt;, country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;,                                                                                                                                  </span></a>
+<a class="sourceLine" id="cb4-24" title="24"><span class="co">## #   admin3 &lt;chr&gt;, location &lt;chr&gt;, latitude &lt;dbl&gt;,                                                                                                                                             </span></a>
+<a class="sourceLine" id="cb4-25" title="25"><span class="co">## #   longitude &lt;dbl&gt;, geo_precision &lt;dbl&gt;, source &lt;chr&gt;,                                                                                                                                       </span></a>
+<a class="sourceLine" id="cb4-26" title="26"><span class="co">## #   source_scale &lt;chr&gt;, notes &lt;chr&gt;, fatalities &lt;dbl&gt;,                                                                                                                                        </span></a>
+<a class="sourceLine" id="cb4-27" title="27"><span class="co">## #   timestamp &lt;dbl&gt;, iso3 &lt;chr&gt;</span></a></code></pre></div>
+<p><code>read_session</code> will not work for all data in HDX, so far the following format are supported: <code>csv</code>, <code>xlsx</code>, <code>xls</code>, <code>json</code>, <code>geojson</code>, <code>zipped shapefile</code>, <code>kmz</code>, <code>zipped geodatabase</code> and <code>zipped geopackage</code>. I will consider adding more data types in the future.</p>
 </div>
 <div id="getting-data-in-r-a-short-tutorial" class="section level2">
 <h2 class="hasAnchor">
@@ -138,200 +144,182 @@
 <h3 class="hasAnchor">
 <a href="#connect-to-a-server" class="anchor"></a>Connect to a server</h3>
 <p>In order to connect to HDX, we can use the <code>set_rhdx_config</code> function</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">set_rhdx_config</span>(<span class="dt">hdx_site =</span> <span class="st">"prod"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="reference/set_rhdx_config.html">set_rhdx_config</a></span>(<span class="dt">hdx_site =</span> <span class="st">"prod"</span>)</a></code></pre></div>
 </div>
 <div id="search-datasets" class="section level3">
 <h3 class="hasAnchor">
 <a href="#search-datasets" class="anchor"></a>Search datasets</h3>
 <p>Once a server is chosen, we can now search from dataset using the <code>search_datasets</code> In this case we will limit just to two results (<code>rows</code> parameter).</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">list_of_ds &lt;-<span class="st"> </span><span class="kw">search_datasets</span>(<span class="st">"displaced Nigeria"</span>, <span class="dt">rows =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb7-2" title="2">list_of_ds</a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="co">## [[1]]</span></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="co">## &lt;HDX Dataset&gt; 4fbc627d-ff64-4bf6-8a49-59904eae15bb </span></a>
-<a class="sourceLine" id="cb7-5" title="5"><span class="co">##   Title: Nigeria - Internally displaced persons - IDPs</span></a>
-<a class="sourceLine" id="cb7-6" title="6"><span class="co">##   Name: idmc-idp-data-for-nigeria</span></a>
-<a class="sourceLine" id="cb7-7" title="7"><span class="co">##   Date: 01/01/2009-12/31/2016</span></a>
-<a class="sourceLine" id="cb7-8" title="8"><span class="co">##   Tags (up to 5): displacement, idmc, population</span></a>
-<a class="sourceLine" id="cb7-9" title="9"><span class="co">##   Locations (up to 5): nga</span></a>
-<a class="sourceLine" id="cb7-10" title="10"><span class="co">##   Resources (up to 5): displacement_data, conflict_data, disaster_data</span></a>
-<a class="sourceLine" id="cb7-11" title="11"></a>
-<a class="sourceLine" id="cb7-12" title="12"><span class="co">## [[2]]</span></a>
-<a class="sourceLine" id="cb7-13" title="13"><span class="co">## &lt;HDX Dataset&gt; 4adf7874-ae01-46fd-a442-5fc6b3c9dff1 </span></a>
-<a class="sourceLine" id="cb7-14" title="14"><span class="co">##   Title: Nigeria Baseline Assessment Data [IOM DTM]</span></a>
-<a class="sourceLine" id="cb7-15" title="15"><span class="co">##   Name: nigeria-baseline-data-iom-dtm</span></a>
-<a class="sourceLine" id="cb7-16" title="16"><span class="co">##   Date: 01/31/2018</span></a>
-<a class="sourceLine" id="cb7-17" title="17"><span class="co">##   Tags (up to 5): adamawa, assessment, baseline-data, baseline-dtm, bauchi</span></a>
-<a class="sourceLine" id="cb7-18" title="18"><span class="co">##   Locations (up to 5): nga</span></a>
-<a class="sourceLine" id="cb7-19" title="19"><span class="co">##   Resources (up to 5): DTM Nigeria Baseline Assessment Round 21, DTM Nigeria Baseline Assessment Round 20, DTM Nigeria Baseline Assessment Round 19, DTM Nigeria Baseline Assessment Round 18, DTM Nigeria Baseline Assessment Round 17</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">list_of_ds &lt;-<span class="st"> </span><span class="kw"><a href="reference/search_datasets.html">search_datasets</a></span>(<span class="st">"displaced Nigeria"</span>, <span class="dt">rows =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb6-2" title="2">list_of_ds</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">## [[1]]</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">## &lt;HDX Dataset&gt; 4fbc627d-ff64-4bf6-8a49-59904eae15bb </span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">##   Title: Nigeria - Internally displaced persons - IDPs</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">##   Name: idmc-idp-data-for-nigeria</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co">##   Date: 01/01/2009-12/31/2016</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co">##   Tags (up to 5): displacement, idmc, population</span></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="co">##   Locations (up to 5): nga</span></a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="co">##   Resources (up to 5): displacement_data, conflict_data, disaster_data</span></a>
+<a class="sourceLine" id="cb6-11" title="11"></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="co">## [[2]]</span></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="co">## &lt;HDX Dataset&gt; 4adf7874-ae01-46fd-a442-5fc6b3c9dff1 </span></a>
+<a class="sourceLine" id="cb6-14" title="14"><span class="co">##   Title: Nigeria Baseline Assessment Data [IOM DTM]</span></a>
+<a class="sourceLine" id="cb6-15" title="15"><span class="co">##   Name: nigeria-baseline-data-iom-dtm</span></a>
+<a class="sourceLine" id="cb6-16" title="16"><span class="co">##   Date: 01/31/2018</span></a>
+<a class="sourceLine" id="cb6-17" title="17"><span class="co">##   Tags (up to 5): adamawa, assessment, baseline-data, baseline-dtm, bauchi</span></a>
+<a class="sourceLine" id="cb6-18" title="18"><span class="co">##   Locations (up to 5): nga</span></a>
+<a class="sourceLine" id="cb6-19" title="19"><span class="co">##   Resources (up to 5): DTM Nigeria Baseline Assessment Round 21, DTM Nigeria Baseline Assessment Round 20, DTM Nigeria Baseline Assessment Round 19, DTM Nigeria Baseline Assessment Round 18, DTM Nigeria Baseline Assessment Round 17</span></a></code></pre></div>
 </div>
 <div id="choose-the-dataset-you-want-to-manipulate-in-r-in-this-case-we-will-take-the-first-one-" class="section level3">
 <h3 class="hasAnchor">
 <a href="#choose-the-dataset-you-want-to-manipulate-in-r-in-this-case-we-will-take-the-first-one-" class="anchor"></a>Choose the dataset you want to manipulate in R, in this case we will take the first one.</h3>
-<p>The result of <code>search_datasets</code> is a list of HDX datasets, you can manipulate this list like any other <code>list</code> in R. We can use <code><a href="http://dplyr.tidyverse.org/reference/nth.html">dplyr::first</a></code> to select the first element of our list.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">ds &lt;-<span class="st"> </span><span class="kw">first</span>(list_of_ds)</a>
-<a class="sourceLine" id="cb8-2" title="2">ds</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">## &lt;HDX Dataset&gt; 4fbc627d-ff64-4bf6-8a49-59904eae15bb </span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">##   Title: Nigeria - Internally displaced persons - IDPs</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">##   Name: idmc-idp-data-for-nigeria</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">##   Date: 01/01/2009-12/31/2016</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">##   Tags (up to 5): displacement, idmc, population</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">##   Locations (up to 5): nga</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">##   Resources (up to 5): displacement_data, conflict_data, disaster_data</span></a></code></pre></div>
+<p>The result of <code>search_datasets</code> is a list of HDX datasets, you can manipulate this list like any other <code>list</code> in R. We can use <code><a href="https://www.rdocumentation.org/packages/purrr/topics/pluck">purrr::pluck</a></code> to select the element we want in our list, here it is the first.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">ds &lt;-<span class="st"> </span><span class="kw">pluck</span>(list_of_ds, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb7-2" title="2">ds</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">## &lt;HDX Dataset&gt; 4fbc627d-ff64-4bf6-8a49-59904eae15bb </span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">##   Title: Nigeria - Internally displaced persons - IDPs</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="co">##   Name: idmc-idp-data-for-nigeria</span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="co">##   Date: 01/01/2009-12/31/2016</span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">##   Tags (up to 5): displacement, idmc, population</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="co">##   Locations (up to 5): nga</span></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="co">##   Resources (up to 5): displacement_data, conflict_data, disaster_data</span></a></code></pre></div>
 </div>
 <div id="list-all-resources-in-the-dataset" class="section level3">
 <h3 class="hasAnchor">
 <a href="#list-all-resources-in-the-dataset" class="anchor"></a>List all resources in the dataset</h3>
-<p>With our dataset, the next step is to list all the resources. If you are not familiar with CKAN terminology, <code>resources</code> refer to the actual files shared in a dataset page. Each dataset page contains one or more resources.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">list_of_rs &lt;-<span class="st"> </span><span class="kw">get_resources</span>(ds)</a>
-<a class="sourceLine" id="cb9-2" title="2">list_of_rs</a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="co">## [[1]]</span></a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="co">## &lt;HDX Resource&gt; f57be018-116e-4dd9-a7ab-8002e7627f36 </span></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="co">##   Name: displacement_data</span></a>
-<a class="sourceLine" id="cb9-6" title="6"><span class="co">##   Description: Internally displaced persons - IDPs (new displacement associated with conflict and violence)</span></a>
-<a class="sourceLine" id="cb9-7" title="7"><span class="co">##   Size: </span></a>
-<a class="sourceLine" id="cb9-8" title="8"><span class="co">##   Format: JSON</span></a>
-<a class="sourceLine" id="cb9-9" title="9"></a>
-<a class="sourceLine" id="cb9-10" title="10"><span class="co">## [[2]]</span></a>
-<a class="sourceLine" id="cb9-11" title="11"><span class="co">## &lt;HDX Resource&gt; 6261856c-afb9-4746-b340-9cf531cbd38f </span></a>
-<a class="sourceLine" id="cb9-12" title="12"><span class="co">##   Name: conflict_data</span></a>
-<a class="sourceLine" id="cb9-13" title="13"><span class="co">##   Description: Internally displaced persons - IDPs (people displaced by conflict and violence)</span></a>
-<a class="sourceLine" id="cb9-14" title="14"><span class="co">##   Size: </span></a>
-<a class="sourceLine" id="cb9-15" title="15"><span class="co">##   Format: JSON</span></a>
-<a class="sourceLine" id="cb9-16" title="16"></a>
-<a class="sourceLine" id="cb9-17" title="17"><span class="co">## [[3]]</span></a>
-<a class="sourceLine" id="cb9-18" title="18"><span class="co">## &lt;HDX Resource&gt; b8ff1f4b-105c-4a6c-bf54-a543a486ab7e </span></a>
-<a class="sourceLine" id="cb9-19" title="19"><span class="co">##   Name: disaster_data</span></a>
-<a class="sourceLine" id="cb9-20" title="20"><span class="co">##   Description: Internally displaced persons - IDPs (new displacement associated with disasters)</span></a>
-<a class="sourceLine" id="cb9-21" title="21"><span class="co">##   Size: </span></a>
-<a class="sourceLine" id="cb9-22" title="22"><span class="co">##   Format: JSON</span></a></code></pre></div>
+<p>With our dataset, the next step is to list all the resources. If you are not familiar with CKAN terminology, <code>resources</code> refer to the actual files shared in a dataset page and you can download. Each dataset page contains one or more resources.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">get_resources</span>(ds)</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="co">## [[1]]</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">## &lt;HDX Resource&gt; f57be018-116e-4dd9-a7ab-8002e7627f36 </span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">##   Name: displacement_data</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">##   Description: Internally displaced persons - IDPs (new displacement associated with conflict and violence)</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">##   Size: </span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">##   Format: JSON</span></a>
+<a class="sourceLine" id="cb8-8" title="8"></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">## [[2]]</span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co">## &lt;HDX Resource&gt; 6261856c-afb9-4746-b340-9cf531cbd38f </span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="co">##   Name: conflict_data</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="co">##   Description: Internally displaced persons - IDPs (people displaced by conflict and violence)</span></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="co">##   Size: </span></a>
+<a class="sourceLine" id="cb8-14" title="14"><span class="co">##   Format: JSON</span></a>
+<a class="sourceLine" id="cb8-15" title="15"></a>
+<a class="sourceLine" id="cb8-16" title="16"><span class="co">## [[3]]</span></a>
+<a class="sourceLine" id="cb8-17" title="17"><span class="co">## &lt;HDX Resource&gt; b8ff1f4b-105c-4a6c-bf54-a543a486ab7e </span></a>
+<a class="sourceLine" id="cb8-18" title="18"><span class="co">##   Name: disaster_data</span></a>
+<a class="sourceLine" id="cb8-19" title="19"><span class="co">##   Description: Internally displaced persons - IDPs (new displacement associated with disasters)</span></a>
+<a class="sourceLine" id="cb8-20" title="20"><span class="co">##   Size: </span></a>
+<a class="sourceLine" id="cb8-21" title="21"><span class="co">##   Format: JSON</span></a></code></pre></div>
 </div>
 <div id="choose-a-resource-we-need-to-downloadread" class="section level3">
 <h3 class="hasAnchor">
 <a href="#choose-a-resource-we-need-to-downloadread" class="anchor"></a>Choose a resource we need to download/read</h3>
-<p>For this example, we are looking for the displacement data and it’s the first resource in our list <code>list_of_rs</code>. The selected resource can be then downloaded and store or directly read into your R session using the <code>read_session</code> function. The resource is a <code>json</code> file and it can be read directly with some options like <code>simplify_json</code> (get a <code>vector</code> or a <code>data.frame</code> when possible instead of a <code>list</code>)</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">idp_nga_rs &lt;-<span class="st"> </span><span class="kw">first</span>(list_of_rs)</a>
-<a class="sourceLine" id="cb10-2" title="2">idp_nga_df &lt;-<span class="st"> </span><span class="kw">read_session</span>(idp_nga_rs, <span class="dt">simplify_json =</span> <span class="ot">TRUE</span>, <span class="dt">folder =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>())</a>
-<a class="sourceLine" id="cb10-3" title="3">idp_nga_df</a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co">## $results</span></a>
-<a class="sourceLine" id="cb10-5" title="5"><span class="co">##   iso iso3 geo_name year conflict_new_displacements</span></a>
-<a class="sourceLine" id="cb10-6" title="6"><span class="co">## 1  NG  NGA  Nigeria 2009                       5000</span></a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="co">## 2  NG  NGA  Nigeria 2010                       5000</span></a>
-<a class="sourceLine" id="cb10-8" title="8"><span class="co">## 3  NG  NGA  Nigeria 2011                      65000</span></a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="co">## 4  NG  NGA  Nigeria 2012                      63000</span></a>
-<a class="sourceLine" id="cb10-10" title="10"><span class="co">## 5  NG  NGA  Nigeria 2013                     471000</span></a>
-<a class="sourceLine" id="cb10-11" title="11"><span class="co">## 6  NG  NGA  Nigeria 2014                     975000</span></a>
-<a class="sourceLine" id="cb10-12" title="12"><span class="co">## 7  NG  NGA  Nigeria 2015                     737000</span></a>
-<a class="sourceLine" id="cb10-13" title="13"><span class="co">## 8  NG  NGA  Nigeria 2016                     501000</span></a>
-<a class="sourceLine" id="cb10-14" title="14"><span class="co">##   disaster_new_displacements conflict_stock_displacement</span></a>
-<a class="sourceLine" id="cb10-15" title="15"><span class="co">## 1                     140000                          NA</span></a>
-<a class="sourceLine" id="cb10-16" title="16"><span class="co">## 2                     560000                          NA</span></a>
-<a class="sourceLine" id="cb10-17" title="17"><span class="co">## 3                       6300                          NA</span></a>
-<a class="sourceLine" id="cb10-18" title="18"><span class="co">## 4                    6112000                          NA</span></a>
-<a class="sourceLine" id="cb10-19" title="19"><span class="co">## 5                     117000                     3300000</span></a>
-<a class="sourceLine" id="cb10-20" title="20"><span class="co">## 6                       3000                     1075000</span></a>
-<a class="sourceLine" id="cb10-21" title="21"><span class="co">## 7                     100000                     2096000</span></a>
-<a class="sourceLine" id="cb10-22" title="22"><span class="co">## 8                      78000                     1955000</span></a>
-<a class="sourceLine" id="cb10-23" title="23"></a>
-<a class="sourceLine" id="cb10-24" title="24"><span class="co">## $lookups</span></a>
-<a class="sourceLine" id="cb10-25" title="25"><span class="co">## named list()</span></a>
-<a class="sourceLine" id="cb10-26" title="26"></a>
-<a class="sourceLine" id="cb10-27" title="27"><span class="co">## $errors</span></a>
-<a class="sourceLine" id="cb10-28" title="28"><span class="co">## list()</span></a>
-<a class="sourceLine" id="cb10-29" title="29"></a>
-<a class="sourceLine" id="cb10-30" title="30"><span class="co">## $success</span></a>
-<a class="sourceLine" id="cb10-31" title="31"><span class="co">## [1] TRUE</span></a>
-<a class="sourceLine" id="cb10-32" title="32"></a>
-<a class="sourceLine" id="cb10-33" title="33"><span class="co">## $params</span></a>
-<a class="sourceLine" id="cb10-34" title="34"><span class="co">## [1] "/api/displacement_data?iso3=NGA&amp;ci=HDX00AKEYJUl17"</span></a>
-<a class="sourceLine" id="cb10-35" title="35"></a>
-<a class="sourceLine" id="cb10-36" title="36"><span class="co">## $total</span></a>
-<a class="sourceLine" id="cb10-37" title="37"><span class="co">## [1] 8</span></a>
-<a class="sourceLine" id="cb10-38" title="38"></a>
-<a class="sourceLine" id="cb10-39" title="39"><span class="co">## $limit</span></a>
-<a class="sourceLine" id="cb10-40" title="40"><span class="co">## [1] 0</span></a>
-<a class="sourceLine" id="cb10-41" title="41"></a>
-<a class="sourceLine" id="cb10-42" title="42"><span class="co">## $offset</span></a>
-<a class="sourceLine" id="cb10-43" title="43"><span class="co">## [1] 0</span></a></code></pre></div>
+<p>For this example, we are looking for the displacement data and it’s the first resource in the dataset page. We can use <code>pluck</code> on the list of resources or the helper function <code>get_resource(resource, resource_index)</code> to select the resource we want to use. The selected resource can be then downloaded and store for further use or directly read into your R session using the <code>read_session</code> function. The resource is a <code>json</code> file and it can be read directly using <code>jsonlite</code> package, we added a <code>simplify_json</code> option to get a <code>vector</code> or a <code>data.frame</code> when possible instead of a <code>list</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">idp_nga_rs &lt;-<span class="st"> </span><span class="kw">get_resource</span>(ds, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2">idp_nga_df &lt;-<span class="st"> </span><span class="kw">read_resource</span>(idp_nga_rs, <span class="dt">simplify_json =</span> <span class="ot">TRUE</span>, <span class="dt">folder =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>())</a>
+<a class="sourceLine" id="cb9-3" title="3">idp_nga_df</a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co">## $results</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co">##   iso iso3 geo_name year conflict_new_displacements</span></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="co">## 1  NG  NGA  Nigeria 2009                       5000</span></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="co">## 2  NG  NGA  Nigeria 2010                       5000</span></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="co">## 3  NG  NGA  Nigeria 2011                      65000</span></a>
+<a class="sourceLine" id="cb9-9" title="9"><span class="co">## 4  NG  NGA  Nigeria 2012                      63000</span></a>
+<a class="sourceLine" id="cb9-10" title="10"><span class="co">## 5  NG  NGA  Nigeria 2013                     471000</span></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="co">## 6  NG  NGA  Nigeria 2014                     975000</span></a>
+<a class="sourceLine" id="cb9-12" title="12"><span class="co">## 7  NG  NGA  Nigeria 2015                     737000</span></a>
+<a class="sourceLine" id="cb9-13" title="13"><span class="co">## 8  NG  NGA  Nigeria 2016                     501000</span></a>
+<a class="sourceLine" id="cb9-14" title="14"><span class="co">##   disaster_new_displacements conflict_stock_displacement</span></a>
+<a class="sourceLine" id="cb9-15" title="15"><span class="co">## 1                     140000                          NA</span></a>
+<a class="sourceLine" id="cb9-16" title="16"><span class="co">## 2                     560000                          NA</span></a>
+<a class="sourceLine" id="cb9-17" title="17"><span class="co">## 3                       6300                          NA</span></a>
+<a class="sourceLine" id="cb9-18" title="18"><span class="co">## 4                    6112000                          NA</span></a>
+<a class="sourceLine" id="cb9-19" title="19"><span class="co">## 5                     117000                     3300000</span></a>
+<a class="sourceLine" id="cb9-20" title="20"><span class="co">## 6                       3000                     1075000</span></a>
+<a class="sourceLine" id="cb9-21" title="21"><span class="co">## 7                     100000                     2096000</span></a>
+<a class="sourceLine" id="cb9-22" title="22"><span class="co">## 8                      78000                     1955000</span></a>
+<a class="sourceLine" id="cb9-23" title="23"></a>
+<a class="sourceLine" id="cb9-24" title="24"><span class="co">## $lookups</span></a>
+<a class="sourceLine" id="cb9-25" title="25"><span class="co">## named list()</span></a>
+<a class="sourceLine" id="cb9-26" title="26"></a>
+<a class="sourceLine" id="cb9-27" title="27"><span class="co">## $errors</span></a>
+<a class="sourceLine" id="cb9-28" title="28"><span class="co">## list()</span></a>
+<a class="sourceLine" id="cb9-29" title="29"></a>
+<a class="sourceLine" id="cb9-30" title="30"><span class="co">## $success</span></a>
+<a class="sourceLine" id="cb9-31" title="31"><span class="co">## [1] TRUE</span></a>
+<a class="sourceLine" id="cb9-32" title="32"></a>
+<a class="sourceLine" id="cb9-33" title="33"><span class="co">## $params</span></a>
+<a class="sourceLine" id="cb9-34" title="34"><span class="co">## [1] "/api/displacement_data?iso3=NGA&amp;ci=HDX00AKEYJUl17"</span></a>
+<a class="sourceLine" id="cb9-35" title="35"></a>
+<a class="sourceLine" id="cb9-36" title="36"><span class="co">## $total</span></a>
+<a class="sourceLine" id="cb9-37" title="37"><span class="co">## [1] 8</span></a>
+<a class="sourceLine" id="cb9-38" title="38"></a>
+<a class="sourceLine" id="cb9-39" title="39"><span class="co">## $limit</span></a>
+<a class="sourceLine" id="cb9-40" title="40"><span class="co">## [1] 0</span></a>
+<a class="sourceLine" id="cb9-41" title="41"></a>
+<a class="sourceLine" id="cb9-42" title="42"><span class="co">## $offset</span></a>
+<a class="sourceLine" id="cb9-43" title="43"><span class="co">## [1] 0</span></a></code></pre></div>
 </div>
-<div id="using-magrittr-pipes" class="section level3">
+<div id="using-magrittr-pipe" class="section level3">
 <h3 class="hasAnchor">
-<a href="#using-magrittr-pipes" class="anchor"></a>Using <code>magrittr</code> pipes</h3>
-<p>All these operations can be chained using pipes <code>%&gt;%</code> and allow for a powerful grammar to easily get your data in R</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidyverse)</a>
-<a class="sourceLine" id="cb11-2" title="2"></a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="kw">set_rhdx_config</span>(<span class="dt">hdx_site =</span> <span class="st">"prod"</span>)</a>
-<a class="sourceLine" id="cb11-4" title="4"></a>
-<a class="sourceLine" id="cb11-5" title="5"><span class="kw">search_datasets</span>(<span class="st">"displaced Nigeria"</span>, <span class="dt">rows =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-6" title="6"><span class="st"> </span><span class="kw">first</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-7" title="7"><span class="st"> </span><span class="kw">get_resources</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-8" title="8"><span class="st"> </span><span class="kw">first</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb11-9" title="9"><span class="st"> </span><span class="kw">read_session</span>(<span class="dt">simplify_json =</span> <span class="ot">TRUE</span>, <span class="dt">folder =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>()) -&gt;<span class="st"> </span>idp_nga_df</a>
-<a class="sourceLine" id="cb11-10" title="10"></a>
-<a class="sourceLine" id="cb11-11" title="11">idp_nga_df</a>
-<a class="sourceLine" id="cb11-12" title="12"><span class="co">## $results</span></a>
-<a class="sourceLine" id="cb11-13" title="13"><span class="co">##   iso iso3 geo_name year conflict_new_displacements</span></a>
-<a class="sourceLine" id="cb11-14" title="14"><span class="co">## 1  NG  NGA  Nigeria 2009                       5000</span></a>
-<a class="sourceLine" id="cb11-15" title="15"><span class="co">## 2  NG  NGA  Nigeria 2010                       5000</span></a>
-<a class="sourceLine" id="cb11-16" title="16"><span class="co">## 3  NG  NGA  Nigeria 2011                      65000</span></a>
-<a class="sourceLine" id="cb11-17" title="17"><span class="co">## 4  NG  NGA  Nigeria 2012                      63000</span></a>
-<a class="sourceLine" id="cb11-18" title="18"><span class="co">## 5  NG  NGA  Nigeria 2013                     471000</span></a>
-<a class="sourceLine" id="cb11-19" title="19"><span class="co">## 6  NG  NGA  Nigeria 2014                     975000</span></a>
-<a class="sourceLine" id="cb11-20" title="20"><span class="co">## 7  NG  NGA  Nigeria 2015                     737000</span></a>
-<a class="sourceLine" id="cb11-21" title="21"><span class="co">## 8  NG  NGA  Nigeria 2016                     501000</span></a>
-<a class="sourceLine" id="cb11-22" title="22"><span class="co">##   disaster_new_displacements conflict_stock_displacement</span></a>
-<a class="sourceLine" id="cb11-23" title="23"><span class="co">## 1                     140000                          NA</span></a>
-<a class="sourceLine" id="cb11-24" title="24"><span class="co">## 2                     560000                          NA</span></a>
-<a class="sourceLine" id="cb11-25" title="25"><span class="co">## 3                       6300                          NA</span></a>
-<a class="sourceLine" id="cb11-26" title="26"><span class="co">## 4                    6112000                          NA</span></a>
-<a class="sourceLine" id="cb11-27" title="27"><span class="co">## 5                     117000                     3300000</span></a>
-<a class="sourceLine" id="cb11-28" title="28"><span class="co">## 6                       3000                     1075000</span></a>
-<a class="sourceLine" id="cb11-29" title="29"><span class="co">## 7                     100000                     2096000</span></a>
-<a class="sourceLine" id="cb11-30" title="30"><span class="co">## 8                      78000                     1955000</span></a>
-<a class="sourceLine" id="cb11-31" title="31"></a>
-<a class="sourceLine" id="cb11-32" title="32"><span class="co">## $lookups</span></a>
-<a class="sourceLine" id="cb11-33" title="33"><span class="co">## named list()</span></a>
-<a class="sourceLine" id="cb11-34" title="34"></a>
-<a class="sourceLine" id="cb11-35" title="35"><span class="co">## $errors</span></a>
-<a class="sourceLine" id="cb11-36" title="36"><span class="co">## list()</span></a>
-<a class="sourceLine" id="cb11-37" title="37"></a>
-<a class="sourceLine" id="cb11-38" title="38"><span class="co">## $success</span></a>
-<a class="sourceLine" id="cb11-39" title="39"><span class="co">## [1] TRUE</span></a>
-<a class="sourceLine" id="cb11-40" title="40"></a>
-<a class="sourceLine" id="cb11-41" title="41"><span class="co">## $params</span></a>
-<a class="sourceLine" id="cb11-42" title="42"><span class="co">## [1] "/api/displacement_data?iso3=NGA&amp;ci=HDX00AKEYJUl17"</span></a>
-<a class="sourceLine" id="cb11-43" title="43"></a>
-<a class="sourceLine" id="cb11-44" title="44"><span class="co">## $total</span></a>
-<a class="sourceLine" id="cb11-45" title="45"><span class="co">## [1] 8</span></a>
-<a class="sourceLine" id="cb11-46" title="46"></a>
-<a class="sourceLine" id="cb11-47" title="47"><span class="co">## $limit</span></a>
-<a class="sourceLine" id="cb11-48" title="48"><span class="co">## [1] 0</span></a>
-<a class="sourceLine" id="cb11-49" title="49"></a>
-<a class="sourceLine" id="cb11-50" title="50"><span class="co">## $offset</span></a>
-<a class="sourceLine" id="cb11-51" title="51"><span class="co">## [1] 0</span></a></code></pre></div>
-</div>
-</div>
-<div id="read-data-with-hxl-tags" class="section level2">
-<h2 class="hasAnchor">
-<a href="#read-data-with-hxl-tags" class="anchor"></a>Read data with HXL tags</h2>
-<p>The <code>rhxl</code> package is used to manipulate HXLated dataset</p>
-</div>
-<div id="create-a-dataset-in-hdx" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-a-dataset-in-hdx" class="anchor"></a>Create a dataset in HDX</h2>
-<div id="connect-to-a-server-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#connect-to-a-server-1" class="anchor"></a>Connect to a server</h3>
-</div>
-<div id="get-an-api-key" class="section level3">
-<h3 class="hasAnchor">
-<a href="#get-an-api-key" class="anchor"></a>Get an API key</h3>
+<a href="#using-magrittr-pipe" class="anchor"></a>Using <code>magrittr</code> pipe</h3>
+<p>All these operations can be chained using pipes <code>%&gt;%</code> and allow for a powerful grammar to easily get humanitarian data in R.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidyverse)</a>
+<a class="sourceLine" id="cb10-2" title="2"></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="kw"><a href="reference/set_rhdx_config.html">set_rhdx_config</a></span>(<span class="dt">hdx_site =</span> <span class="st">"prod"</span>)</a>
+<a class="sourceLine" id="cb10-4" title="4"></a>
+<a class="sourceLine" id="cb10-5" title="5">idp_nga_df &lt;-</a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="st">  </span><span class="kw"><a href="reference/search_datasets.html">search_datasets</a></span>(<span class="st">"displaced Nigeria"</span>, <span class="dt">rows =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="st">  </span><span class="kw">pluck</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="st">  </span><span class="kw">get_resource</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## get the first resource</span></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="st">  </span><span class="kw">read_resource</span>(<span class="dt">simplify_json =</span> <span class="ot">TRUE</span>, <span class="dt">folder =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>()) <span class="co">## the file will be downloaded in a temporary directory</span></a>
+<a class="sourceLine" id="cb10-10" title="10"></a>
+<a class="sourceLine" id="cb10-11" title="11">idp_nga_df</a>
+<a class="sourceLine" id="cb10-12" title="12"><span class="co">## $results</span></a>
+<a class="sourceLine" id="cb10-13" title="13"><span class="co">##   iso iso3 geo_name year conflict_new_displacements</span></a>
+<a class="sourceLine" id="cb10-14" title="14"><span class="co">## 1  NG  NGA  Nigeria 2009                       5000</span></a>
+<a class="sourceLine" id="cb10-15" title="15"><span class="co">## 2  NG  NGA  Nigeria 2010                       5000</span></a>
+<a class="sourceLine" id="cb10-16" title="16"><span class="co">## 3  NG  NGA  Nigeria 2011                      65000</span></a>
+<a class="sourceLine" id="cb10-17" title="17"><span class="co">## 4  NG  NGA  Nigeria 2012                      63000</span></a>
+<a class="sourceLine" id="cb10-18" title="18"><span class="co">## 5  NG  NGA  Nigeria 2013                     471000</span></a>
+<a class="sourceLine" id="cb10-19" title="19"><span class="co">## 6  NG  NGA  Nigeria 2014                     975000</span></a>
+<a class="sourceLine" id="cb10-20" title="20"><span class="co">## 7  NG  NGA  Nigeria 2015                     737000</span></a>
+<a class="sourceLine" id="cb10-21" title="21"><span class="co">## 8  NG  NGA  Nigeria 2016                     501000</span></a>
+<a class="sourceLine" id="cb10-22" title="22"><span class="co">##   disaster_new_displacements conflict_stock_displacement</span></a>
+<a class="sourceLine" id="cb10-23" title="23"><span class="co">## 1                     140000                          NA</span></a>
+<a class="sourceLine" id="cb10-24" title="24"><span class="co">## 2                     560000                          NA</span></a>
+<a class="sourceLine" id="cb10-25" title="25"><span class="co">## 3                       6300                          NA</span></a>
+<a class="sourceLine" id="cb10-26" title="26"><span class="co">## 4                    6112000                          NA</span></a>
+<a class="sourceLine" id="cb10-27" title="27"><span class="co">## 5                     117000                     3300000</span></a>
+<a class="sourceLine" id="cb10-28" title="28"><span class="co">## 6                       3000                     1075000</span></a>
+<a class="sourceLine" id="cb10-29" title="29"><span class="co">## 7                     100000                     2096000</span></a>
+<a class="sourceLine" id="cb10-30" title="30"><span class="co">## 8                      78000                     1955000</span></a>
+<a class="sourceLine" id="cb10-31" title="31"></a>
+<a class="sourceLine" id="cb10-32" title="32"><span class="co">## $lookups</span></a>
+<a class="sourceLine" id="cb10-33" title="33"><span class="co">## named list()</span></a>
+<a class="sourceLine" id="cb10-34" title="34"></a>
+<a class="sourceLine" id="cb10-35" title="35"><span class="co">## $errors</span></a>
+<a class="sourceLine" id="cb10-36" title="36"><span class="co">## list()</span></a>
+<a class="sourceLine" id="cb10-37" title="37"></a>
+<a class="sourceLine" id="cb10-38" title="38"><span class="co">## $success</span></a>
+<a class="sourceLine" id="cb10-39" title="39"><span class="co">## [1] TRUE</span></a>
+<a class="sourceLine" id="cb10-40" title="40"></a>
+<a class="sourceLine" id="cb10-41" title="41"><span class="co">## $params</span></a>
+<a class="sourceLine" id="cb10-42" title="42"><span class="co">## [1] "/api/displacement_data?iso3=NGA&amp;ci=HDX00AKEYJUl17"</span></a>
+<a class="sourceLine" id="cb10-43" title="43"></a>
+<a class="sourceLine" id="cb10-44" title="44"><span class="co">## $total</span></a>
+<a class="sourceLine" id="cb10-45" title="45"><span class="co">## [1] 8</span></a>
+<a class="sourceLine" id="cb10-46" title="46"></a>
+<a class="sourceLine" id="cb10-47" title="47"><span class="co">## $limit</span></a>
+<a class="sourceLine" id="cb10-48" title="48"><span class="co">## [1] 0</span></a>
+<a class="sourceLine" id="cb10-49" title="49"></a>
+<a class="sourceLine" id="cb10-50" title="50"><span class="co">## $offset</span></a>
+<a class="sourceLine" id="cb10-51" title="51"><span class="co">## [1] 0</span></a></code></pre></div>
 </div>
 </div>
 <div id="meta" class="section level2">
 <h2 class="hasAnchor">
 <a href="#meta" class="anchor"></a>Meta</h2>
 <ul>
-<li>Please <a href="https://gitlab.dickoa/rhdx/issues">report any issues or bugs</a>.</li>
+<li>Please <a href="https://gitlab.com/dickoa/rhdx/issues">report any issues or bugs</a>.</li>
 <li>License: MIT</li>
 <li>Please note that this project is released with a <a href="CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</li>
 </ul>
@@ -339,7 +327,7 @@
 </div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
@@ -362,7 +350,7 @@
 </ul>
 </div>
 
-  <div class="dev-status">
+      <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://gitlab.com/dickoa/rhdx/pipelines"><img src="https://gitlab.com/dickoa/rhdx/badges/master/build.svg" alt="GitLab CI Build Status"></a></li>
@@ -371,6 +359,7 @@
 </ul>
 </div>
 </div>
+
 </div>
 
 
@@ -379,7 +368,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
 </div>

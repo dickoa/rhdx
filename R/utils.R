@@ -132,7 +132,7 @@ read_hdx_csv <- function(path, hxl = FALSE, ...) {
   check_packages("readr")
   df <- readr::read_csv(path, ...)
   if (isTRUE(hxl))
-    df <- rhxl::as_hxl(df)
+    df <- strip_hxl(df)
   df
 }
 
@@ -146,7 +146,7 @@ read_hdx_excel <- function(path = NULL, sheet = NULL, hxl = FALSE, ...) {
   }
   df <- readxl::read_excel(path, sheet = sheet, ...)
   if (isTRUE(hxl))
-    df <- rhxl::as_hxl(df)
+    df <- strip_hxl(df)
   df
 }
 
@@ -204,11 +204,3 @@ browse <- function(x, ...)
 #' @export
 browse.default <- function(x, ...)
   x$browse()
-
-#' @export
-create_in_hdx <- function(x, ...)
-  UseMethod("create_in_hdx", x)
-
-#' @export
-create_in_hdx.default <- function(x, ...)
-  cat("Not an HDX object")

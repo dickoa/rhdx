@@ -13,7 +13,7 @@ delete_from_hdx(dataset)
 "None"
 }
 \description{
-Dataset delete
+Delete dataset from HDX
 }
 \examples{
 \dontrun{

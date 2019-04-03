@@ -20,7 +20,6 @@ Create dataset from list with required fields
 # Setting the config to use HDX default server
  set_rhdx_config()
  metadata <- list(name = "hum-dataset", date = "09/25/2018", title = "Humanitarian dataset")
- create_data(metdata)
- res
+ create_dataset(metdata)
 }
 }

@@ -3,22 +3,18 @@
 \docType{data}
 \name{Location}
 \alias{Location}
-\title{Create and manipulate HDX Location}
+\title{HDX Location}
 \description{
 HDX location mostly countries
 }
 \details{
-**Methods**
-  \describe{
-  }
+\strong{Methods}
+\describe{
+}
 }
 \examples{
 # ---------------------------------------------------------
 \dontrun{
-Configuration$create(hdx_site = "demo")
-org <- Location$read_from_hdx("ocha-mali", include_dataset = TRUE)
-org
 }
-
 }
 \keyword{datasets}

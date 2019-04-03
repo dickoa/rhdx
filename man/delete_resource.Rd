@@ -8,9 +8,13 @@ delete_resource(dataset, index)
 }
 \arguments{
 \item{dataset}{}
+
+\item{index}{Integer the index of the resource to be removed}
+
+\item{dataset}{Dataset the dataset from which we one to remove the resource}
 }
 \value{
-A Dataset
+Dataset the dataset without the resource
 }
 \description{
 Delete resource from dataset

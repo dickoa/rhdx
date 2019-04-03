@@ -8,7 +8,7 @@ search_datasets(query = "*:*", rows = 10L, page_size = 1000L,
   configuration = NULL, ...)
 }
 \arguments{
-\item{query}{Character Query (in Solr format). Defaults to ‘*:*’}
+\item{query}{Character Query (in Solr format). Defaults to ‘\emph{:}’}
 
 \item{rows}{Number of matching rows to return. Defaults to 10.}
 

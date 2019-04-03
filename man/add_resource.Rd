@@ -2,20 +2,21 @@
 % Please edit documentation in R/dataset.R
 \name{add_resource}
 \alias{add_resource}
-\title{Add resource to dataset}
+\title{Delete resource from dataset}
 \usage{
 add_resource(dataset, resource, ignore_dataset_id = FALSE)
 }
 \arguments{
-\item{dataset}{}
+\item{dataset}{Dataset the dataset in which we want to add a resource}
+
+\item{resource}{Resource the resource to add}
+
+\item{ignore_dataset_id}{whether or not to check dataset id before adding a resource}
 }
 \value{
-A Dataset
+Dataset
 }
 \description{
-Add resource to dataset
-}
-\details{
 Delete resource from dataset
 }
 \examples{

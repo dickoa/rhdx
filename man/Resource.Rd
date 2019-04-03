@@ -3,25 +3,20 @@
 \docType{data}
 \name{Resource}
 \alias{Resource}
-\title{Create HDX Resource}
+\title{HDX Resource}
 \description{
-R6 objects are essentially environments, structured in a way that makes them
-look like an object in a more typical object-oriented language than R. They
-support public and private members, as well as inheritance across different
-packages.
+HDX Resource
 }
 \details{
-**Methods**
-  \describe{
-  }
+\strong{Methods}
+\describe{
+}
 }
 \examples{
 \dontrun{
-set_rhdx_config()
-read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
-resource
+  set_rhdx_config()
+  resource <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+  resource
 }
-
-
 }
 \keyword{datasets}

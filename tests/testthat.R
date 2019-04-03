@@ -1,4 +1,4 @@
 library(testthat)
-library(ropenaq)
+library(rhdx)
 
 test_check("rhdx")
