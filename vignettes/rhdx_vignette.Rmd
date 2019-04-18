@@ -14,37 +14,35 @@ The Humanitarian Data Exchange is the UN OCHA platform for share
 Development version from GitLab
 
 ```{r, eval = FALSE}
-devtools::install_github("ropensci/crul")
-devtools::install_git("https://gitlab.com/dickoa/rhdx")
+remotes::install_gitlab("dickoa/rhdx")
 ```
 
 
 ```{r, eval = FALSE}
 library("rhdx")
-set_rhdx_config(hdx_site = "prod", read_only = TRUE)
 ```
 
-## Get data from HDX using an OOP approach
+## Get data from HDX
 ### Connect to a server
 
-You need to use the `Configuration` class to select a server 
+You need to set your configuration first
 
 ```{r, eval = FALSE}
-conf <- Configuration$setup(hdx_site = "prod")
-conf
-## <HDX Configuration> 
+set_rhdx_config(hdx_site = "prod", read_only = TRUE)
+get_rhdx_config()
+## <HDX Configuration>
 ##   HDX site: prod
 ##   HDX site url: https://data.humdata.org/
-##   HDX API key: 
+##   HDX API key:
 ```
 
 ### Search datasets
 
-Once we selected a server, we can now search from dataset using the `search_in_hdx` method from the `Dataset` class.
+Once we selected a server, we can now search from dataset using the `search_datasets` function.
 In this case we will limit just to two results.
 
 ```{r, eval = FALSE}
-list_of_ds <- Dataset$search_in_hdx("displaced Nigeria", rows = 2)
+list_of_ds <- search_datasets("displaced Nigeria", rows = 2)
 list_of_ds
 ## [[1]]
 ## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
@@ -81,7 +79,7 @@ ds
 ### List all resources in the dataset
 
 ```{r, eval = FALSE}
-list_of_rs <- ds$get_resources()
+list_of_rs <- get_resources(ds)
 list_of_rs
 ## [[1]]
 ## <HDX Resource> f57be018-116e-4dd9-a7ab-8002e7627f36 
@@ -106,11 +104,12 @@ list_of_rs
 ```
 
 ### Choose a resource we need to download/read
+
 We are looking for the displacement data, it's the first resource in our list `list_of_rs`
 
 ```{r, eval = FALSE}
 idp_nga_rs <- list_of_rs[[1]]
-idp_nga_df <- idp_nga_rs$read_session(simplify_json = TRUE, folder = tempdir())
+idp_nga_df <- read_resource(idp_nga_rs, simplify_json = TRUE, folder = tempdir())
 idp_nga_df
 ## $results
 ##   iso iso3 geo_name year conflict_new_displacements
