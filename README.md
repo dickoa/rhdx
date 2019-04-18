@@ -10,10 +10,7 @@ Coverage](https://codecov.io/gl/dickoa/rhdx/branch/master/graph/badge.svg)](http
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`rhdx` is an R client for the Humanitarian Exchange Data
-platform.
-
-![](https://gitlab.com/dickoa/rhdx/raw/5ec77127ad1a7322c6ff118f4b0a8fdcbba71788/inst/demo/demo.gif)
+`rhdx` is an R client for the Humanitarian Exchange Data platform.
 
 ## Introduction
 
