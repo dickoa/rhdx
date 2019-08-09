@@ -14,17 +14,17 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 
 ## Introduction
 
-The Humanitarian Data Exchange platform is the open platform to easily
-find and analyze humanitarian data.
+The [Humanitarian Data Exchange platform](https://data.humdata.org/) is
+the open platform to easily find and analyze humanitarian data.
 
 ## Installation
 
 This package is not on yet on CRAN and to install it, you will need the
 [`remotes`](https://github.com/r-lib/remotes) package. You can get
-`rhdx` from Gitlab or Github
+`rhdx` from Gitlab or Github (mirror)
 
 ``` r
-## install.packages("remotes") 
+## install.packages("remotes")
 remotes::install_gitlab("dickoa/rhdx")
 remotes::install_github("dickoa/rhdx")
 ```
@@ -41,22 +41,23 @@ and check the config using `get_rhdx_config`
 ``` r
 set_rhdx_config(hdx_site = "prod")
 get_rhdx_config()
-## <HDX Configuration> 
+## <HDX Configuration>
 ##   HDX site: prod
 ##   HDX site url: https://data.humdata.org/
-##   HDX API key: 
+##   HDX API key:
 ```
 
-Now that we are connected to HDX, we can search for dataset pages using
-`search_datasets`, access resources on the dataset pages with the
-`get_resources` function and finally read the data directly into the R
-session using `read_session`. `magrittr` pipes operator are supported
+Now that we are connected to HDX, we can search for dataset using
+`search_datasets`, access resources withini the dataset page with the
+`get_resources` function and finally read the data directly into the `R`
+session using `read_session`. `magrittr` pipes operator are also
+supported
 
 ``` r
 library(tidyverse)
 search_datasets("ACLED Mali", rows = 2) %>% ## search dataset in HDX, limit the results to two rows
   pluck(1) %>% ## select the first dataset
-  get_resource(1) %>% ## list all resources in the dataset page
+  get_resource(1) %>% ## pick the first resource
   read_resource() ## read this HXLated data into R
 ## # A tibble: 2,516 x 30
 ##    data_id   iso event_id_cnty event_id_no_cnty event_date  year
@@ -72,22 +73,24 @@ search_datasets("ACLED Mali", rows = 2) %>% ## search dataset in HDX, limit the 
 ##  9 2942553   466 MLI2597                   2597 2019-01-23  2019
 ## 10 2942554   466 MLI2598                   2598 2019-01-23  2019
 ## # … with 2,506 more rows, and 24 more variables:
-## #   time_precision <dbl>, event_type <chr>, actor1 <chr>,                                                                                                                                     
-## #   assoc_actor_1 <chr>, inter1 <dbl>, actor2 <chr>,                                                                                                                                          
-## #   assoc_actor_2 <chr>, inter2 <dbl>, interaction <dbl>,                                                                                                                                     
-## #   region <chr>, country <chr>, admin1 <chr>, admin2 <chr>,                                                                                                                                  
-## #   admin3 <chr>, location <chr>, latitude <dbl>,                                                                                                                                             
-## #   longitude <dbl>, geo_precision <dbl>, source <chr>,                                                                                                                                       
-## #   source_scale <chr>, notes <chr>, fatalities <dbl>,                                                                                                                                        
+## #   time_precision <dbl>, event_type <chr>, actor1 <chr>,
+## #   assoc_actor_1 <chr>, inter1 <dbl>, actor2 <chr>,
+## #   assoc_actor_2 <chr>, inter2 <dbl>, interaction <dbl>,
+## #   region <chr>, country <chr>, admin1 <chr>, admin2 <chr>,
+## #   admin3 <chr>, location <chr>, latitude <dbl>,
+## #   longitude <dbl>, geo_precision <dbl>, source <chr>,
+## #   source_scale <chr>, notes <chr>, fatalities <dbl>,
 ## #   timestamp <dbl>, iso3 <chr>
 ```
 
-`read_session` will not work for all data in HDX, so far the following
-format are supported: `csv`, `xlsx`, `xls`, `json`, `geojson`, `zipped
-shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`. I will
-consider adding more data types in the future.
+`read_resource` will not work with resources in HDX, so far the
+following format are supported: `csv`, `xlsx`, `xls`, `json`, `geojson`,
+`zipped shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`.
+I will consider adding more data types in the future, feel free to file
+an issue if it doesn’t work as expected or you want to add a support for
+a format.
 
-## Getting data in R a short tutorial
+## A step by step tutorial to getting data from rhdx
 
 ### Connect to a server
 
@@ -107,7 +110,7 @@ parameter).
 list_of_ds <- search_datasets("displaced Nigeria", rows = 2)
 list_of_ds
 ## [[1]]
-## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
+## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb
 ##   Title: Nigeria - Internally displaced persons - IDPs
 ##   Name: idmc-idp-data-for-nigeria
 ##   Date: 01/01/2009-12/31/2016
@@ -116,7 +119,7 @@ list_of_ds
 ##   Resources (up to 5): displacement_data, conflict_data, disaster_data
 
 ## [[2]]
-## <HDX Dataset> 4adf7874-ae01-46fd-a442-5fc6b3c9dff1 
+## <HDX Dataset> 4adf7874-ae01-46fd-a442-5fc6b3c9dff1
 ##   Title: Nigeria Baseline Assessment Data [IOM DTM]
 ##   Name: nigeria-baseline-data-iom-dtm
 ##   Date: 01/31/2018
@@ -128,14 +131,14 @@ list_of_ds
 ### Choose the dataset you want to manipulate in R, in this case we will take the first one.
 
 The result of `search_datasets` is a list of HDX datasets, you can
-manipulate this list like any other `list` in R. We can use
+manipulate this list like any other `list` in `R`. We can use
 `purrr::pluck` to select the element we want in our list, here it is the
 first.
 
 ``` r
 ds <- pluck(list_of_ds, 1)
 ds
-## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb 
+## <HDX Dataset> 4fbc627d-ff64-4bf6-8a49-59904eae15bb
 ##   Title: Nigeria - Internally displaced persons - IDPs
 ##   Name: idmc-idp-data-for-nigeria
 ##   Date: 01/01/2009-12/31/2016
@@ -154,24 +157,24 @@ contains one or more resources.
 ``` r
 get_resources(ds)
 ## [[1]]
-## <HDX Resource> f57be018-116e-4dd9-a7ab-8002e7627f36 
+## <HDX Resource> f57be018-116e-4dd9-a7ab-8002e7627f36
 ##   Name: displacement_data
 ##   Description: Internally displaced persons - IDPs (new displacement associated with conflict and violence)
-##   Size: 
+##   Size:
 ##   Format: JSON
 
 ## [[2]]
-## <HDX Resource> 6261856c-afb9-4746-b340-9cf531cbd38f 
+## <HDX Resource> 6261856c-afb9-4746-b340-9cf531cbd38f
 ##   Name: conflict_data
 ##   Description: Internally displaced persons - IDPs (people displaced by conflict and violence)
-##   Size: 
+##   Size:
 ##   Format: JSON
 
 ## [[3]]
-## <HDX Resource> b8ff1f4b-105c-4a6c-bf54-a543a486ab7e 
+## <HDX Resource> b8ff1f4b-105c-4a6c-bf54-a543a486ab7e
 ##   Name: disaster_data
 ##   Description: Internally displaced persons - IDPs (new displacement associated with disasters)
-##   Size: 
+##   Size:
 ##   Format: JSON
 ```
 
