@@ -50,7 +50,7 @@ get_rhdx_config()
 Now that we are connected to HDX, we can search for dataset using
 `search_datasets`, access resources withini the dataset page with the
 `get_resources` function and finally read the data directly into the `R`
-session using `read_session`. `magrittr` pipes operator are also
+session using `read_resource`. `magrittr` pipes operator are also
 supported
 
 ``` r
@@ -185,10 +185,10 @@ first resource in the dataset page. We can use `pluck` on the list of
 resources or the helper function `get_resource(resource,
 resource_index)` to select the resource we want to use. The selected
 resource can be then downloaded and store for further use or directly
-read into your R session using the `read_session` function. The resource
-is a `json` file and it can be read directly using `jsonlite` package,
-we added a `simplify_json` option to get a `vector` or a `data.frame`
-when possible instead of a `list`.
+read into your R session using the `read_resource` function. The
+resource is a `json` file and it can be read directly using `jsonlite`
+package, we added a `simplify_json` option to get a `vector` or a
+`data.frame` when possible instead of a `list`.
 
 ``` r
 idp_nga_rs <- get_resource(ds, 1)
