@@ -2,7 +2,7 @@ image: rocker/r-base:latest
 
 pages:
   stage: deploy
-  
+
   before_script:
     - apt-get update -qq
     - apt-get install -t unstable software-properties-common --yes
@@ -12,9 +12,7 @@ pages:
     - Rscript -e 'install.packages(c("devtools", "tidyverse", "remotes", "pkgdown", "testthat"))'
     - Rscript -e 'devtools::install_deps(dependencies = TRUE)'
     - Rscript -e 'remotes::install_gitlab("dickoa/rhdx")'
-    - Rscript -e 'pkgdown::build_site()'
-    - mv docs public
-    
+    - Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
 
   artifacts:
     paths:
