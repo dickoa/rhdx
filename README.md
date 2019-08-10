@@ -5,8 +5,14 @@
 
 [![GitLab CI Build
 Status](https://gitlab.com/dickoa/rhdx/badges/master/build.svg)](https://gitlab.com/dickoa/rhdx/pipelines)
+[![Travis build
+status](https://travis-ci.org/dickoa/rhdx.svg?branch=master)](https://travis-ci.org/dickoa/rhdx)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/gitlab/dickoa/rhdx?branch=master&svg=true)](https://ci.appveyor.com/project/dickoa/rhdx)
 [![Codecov Code
 Coverage](https://codecov.io/gl/dickoa/rhdx/branch/master/graph/badge.svg)](https://codecov.io/gl/dickoa/rhdx)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rhdx)](https://cran.r-project.org/package=rhdx)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

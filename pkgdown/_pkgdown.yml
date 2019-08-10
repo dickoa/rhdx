@@ -1,4 +1,4 @@
-destination: docs
+destination: public
 url: http://dickoa.gitlab.io/rhdx/
 navbar:
   type: inverse
