@@ -20,7 +20,3 @@ Add organization to dataset
 \details{
 Add locations to dataset
 }
-\examples{
-\dontrun{
-}
-}

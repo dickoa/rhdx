@@ -16,22 +16,22 @@ nc <- drop_nulls
 
 #' @noRd
 check_config_params <- function(hdx_site = NULL, hdx_key = NULL, hdx_config_file = NULL, read_only = NULL, user_agent = NULL) {
-  
+
   if (!is.null(hdx_site) && !hdx_site %in% c("prod", "test", "feature", "demo"))
     stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
-  
+
   if (!is.null(read_only) && !is.logical(read_only))
     stop("read_only should be take a logical, either `TRUE` or `FALSE`", call. = FALSE)
-  
+
   if (!is.null(user_agent) && !is.character(user_agent))
     stop("user_agent should be a character", call. = FALSE)
 
   if (!is.null(hdx_key) && !is_valid_uuid(hdx_key))
     stop("hdx_key not valid!", call. = FALSE)
-  
-  if (!is.null(hdx_config_file) && !file.exists(hdx_config_file)) 
+
+  if (!is.null(hdx_config_file) && !file.exists(hdx_config_file))
     stop("HDX config file not found!", call. = FALSE)
-  
+
   if (!is.null(hdx_config_file) && file.exists(hdx_config_file)) {
     file_ext <- tools::file_ext(hdx_config_file)
     if (!file_ext %in% c("yml", "json"))
@@ -108,6 +108,7 @@ is_valid_uuid <- function(x) {
 }
 
 #' @noRd
+#' @importFrom utils packageVersion
 get_user_agent <- function(x) {
   rhdx_version <- packageVersion("rhdx")
   os <- Sys.info()[["sysname"]]
@@ -185,6 +186,7 @@ read_hdx_raster <- function(path = NULL, zipped = TRUE, ...) {
 }
 
 #' @noRd
+#' @importFrom stats na.omit
 sift_res <- function(z, key = "name") {
   if (!is.null(z) && length(z) > 0) {
     if (!key %in% names(z)) key <- "name"
@@ -197,10 +199,29 @@ sift_res <- function(z, key = "name") {
   }
 }
 
+#' Browse a HDX object
+#'
+#' Browse a HDX object
+#'
+#' @param x an HDX object
+#' @param ... Extra parameters
+#' @rdname browse
+#'
+#'
+#' @return Character Tags of the dataset
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  res <- search_dataset(rows = 3L)
+#'  browse(res[[1]])
+#' }
 browse <- function(x, ...)
   UseMethod("browse", x)
 
+#' @rdname browse
 #' @export
 browse.default <- function(x, ...)
   x$browse()

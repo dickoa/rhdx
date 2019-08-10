@@ -2,24 +2,15 @@
 #'
 #' HDX Showcase
 #'
-#' @details
-#' **Methods**
-#'   \describe{
-#'   }
-#'
 #' @format NULL
 #' @usage NULL
-#'
-#' @examples
-#' \dontrun{
-#' }
 Showcase <- R6::R6Class(
   "Showcase",
 
   private = list(
     configuration = NULL
   ),
-  
+
   public = list(
     datasets = NULL,
     data = NULL,
@@ -36,16 +27,16 @@ Showcase <- R6::R6Class(
       if ("dataset" %in% key)
         self$datasets <- lapply(self$data$datasets,
                                 function(x) Dataset$new(initial_data = x, configuration = configuration))
-      
+
     },
-    
+
     pull = function(identifier = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("ckanext_showcase_show", list(id = identifier))
       Showcase$new(initial_data = res$result, configuration = configuration)
     },
-    
+
     add_dataset = function(dataset) {
       if (!inherits(dataset, "Dataset"))
         stop("Not of class Dataset, use `Dataset$new`!")
@@ -59,7 +50,7 @@ Showcase <- R6::R6Class(
         stop("Dataset not added to the showcase")
       res$result
     },
-    
+
     delete_dataset = function(dataset) {
       if (!inherits(dataset, "Dataset"))
         stop("Not of class Dataset, use `create_dataset`!")
@@ -73,7 +64,7 @@ Showcase <- R6::R6Class(
         stop("Dataset not added to the showcase")
       res$result
     },
-    
+
     list_datasets = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
@@ -82,7 +73,7 @@ Showcase <- R6::R6Class(
         stop("Dataset not added to the showcase")
       res$result
     },
-    
+
     add_tag = function(tag) {
       if (!inherits(tag, "Tag"))
         stop("Not of class Tag, use `Tag$new`!")
@@ -99,7 +90,7 @@ Showcase <- R6::R6Class(
         stop("Tag not added to the showcase")
       res$result
     },
-        
+
     delete_tag = function(tag) {
       if (!inherits(tag, "Tag"))
         stop("Not of class Tag, use `Tag$new`!")
@@ -116,7 +107,7 @@ Showcase <- R6::R6Class(
         stop("Tag not added to the showcase")
       res$result
     },
-    
+
     list_tags = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
@@ -125,7 +116,7 @@ Showcase <- R6::R6Class(
         stop("Tag not added to the showcase")
       res$result
     },
-    
+
     push = function() {
       configuration <- private$configuration
       ds <- nc(self$data)
@@ -137,7 +128,7 @@ Showcase <- R6::R6Class(
         stop("Showcase not created check the parameters")
       invisible(res1$result)
     },
-    
+
     delete = function(name = NULL) {
       configuration <- private$configuration
       ds <- drop_nulls(self$data)
@@ -149,16 +140,16 @@ Showcase <- R6::R6Class(
         stop("Showcase not created check the parameters")
 
     },
-    
+
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "showcase/", self$data$name))
     },
-    
+
     as_list = function() {
       self$data
     },
-    
+
     print = function() {
       cat(paste0("<HDX Showcase> ", self$data$id), "\n")
       cat("  Title: ", self$data$title, "\n", sep = "")
@@ -169,9 +160,9 @@ Showcase <- R6::R6Class(
     }
   )
 )
- 
+
 #' @export
-#' @aliases Showcase 
+#' @aliases Showcase
 #' @importFrom tibble as_tibble
 as_tibble.Showcase <- function(x) {
   df <- tibble::tibble(
@@ -182,8 +173,8 @@ as_tibble.Showcase <- function(x) {
 }
 
 #' @export
-#' @aliases Showcase 
-as.list.Showcase <- function(x) {
+#' @aliases Showcase
+as.list.Showcase <- function(x, ...) {
   x$as_list()
 }
 
@@ -200,10 +191,10 @@ as.list.Showcase <- function(x) {
 #'
 #' @param identifier Character Showcase name or id
 #' @param configuration Configuration an HDX configuration object
-#' 
+#'
 #' @details Delete resource from dataset
 #'
-#' 
+#'
 #' @return A showcase
 #' @export
 #'

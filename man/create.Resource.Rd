@@ -8,14 +8,12 @@ create.Resource(resource, verbose = FALSE)
 }
 \arguments{
 \item{resource}{Resource}
+
+\item{verbose}{Logical, verbose output if TRUE}
 }
 \value{
 an HDX resource
 }
 \description{
 Create resource in HDX
-}
-\examples{
-\dontrun{
-}
 }

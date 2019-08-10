@@ -7,11 +7,6 @@
 \description{
 HDX Resource
 }
-\details{
-\strong{Methods}
-\describe{
-}
-}
 \examples{
 \dontrun{
   set_rhdx_config()

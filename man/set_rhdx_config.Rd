@@ -2,10 +2,13 @@
 % Please edit documentation in R/configuration.R
 \name{set_rhdx_config}
 \alias{set_rhdx_config}
+\alias{get_rhdx_config}
 \title{Set rhdx config}
 \usage{
 set_rhdx_config(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
   hdx_config = NULL, hdx_config_file = NULL, configuration = NULL)
+
+get_rhdx_config()
 }
 \arguments{
 \item{hdx_site}{Character to specify which HDX server you want to use. Default to "prod".}
@@ -14,9 +17,13 @@ set_rhdx_config(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
 
 \item{read_only}{Logical if \code{FALSE} and hdx_key provided is correct you can push metdata and data to HDX}
 
-\item{hdx_config_file}{Character config file path, it can either a \code{JSON} or a \code{YAML}.}
+\item{hdx_config}{List of HDX configuration}
+
+\item{hdx_config_file}{Character, path of the HDX config file in JSON and YAML format}
 
 \item{configuration}{Configuration object.}
+
+\item{...}{Extra parameters}
 }
 \value{
 Invisibly returns the rhdx config object
@@ -32,8 +39,8 @@ Setting up a configuration will help you access and push data into HDX
 # Setting the config to use HDX default server
 set_rhdx_config(hdx_site = "prod")
 
-
 # You can check your configuration using \\code{get_rhdx_config}
 config <- get_rhdx_config()
+config
 }
 }

@@ -7,13 +7,4 @@
 \description{
 HDX user
 }
-\details{
-\strong{Methods}
-\describe{
-}
-}
-\examples{
-\dontrun{
-}
-}
 \keyword{datasets}

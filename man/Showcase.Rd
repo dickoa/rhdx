@@ -7,13 +7,4 @@
 \description{
 HDX Showcase
 }
-\details{
-\strong{Methods}
-\describe{
-}
-}
-\examples{
-\dontrun{
-}
-}
 \keyword{datasets}

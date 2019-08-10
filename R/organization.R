@@ -2,27 +2,18 @@
 #'
 #' HDX Organization
 #'
-#' @details
-#' **Methods**
-#'   \describe{
-#'   }
-#'
 #' @format NULL
 #' @usage NULL
-#'
-#' @examples
-#' \dontrun{
-#' }
 Organization <- R6::R6Class(
   "Organization",
-  
+
   private = list(
     configuration = NULL
   ),
-  
+
   public = list(
     data = NULL,
-    
+
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- configuration_read()
@@ -33,7 +24,7 @@ Organization <- R6::R6Class(
       initial_data <- nc(initial_data)
       self$data <- initial_data
     },
-    
+
     pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
@@ -48,12 +39,12 @@ Organization <- R6::R6Class(
 
       if (!is.null(self$data$id))
         stop("Organization already exists on HDX use `update_in_hdx`", call. = FALSE)
-      
+
       org_req <- configuration$call_remoteclient(action = "organization_update",
                                                  data = org,
                                                  verb = "post",
                                                  verbose = verbose)
-      
+
       if (org_req$status_code == 200L) {
         ## Replace message by logger
         message(paste0("Organization updated with id: ", ds_req$result$id))
@@ -65,7 +56,7 @@ Organization <- R6::R6Class(
       }
       invisible(list(organization = org_req))
     },
-    
+
     push = function(verbose = FALSE) {
       invisible(self$check_required_fields())
       configuration <- private$configuration
@@ -73,12 +64,12 @@ Organization <- R6::R6Class(
 
       if (!is.null(self$data$id))
         stop("Organization already exists on HDX use `update`", call. = FALSE)
-      
+
       org_req <- configuration$call_remoteclient(action = "organization_create",
                                                 data = org,
                                                 verb = "post",
                                                 verbose = verbose)
-      
+
       if (org_req$status_code == 200L) {
         ## Replace message by logger
         message(paste0("Organization created with id: ", ds_req$result$id))
@@ -90,7 +81,7 @@ Organization <- R6::R6Class(
       }
       invisible(list(organization = org_req))
     },
-    
+
     list_organizations = function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title"))
         stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
@@ -103,22 +94,22 @@ Organization <- R6::R6Class(
         unlist(res$result)
       res$result
     },
-    
+
     get_datasets = function() {
       if (!"packages" %in% names(self$data)) stop("No datasets available, please run Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
       list_of_ds <- lapply(self$data$packages, function(x) Dataset$new(initial_data = x))
       list_of_ds
     },
-    
+
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "organization/", self$data$name))
     },
-    
+
     as_list = function() {
       self$data
     },
-    
+
     print = function() {
       cat(paste0("<HDX Organization> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -129,7 +120,7 @@ Organization <- R6::R6Class(
     }
   )
 )
- 
+
 #' @export
 #' @aliases Organization
 #' @importFrom tibble as_tibble
@@ -142,15 +133,9 @@ as_tibble.Organization <- function(x, ...) {
 
 
 #' @export
-#' @aliases Organization 
-as.list.Organization <- function(x) {
-  x$as_list()
-}
-
 #' @aliases Organization
-.pull_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-  org <- Organization$new()
-  org$pull(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+as.list.Organization <- function(x, ...) {
+  x$as_list()
 }
 
 #' Read an HDX organization
@@ -159,21 +144,23 @@ as.list.Organization <- function(x) {
 #'
 #' @param identifier character resource uuid
 #' @param configuration an HDX configuration object
+#' @param include_datasets Logical, include datasets if TRUE
+#' @param ... Extra parameters
+#'
+#' @rdname pull_organization
 #'
 #' @return HDX organization
+.pull_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+  org <- Organization$new()
+  org$pull(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
+}
+
+#' @rdname pull_organization
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 pull_organization <- memoise::memoise(.pull_organization)
 
-#' @aliases read_organization
+#' @rdname browse
 #' @export
-read_organization <- pull_organization
-
-#' @export
-#' @aliases Organization 
 browse.Organization <- function(x, ...)
   x$browse()
 
@@ -189,13 +176,10 @@ browse.Organization <- function(x, ...)
 #' @param include_user Logical, whether or not to include user
 #' @param include_tags Logical whether or not to include tags
 #' @param configuration Configuration
-#'
+#' @param ... extra paramaters
+
 #' @return A list of organization
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 list_organizations <- function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
     org <- Organization$new()
     org$list_organizations(sort = sort, all_fields = all_fields, include_user = include_user, include_groups = include_groups, include_tags = include_tags, include_dataset_count = include_dataset_count, configuration = configuration, ...)
@@ -206,14 +190,10 @@ list_organizations <- function(sort = "name asc", all_fields = FALSE, include_da
 #' Create organization in HDX
 #'
 #' @param organization Organization
+#' @param verbose Logical, if TRUE verbose output
 #'
-#' 
 #' @return an HDX organization
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 push_organization <- function(organization, verbose = FALSE) {
   assert_organization(organization)
   organization$push(verbose = FALSE)

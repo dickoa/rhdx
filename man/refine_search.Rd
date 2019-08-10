@@ -19,11 +19,11 @@ refine_search(datasets_list, format = NULL, locations = NULL,
 
 \item{tags}{character Dataset with specified tags}
 
+\item{organization}{Character Organizations sharing the dataset}
+
 \item{cod}{logical dataset with COD tags}
 
 \item{requestable}{logical requestable dataset}
-
-\item{quick_charts}{logical dataset with Quich Charts}
 }
 \value{
 Dataset the dataset

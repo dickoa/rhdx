@@ -7,11 +7,9 @@
 delete_resource(dataset, index)
 }
 \arguments{
-\item{dataset}{}
+\item{dataset}{Dataset the dataset from which we one to remove the resource}
 
 \item{index}{Integer the index of the resource to be removed}
-
-\item{dataset}{Dataset the dataset from which we one to remove the resource}
 }
 \value{
 Dataset the dataset without the resource
@@ -21,10 +19,4 @@ Delete resource from dataset
 }
 \details{
 Delete resource from dataset
-}
-\examples{
-\dontrun{
- # Setting the config to use HDX default server
- delete_resource(dataset, 1) # remove first resource
-}
 }

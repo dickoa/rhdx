@@ -17,6 +17,8 @@ download_resource(resource, folder = NULL, filename = NULL,
 \item{quiet}{Logical, no progress bar from download (default = FALSE)}
 
 \item{force}{Logical, force download (default = FALSE)}
+
+\item{...}{extra paramaters}
 }
 \value{
 Resource

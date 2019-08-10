@@ -7,7 +7,7 @@
 delete_resources(dataset)
 }
 \arguments{
-\item{dataset}{}
+\item{dataset}{A Dataset, the dataset to remove}
 }
 \value{
 Dataset without resources
@@ -17,10 +17,4 @@ Delete all resource from dataset
 }
 \details{
 Delete all resources from dataset
-}
-\examples{
-\dontrun{
- # Setting the config to use HDX default server
- delete_all_resources(dataset) # remove first resource
-}
 }

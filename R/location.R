@@ -2,27 +2,18 @@
 #'
 #' HDX location mostly countries
 #'
-#' @details
-#' **Methods**
-#'   \describe{
-#'   }
-#'
 #' @format NULL
 #' @usage NULL
-#' @examples
-#' # ---------------------------------------------------------
-#' \dontrun{
-#' }
 Location <- R6::R6Class(
   "Location",
-  
+
   private = list(
     configuration = NULL
   ),
-  
+
   public = list(
     data = NULL,
-    
+
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- configuration_read()
@@ -33,22 +24,22 @@ Location <- R6::R6Class(
       initial_data <- nc(initial_data)
       self$data <- initial_data
     },
-    
+
     update_from_yaml = function(hdx_location_static_yaml) {
       self$data <- yaml::read_yaml(hdx_location_static_yaml)
     },
-    
+
     update_from_json = function(hdx_location_static_json) {
       self$data <- jsonlite::read_json(hdx_location_static_json, simplifyVector = TRUE)
     },
-    
+
     pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
       res <- configuration$call_remoteclient("group_show", list(id = identifier, include_datasets = include_datasets, ...))
       Location$new(initial_data = res$result, configuration = configuration)
     },
-    
+
     list_all_locations = function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
       if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
       if (is.null(configuration))
@@ -62,7 +53,7 @@ Location <- R6::R6Class(
     get_required_fields = function() {
       private$configuration$data$hdx_config$resource$required_fields
     },
-   
+
     check_required_fields = function() {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
@@ -73,16 +64,16 @@ Location <- R6::R6Class(
         TRUE
       }
     },
-   
+
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "group/", self$data$name))
     },
-    
+
     as_list = function() {
       self$data
     },
-    
+
     print = function(x, ...) {
     cat(paste0("<HDX Location> ", self$data$id), "\n")
     cat("  Name: ", self$data$name, "\n", sep = "")
@@ -109,11 +100,7 @@ Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, c
                         configuration = configuration, ...)
 }
 
-#' @aliases Location
-.pull_location <- function(identifier = NULL, configuration = NULL, ...) {
-  loc <- Location$new()
-  loc$pull(identifier = identifier, configuration = configuration, ...)
-}
+
 
 #' Read an HDX location
 #'
@@ -121,21 +108,29 @@ Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, c
 #'
 #' @param identifier Character location uuid
 #' @param configuration Configuration a configuration object
+#' @param ... Extra parameters
 #'
+#' @rdname pull_location
 #' @return Location
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' #Setting the config to use HDX default server
 #'  set_rhdx_config()
-#'  res <- read_location("mli")
+#'  res <- pull_location("mli")
 #'  res
 #' }
+.pull_location <- function(identifier = NULL, configuration = NULL, ...) {
+  loc <- Location$new()
+  loc$pull(identifier = identifier, configuration = configuration, ...)
+}
+
+#' @rdname pull_location
+#' @export
 pull_location <- memoise::memoise(.pull_location)
 
 #' @export
-#' @aliases Location 
+#' @aliases Location
 #' @importFrom tibble as_tibble
 as_tibble.Location <- function(x, ...) {
   df <- tibble::tibble(
@@ -146,7 +141,7 @@ as_tibble.Location <- function(x, ...) {
 }
 
 #' @export
-#' @aliases Location 
-as.list.Location <- function(x) {
+#' @aliases Location
+as.list.Location <- function(x, ...) {
   x$as_list()
 }

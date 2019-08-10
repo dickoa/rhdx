@@ -20,7 +20,3 @@ Add tags to dataset
 \details{
 Add tags to dataset
 }
-\examples{
-\dontrun{
-}
-}

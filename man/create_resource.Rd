@@ -15,7 +15,3 @@ Resource the resource
 \description{
 Create resource from list
 }
-\examples{
-\dontrun{
-}
-}

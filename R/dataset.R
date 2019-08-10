@@ -6,7 +6,6 @@
 #'
 #'
 #' @section Details:
-#' @details
 #' **Methods**
 #'   \describe{
 #'     \item{`Dataset$new(initial_data, configuration)`}{
@@ -57,8 +56,6 @@
 #'     \item{`set_update_frequency()`}{
 #'       Set expected update frequency.
 #'     }
-#'
-#'
 #'   }
 #'
 #' @format NULL
@@ -428,10 +425,6 @@ Dataset <- R6::R6Class(
 #' @param verbose Logical Silent output if FALSE
 #' @return an HDX dataset
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 push_dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
   assert_dataset(dataset)
   dataset$push(upload_resources = upload_resources, verbose = verbose)
@@ -439,7 +432,7 @@ push_dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
 
 #' @export
 #' @aliases Dataset
-as.list.Dataset <- function(x) {
+as.list.Dataset <- function(x, ...) {
   x$as_list()
 }
 
@@ -518,10 +511,6 @@ add_resource <- function(dataset, resource, ignore_dataset_id = FALSE) {
 #'
 #' @return A Dataset
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 add_tags <- function(dataset, tags) {
   assert_dataset(dataset)
   dataset$add_tags(tags)
@@ -540,10 +529,6 @@ add_tags <- function(dataset, tags) {
 #'
 #' @return A Dataset
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 add_locations <- function(dataset, locations) {
   assert_dataset(dataset)
   dataset$add_locations(locations)
@@ -562,10 +547,6 @@ add_locations <- function(dataset, locations) {
 #'
 #' @return A Dataset
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 add_organization <- function(dataset, organization) {
   assert_dataset(dataset)
   dataset$add_organization(organization)
@@ -577,9 +558,6 @@ add_organization <- function(dataset, organization) {
 #'
 #' Delete resource from dataset
 #'
-#' @param dataset
-#'
-#'
 #' @details Delete resource from dataset
 #'
 #' @param dataset Dataset the dataset from which we one to remove the resource
@@ -587,12 +565,6 @@ add_organization <- function(dataset, organization) {
 #'
 #' @return Dataset the dataset without the resource
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#'  # Setting the config to use HDX default server
-#'  delete_resource(dataset, 1) # remove first resource
-#' }
 delete_resource <- function(dataset, index) {
   assert_dataset(dataset)
   dataset$delete_resource(index)
@@ -604,20 +576,12 @@ delete_resource <- function(dataset, index) {
 #'
 #' Delete all resource from dataset
 #'
-#' @param dataset
-#'
+#' @param dataset A Dataset, the dataset to remove
 #'
 #' @details Delete all resources from dataset
 #'
-#'
 #' @return Dataset without resources
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#'  # Setting the config to use HDX default server
-#'  delete_all_resources(dataset) # remove first resource
-#' }
 delete_resources <- function(dataset) {
   assert_dataset(dataset)
   invisible(lapply(seq(dataset$data$num_resources),
@@ -625,21 +589,24 @@ delete_resources <- function(dataset) {
 }
 
 
+#' Gives the number of datasets available
+#'
+#' Gives the number of datasets available
+#'
+#' @param configuration Configuration, an HDX config object
+#' @return The number of datasets
 #' @export
-#' @aliases Dataset
+#'
+#' @examples
+#' \dontrun{
+#'  set_rhdx_config()
+#'  count_datasets()
+#' }
 count_datasets <- function(configuration = NULL) {
   ds <- Dataset$new()
   ds$count(configuration = configuration)
 }
 
-#' @noRd
-.search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
-  ds <- Dataset$new()
-  ds$search(query = query, rows = rows,
-            page_size = page_size,
-            configuration = configuration,
-            ...)
-}
 
 #' Search datasets on HDX
 #'
@@ -649,7 +616,7 @@ count_datasets <- function(configuration = NULL) {
 #' @param rows Number of matching rows to return. Defaults to 10.
 #' @param page_size Integer Size of page to return. Defaults to 1000.
 #' @param configuration Configuration object.
-#'
+#' @param ... Extra parameters
 #'
 #' @rdname search_datasets
 #'
@@ -657,22 +624,25 @@ count_datasets <- function(configuration = NULL) {
 #'
 #'
 #' @return A list of HDX datasets
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #'  # Setting the config to use HDX default server
 #'  search_datasets("displaced nigeria", rows = 3L)
 #' }
+.search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+  ds <- Dataset$new()
+  ds$search(query = query, rows = rows,
+            page_size = page_size,
+            configuration = configuration,
+            ...)
+}
+
+#' @rdname search_datasets
+#' @importFrom memoise memoise
+#' @export
 search_datasets <- memoise::memoise(.search_datasets)
 
-
-#' @aliases Dataset
-#' @noRd
-.pull_dataset <- function(identifier, configuration = NULL, ...) {
-  ds <- Dataset$new()
-  ds$pull(identifier, configuration = configuration, ...)
-}
 
 #' Read dataset
 #'
@@ -680,10 +650,10 @@ search_datasets <- memoise::memoise(.search_datasets)
 #'
 #' @param identifier character dataset keyword
 #' @param configuration a Configuration object
+#' @param ... Extra parameters
 #'
-#'
+#' @rdname pull_dataset
 #' @return Dataset the dataset
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -692,6 +662,13 @@ search_datasets <- memoise::memoise(.search_datasets)
 #'  res <- read_dataset("mali-3wop")
 #'  res
 #' }
+.pull_dataset <- function(identifier, configuration = NULL, ...) {
+  ds <- Dataset$new()
+  ds$pull(identifier, configuration = configuration, ...)
+}
+
+#' @rdname pull_dataset
+#' @export
 pull_dataset <- memoise::memoise(.pull_dataset)
 
 #' List datasets
@@ -739,34 +716,11 @@ create_dataset <- function(initial_data) {
   Dataset$new(initial_data)
 }
 
-#' Create dataset in HDX
-#'
-#' Create dataset in HDX
-#'
-#' @param dataset Dataset
-#'
-#' @return  Dataset the published dataset
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Setting the config to use HDX default server
-#'  set_rhdx_config(hdx_site = "demo", hdx_key = "xxxxxxxxxxxxxx", read_only = FALSE)
-#'  res <- read_dataset("mali-3wop")
-#'  push_dataset(res)
-#' }
-push_dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
-  assert_dataset(dataset)
-  dataset$create(upload_resources = upload_resources, verbose = verbose)
-}
-
-
 #' Delete dataset from HDX
 #'
 #' Delete dataset from HDX
 #'
 #' @param dataset Dataset
-#'
 #'
 #' @return "None"
 #' @export
@@ -783,8 +737,8 @@ delete_from_hdx <- function(dataset) {
   dataset$delete_from_hdx()
 }
 
+#' @rdname browse
 #' @export
-#' @aliases Dataset
 browse.Dataset <- function(x, ...)
   x$browse()
 
@@ -796,10 +750,10 @@ browse.Dataset <- function(x, ...)
 #' @param datasets_list A list of dataset
 #' @param format character Format of a resource in the dataset
 #' @param locations character Locations of the dataset
+#' @param organization Character Organizations sharing the dataset
 #' @param tags character Dataset with specified tags
 #' @param hxl logical dataset with HXL tags
 #' @param cod logical dataset with COD tags
-#' @param quick_charts logical dataset with Quich Charts
 #' @param requestable logical requestable dataset
 #'
 #'
@@ -995,6 +949,6 @@ get_dataset_date <- function(dataset) {
 #' }
 set_dataset_date <- function(dataset, date) {
   assert_dataset(dataset)
-  stopifnot(is.Date(date))
+  stopifnot(methods::is(date, "Date"))
   dataset$set_dataset_date(date, format = "%m/%d/%Y")
 }

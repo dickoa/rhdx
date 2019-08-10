@@ -20,7 +20,3 @@ Add locations to dataset
 \details{
 Add locations to dataset
 }
-\examples{
-\dontrun{
-}
-}

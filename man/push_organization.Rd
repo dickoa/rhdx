@@ -8,14 +8,12 @@ push_organization(organization, verbose = FALSE)
 }
 \arguments{
 \item{organization}{Organization}
+
+\item{verbose}{Logical, if TRUE verbose output}
 }
 \value{
 an HDX organization
 }
 \description{
 Create organization in HDX
-}
-\examples{
-\dontrun{
-}
 }

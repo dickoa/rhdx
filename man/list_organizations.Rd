@@ -23,14 +23,12 @@ list_organizations(sort = "name asc", all_fields = FALSE,
 \item{include_tags}{Logical whether or not to include tags}
 
 \item{configuration}{Configuration}
+
+\item{...}{extra paramaters}
 }
 \value{
 A list of organization
 }
 \description{
 List HDX organization
-}
-\examples{
-\dontrun{
-}
 }

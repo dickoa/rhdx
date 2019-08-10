@@ -7,13 +7,4 @@
 \description{
 HDX Organization
 }
-\details{
-\strong{Methods}
-\describe{
-}
-}
-\examples{
-\dontrun{
-}
-}
 \keyword{datasets}

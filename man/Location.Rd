@@ -7,14 +7,4 @@
 \description{
 HDX location mostly countries
 }
-\details{
-\strong{Methods}
-\describe{
-}
-}
-\examples{
-# ---------------------------------------------------------
-\dontrun{
-}
-}
 \keyword{datasets}

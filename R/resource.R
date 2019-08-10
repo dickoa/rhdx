@@ -2,11 +2,6 @@
 #'
 #' HDX Resource
 #'
-#' @details
-#' **Methods**
-#'   \describe{
-#'   }
-#'
 #' @format NULL
 #' @usage NULL
 #'
@@ -46,21 +41,21 @@ Resource <- R6::R6Class(
       }
       self$data <- initial_data
     },
-    
+
     update_from_yaml = function(hdx_resource_static_yaml) {
       self$data <- yaml::read_yaml(hdx_resource_static_yaml)
     },
-    
+
     update_from_json = function(hdx_resource_static_json) {
       self$data <- jsonlite::read_json(hdx_resource_static_json,
                                        simplifyVector = TRUE)
     },
-    
+
     touch = function() {
       private$configuration$call_remoteclient("resource_patch",
                                               list(id = self$data$id))
     },
-    
+
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
       rhdx_cache$mkdir()
@@ -76,15 +71,15 @@ Resource <- R6::R6Class(
       rhdx_cache$cache_path_set(path)
       if (!file.exists(path) | force)
         download.file(url = self$data$url, destfile = path,
-                      mode = "wb", quiet = quiet, ...)      
+                      mode = "wb", quiet = quiet, ...)
       private$download_folder_ <- tools::file_path_as_absolute(folder)
       invisible(tools::file_path_as_absolute(path))
     },
-    
+
     download_folder = function() {
       tools::file_path_as_absolute(private$download_folder_)
     },
-    
+
     read_resource = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet = TRUE, hxl = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
@@ -107,7 +102,7 @@ Resource <- R6::R6Class(
         `zipped geopackage` = read_hdx_vector(path = path, layer = layer),
         `zipped geotiff` = read_hdx_raster(path = path))
     },
-    
+
     get_layers = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
@@ -145,10 +140,10 @@ Resource <- R6::R6Class(
       if (is.null(package_id)) {
         stop("Resource has no package id!", call. = FALSE)
       } else {
-        pull_dataset(package_id) 
+        pull_dataset(package_id)
       }
     },
-    
+
     get_file_to_upload = function() {
       self$data$file_to_upload
     },
@@ -160,7 +155,7 @@ Resource <- R6::R6Class(
     get_required_fields = function() {
       private$configuration$data$hdx_config$resource$required_fields
     },
-    
+
     check_required_field = function(check_dataset_id = FALSE) {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
@@ -223,7 +218,7 @@ Resource <- R6::R6Class(
       }
       invisible(rs_req)
     },
-   
+
     push = function(dataset_id = NULL, verbose = FALSE) {
       configuration <- private$configuration
       rs <- self$data
@@ -241,14 +236,14 @@ Resource <- R6::R6Class(
       }
       invisible(rs_req)
     },
-    
+
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       dataset_id <- self$data$package_id
       resource_id <- self$data$id
       browseURL(url = paste0(url, "dataset/", dataset_id, "/resource/", resource_id))
     },
-    
+
     print = function() {
       cat(paste0("<HDX Resource> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -275,7 +270,7 @@ as_tibble.Resource <- function(x, ...) {
 
 #' @export
 #' @aliases Resource
-as.list.Resource <- function(x) {
+as.list.Resource <- function(x, ...) {
   x$as_list()
 }
 
@@ -288,6 +283,7 @@ as.list.Resource <- function(x) {
 #' @param filename Character, name of the file you will download
 #' @param quiet Logical, no progress bar from download (default = FALSE)
 #' @param force Logical, force download (default = FALSE)
+#' @param ... extra paramaters
 #'
 #' @return Resource
 #' @export
@@ -304,29 +300,63 @@ download_resource <- function(resource, folder = NULL, filename = NULL, quiet = 
   resource$download(folder = folder, filename = filename, quiet = quiet, force = force, ...)
 }
 
+#' List layers available in spatial resources on HDX
+#'
+#' List layers available in spatial resources on HDX
+#' @param resource Resource, an HDX resource
+#' @param folder Character, path of the directory where you will store the data
+#' @param quiet Logical, no progress bar from download (default = FALSE)
+#'
+#' @return the layers name
 #' @export
-#' @aliases Resource 
 get_layers <- function(resource, folder = NULL, quiet = TRUE) {
   assert_resource(resource)
   resource$get_layers(folder = folder, quiet = quiet)
 }
 
+
+#' Get the names of the sheets of XLS(X) resources
+#'
+#'  Get the names of the sheets of XLS(X) resources
+#' @param resource Resource, an HDX resource
+#' @param folder Character, path of the directory where you will store the data
+#' @param quiet Logical, no progress bar from download (default = FALSE)
+#' @param ... extra parameters
+#'
+#' @return the names of the sheets of XLS(X) resources
 #' @export
-#' @aliases Resource 
 get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
   assert_resource(resource)
   resource$get_sheets(folder = folder, quiet = quiet, ...)
 }
 
+#' Get the file format of the resource
+#'
+#' Get the file format of the resource
+#' @param resource Resource, an HDX resource
+#'
+#' @return A character, the format of the resource
 #' @export
-#' @aliases Resource 
 get_format <- function(resource) {
   assert_resource(resource)
   resource$get_format()
 }
 
+
+#' Read resource
+#'
+#' Read resource
+#' @param resource Resource, an HDX resource
+#'
+#' @param sheet Character, the name of the sheet to read if XLS(X) resources. The first sheet is read by default.
+#' @param layer Character, the name of the layer to read if spatial data. The first sheet is read by default.
+#' @param folder Character, the path of the folder to store the downloaded data
+#' @param simplify_json Logical, if TRUE simplifies nested lists into vectors and data frames for JSON resources
+#' @param force_download Logical, force download if TRUE
+#' @param hxl Logical, if TRUE return a tbl_hxl object from the rhxl package
+#' @param ... Extra parameters
+#' @return an `tbl`, a `list` or a `sf` object depending on the type of resource you are reading
 #' @export
-#' @aliases Resource 
 read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE,  hxl = FALSE, ...) {
   assert_resource(resource)
   resource$read_resource(sheet = sheet,
@@ -338,21 +368,23 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, s
                          ...)
 }
 
-#' @aliases Resource
+
+#' Search resources
+#'
+#' Search Resources
+#'
+#' @rdname search_resources
+#' @param query Character, a query
+#' @param configuration an HDX configuration object
+#' @param ... extra params
 .search_resources <- function(query = "*:*", configuration = NULL, ...) {
   rs <- Resource$new()
   rs$search(query = query, configuration = configuration, ...)
 }
 
+#' @rdname search_resources
 #' @export
-#' @aliases Resource
 search_resources <- memoise::memoise(.search_resources)
-
-#' @aliases Resource
-.pull_resource <- function(identifier = NULL, configuration = NULL, ...) {
-  rs <- Resource$new()
-  rs$pull(identifier = identifier, configuration = configuration, ...)
-}
 
 #' Read an HDX resource
 #'
@@ -360,7 +392,10 @@ search_resources <- memoise::memoise(.search_resources)
 #'
 #' @param identifier character resource uuid
 #' @param configuration an HDX configuration object
-#' 
+#' @param ... Extra parameters
+#'
+#' @rdname pull_resource
+#'
 #' @return Resource
 #' @export
 #'
@@ -371,6 +406,13 @@ search_resources <- memoise::memoise(.search_resources)
 #'  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #'  res
 #' }
+.pull_resource <- function(identifier = NULL, configuration = NULL, ...) {
+  rs <- Resource$new()
+  rs$pull(identifier = identifier, configuration = configuration, ...)
+}
+
+#' @rdname pull_resource
+#' @export
 pull_resource <- memoise::memoise(.pull_resource)
 
 #' Create resource from list
@@ -379,13 +421,9 @@ pull_resource <- memoise::memoise(.pull_resource)
 #'
 #' @param initial_data List, list of data
 #'
-#' 
+#'
 #' @return Resource the resource
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 create_resource <- function(initial_data) {
   Resource$new(initial_data)
 }
@@ -395,20 +433,16 @@ create_resource <- function(initial_data) {
 #' Create resource in HDX
 #'
 #' @param resource Resource
+#' @param verbose Logical, verbose output if TRUE
 #'
-#' 
+#'
 #' @return an HDX resource
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' }
 create.Resource <- function(resource, verbose = FALSE) {
   assert_resource(resource)
   resource$create(verbose = FALSE)
 }
 
+#' @rdname browse
 #' @export
-#' @aliases Resource 
-browse.Resource <- function(x)
+browse.Resource <- function(x, ...)
   x$browse()

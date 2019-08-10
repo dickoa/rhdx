@@ -9,7 +9,8 @@ HDX Dataset
 Dataset class containing all logic for accessing,
 creating, and updating datasets and associated resources.
 }
-\details{
+\section{Details}{
+
 \strong{Methods}
 \describe{
 \item{\code{Dataset$new(initial_data, configuration)}}{
@@ -61,9 +62,6 @@ Get dataset date as string.
 }
 
 }
-}
-\section{Details}{
-
 }
 
 \examples{
