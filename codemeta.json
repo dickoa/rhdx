@@ -5,8 +5,8 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "rhdx",
-  "description": "R client for the Humanitarian Data Exchange platform <https://data.humdata.org/>",
-  "name": "rhdx: R client for the Humanitarian Data Exchange platform",
+  "description": "Client for the Humanitarian Data Exchange platform API. Allows to search and download datasets into R.",
+  "name": "rhdx: Client for the Humanitarian Data Exchange platform API",
   "codeRepository": "https://gitlab.com/dickoa/rhdx",
   "issueTracker": "https://gitlab.com/dickoa/rhdx/issues",
   "license": "https://spdx.org/licenses/MIT",
@@ -14,10 +14,10 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.3",
+    "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.3 Patched (2019-03-11 r76306)",
+  "runtimePlatform": "R version 3.6.1 Patched (2019-08-08 r76939)",
   "author": [
     {
       "@type": "Person",
@@ -86,6 +86,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "covr",
+      "name": "covr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=covr"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "vcr",
       "name": "vcr",
       "version": ">= 0.2.2",
@@ -111,6 +123,11 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=crul"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "methods",
+      "name": "methods"
     },
     {
       "@type": "SoftwareApplication",
@@ -249,7 +266,7 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "52.448KB",
+  "fileSize": "48.339KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
   "contributor": {},
   "copyrightHolder": {},
