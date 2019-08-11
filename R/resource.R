@@ -347,6 +347,10 @@ search_resources <- memoise::memoise(.search_resources)
   rs$pull(identifier = identifier, configuration = configuration, ...)
 }
 
+#' @rdname pull_resource
+#' @export
+pull_resource <- memoise::memoise(.pull_resource)
+
 #' @rdname browse
 #' @export
 browse.Resource <- function(x, ...)

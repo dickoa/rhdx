@@ -3,8 +3,8 @@ sudo: false
 cache: packages
 dist: trusty
 
-after_success:
-  - Rscript -e 'covr::codecov()'
+r:
+ - release
 
 addons:
   apt:
@@ -16,3 +16,6 @@ notifications:
   email:
     on_success: change
     on_failure: change
+
+after_success:
+  - Rscript -e 'covr::codecov()'
