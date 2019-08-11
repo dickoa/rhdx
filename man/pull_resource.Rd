@@ -2,12 +2,9 @@
 % Please edit documentation in R/resource.R
 \name{.pull_resource}
 \alias{.pull_resource}
-\alias{pull_resource}
 \title{Read an HDX resource}
 \usage{
 .pull_resource(identifier = NULL, configuration = NULL, ...)
-
-pull_resource(identifier = NULL, configuration = NULL, ...)
 }
 \arguments{
 \item{identifier}{character resource uuid}

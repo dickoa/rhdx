@@ -17,21 +17,12 @@ creating, and updating datasets and associated resources.
 Dataset class enabling operations on datasets and associated resources
 }
 
-\item{\code{add_resource(resource, ignore_datasetid = FALSE)}}{
-Add new resource in dataset with new metadata
-}
-
 \item{\code{check_required_fields()}}{
 Check that metadata for dataset and its resources is complete.
 }
 
 \item{\code{create(upload_resources)}}{
 Check if dataset exists in HDX and if so, update it, otherwise create it
-}
-
-\item{\code{delete_from_hdx(identifier, configuration)}}{
-Reads the dataset given by identifier
-from HDX and returns Dataset object
 }
 
 \item{\code{get_configuration(identifier, configuration)}}{
@@ -54,10 +45,6 @@ Get dataset date as string.
 
 \item{`get_update_frequency()`}{
   Get expected update frequency.
-}
-
-\item{`set_update_frequency()`}{
-  Set expected update frequency.
 }
 }
 

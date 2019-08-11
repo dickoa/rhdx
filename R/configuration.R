@@ -75,7 +75,7 @@
 #' get_rhd_config()
 #' }
 Configuration <- R6::R6Class(
-  "Configuration",
+  classname = "Configuration",
   private = list(shared = .rhdx_env),
   public = list(
     data = list(),

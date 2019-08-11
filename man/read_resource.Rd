@@ -5,7 +5,7 @@
 \title{Read resource}
 \usage{
 read_resource(resource, sheet = NULL, layer = NULL, folder = NULL,
-  simplify_json = TRUE, force_download = FALSE, hxl = FALSE, ...)
+  simplify_json = TRUE, force_download = FALSE, ...)
 }
 \arguments{
 \item{resource}{Resource, an HDX resource}
@@ -19,8 +19,6 @@ read_resource(resource, sheet = NULL, layer = NULL, folder = NULL,
 \item{simplify_json}{Logical, if TRUE simplifies nested lists into vectors and data frames for JSON resources}
 
 \item{force_download}{Logical, force download if TRUE}
-
-\item{hxl}{Logical, if TRUE return a tbl_hxl object from the rhxl package}
 
 \item{...}{Extra parameters}
 }

@@ -37,74 +37,12 @@ Showcase <- R6::R6Class(
       Showcase$new(initial_data = res$result, configuration = configuration)
     },
 
-    add_dataset = function(dataset) {
-      if (!inherits(dataset, "Dataset"))
-        stop("Not of class Dataset, use `Dataset$new`!")
-      if (is.null(self$data$id))
-        stop("Not of class Dataset, use `Dataset$new`!")
-      configuration <- private$configuration
-      dataset_id <- dataset$data$id
-      showcase_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_package_association_create", list(showcase_id = showcase_id, package_id = dataset_id))
-      if (res$status_code != 200L)
-        stop("Dataset not added to the showcase")
-      res$result
-    },
-
-    delete_dataset = function(dataset) {
-      if (!inherits(dataset, "Dataset"))
-        stop("Not of class Dataset, use `create_dataset`!")
-      if (is.null(self$data$id))
-        stop("Showcase not on HDX uses Showcase$push first")
-      configuration <- private$configuration
-      dataset_id <- dataset$data$id
-      showcase_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_package_association_delete", list(showcase_id = showcase_id, package_id = dataset_id))
-      if (res$status_code != 200L)
-        stop("Dataset not added to the showcase")
-      res$result
-    },
-
     list_datasets = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
       res <- configuration$call_remoteclient("ckanext_showcase_list", data = list(showcase_id = showcase_id))
       if (res$status_code != 200L)
         stop("Dataset not added to the showcase")
-      res$result
-    },
-
-    add_tag = function(tag) {
-      if (!inherits(tag, "Tag"))
-        stop("Not of class Tag, use `Tag$new`!")
-        if (is.null(self$data$id))
-        stop("Not of class Tag, use `Tag$new`!")
-      configuration <- private$configuration
-      tag_id <- tag$data$id
-      showcase_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_package_association_create",
-                                             list(showcase_id = showcase_id, package_id = tag_id),
-                                             verb = "post",
-                                            encode = "json")
-      if (res$status_code != 200L)
-        stop("Tag not added to the showcase")
-      res$result
-    },
-
-    delete_tag = function(tag) {
-      if (!inherits(tag, "Tag"))
-        stop("Not of class Tag, use `Tag$new`!")
-      if (is.null(self$data$id))
-        stop("Showcase not on HDX uses Showcase$create_in_hdx first")
-      configuration <- private$configuration
-      tag_id <- tag$data$id
-      showcase_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_package_association_delete",
-                                            list(showcase_id = showcase_id, tag_id = tag_id),
-                                            verb = "post",
-                                            encode = "json")
-      if (res$status_code != 200L)
-        stop("Tag not added to the showcase")
       res$result
     },
 
@@ -115,30 +53,6 @@ Showcase <- R6::R6Class(
       if (res$status_code != 200L)
         stop("Tag not added to the showcase")
       res$result
-    },
-
-    push = function() {
-      configuration <- private$configuration
-      ds <- nc(self$data)
-      res <- configuration$call_remoteclient("ckanext_showcase_create",
-                                            ds,
-                                            verb = "post",
-                                            encode = "json")
-      if (res1$status_code != 200L)
-        stop("Showcase not created check the parameters")
-      invisible(res1$result)
-    },
-
-    delete = function(name = NULL) {
-      configuration <- private$configuration
-      ds <- drop_nulls(self$data)
-      res <- configuration$call_remoteclient("ckanext_showcase_delete",
-                                            list(name = name),
-                                            verb = "post",
-                                            encode = "json")
-      if (res$status_code != 200L)
-        stop("Showcase not created check the parameters")
-
     },
 
     browse = function() {

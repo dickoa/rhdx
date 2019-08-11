@@ -124,5 +124,5 @@ pull_user <- memoise::memoise(.pull_user)
 #' @export
 list_users <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
   user <- User$new()
-  user$lists_all_user(sort = sort, all_fields = all_fields, configuration = configuration, ...)
+  user$list_users(sort = sort, all_fields = all_fields, configuration = configuration, ...)
 }

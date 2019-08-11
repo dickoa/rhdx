@@ -3,7 +3,7 @@
 \name{.pull_dataset}
 \alias{.pull_dataset}
 \alias{pull_dataset}
-\title{Read dataset}
+\title{Pull HDX dataset into R}
 \usage{
 .pull_dataset(identifier, configuration = NULL, ...)
 

@@ -42,20 +42,6 @@ Resource <- R6::R6Class(
       self$data <- initial_data
     },
 
-    update_from_yaml = function(hdx_resource_static_yaml) {
-      self$data <- yaml::read_yaml(hdx_resource_static_yaml)
-    },
-
-    update_from_json = function(hdx_resource_static_json) {
-      self$data <- jsonlite::read_json(hdx_resource_static_json,
-                                       simplifyVector = TRUE)
-    },
-
-    touch = function() {
-      private$configuration$call_remoteclient("resource_patch",
-                                              list(id = self$data$id))
-    },
-
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
       rhdx_cache$mkdir()
@@ -80,7 +66,7 @@ Resource <- R6::R6Class(
       tools::file_path_as_absolute(private$download_folder_)
     },
 
-    read_resource = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet = TRUE, hxl = FALSE, ...) {
+    read_resource = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet = TRUE, ...) {
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
       path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
@@ -148,10 +134,6 @@ Resource <- R6::R6Class(
       self$data$file_to_upload
     },
 
-    set_file_to_upload = function(file_to_upload) {
-      self$data$file_to_upload <- crul::upload(file_to_upload)
-    },
-
     get_required_fields = function() {
       private$configuration$data$hdx_config$resource$required_fields
     },
@@ -189,52 +171,8 @@ Resource <- R6::R6Class(
       tolower(self$data$format)
     },
 
-    set_file_type = function(file_type) {
-      self$data$format <- file_type
-    },
-
-    set_format = function(format) {
-      self$data$format <- format
-    },
-
     as_list = function() {
       self$data
-    },
-
-    update = function(verbose = FALSE) {
-      configuration <- private$configuration
-      resource_id <- self$data$id
-      if (is.null(resource_id))
-        stop("Resource not on HDX use `push` method")
-      rs <- drop_nulls(self$data)
-      rs_req <- configuration$call_remoteclient("resource_update",
-                                                data = rs,
-                                                verb = "post",
-                                                encode = "multipart",
-                                                verbose = verbose)
-      if (rs_req$status_code != 200L) {
-        warning("Resources not updated check the parameters", call. = FALSE)
-        message(paste0(ds_req$error[[1]], ": ", ds_req$error[[2]]))
-      }
-      invisible(rs_req)
-    },
-
-    push = function(dataset_id = NULL, verbose = FALSE) {
-      configuration <- private$configuration
-      rs <- self$data
-      rs$package_id <- dataset_id
-      rs_req <- configuration$call_remoteclient("resource_create",
-                                                data = rs,
-                                                verb = "post",
-                                                encode = "multipart",
-                                                verbose = verbose)
-      if (rs_req$status_code == 200L) {
-        message("All resources uploaded")
-      } else {
-        warning("Resources not created check the parameters")
-        message(paste0(rs_req$error[[1]], ": ", rs_req$error[[2]]))
-      }
-      invisible(rs_req)
     },
 
     browse = function() {
@@ -353,18 +291,16 @@ get_format <- function(resource) {
 #' @param folder Character, the path of the folder to store the downloaded data
 #' @param simplify_json Logical, if TRUE simplifies nested lists into vectors and data frames for JSON resources
 #' @param force_download Logical, force download if TRUE
-#' @param hxl Logical, if TRUE return a tbl_hxl object from the rhxl package
 #' @param ... Extra parameters
 #' @return an `tbl`, a `list` or a `sf` object depending on the type of resource you are reading
 #' @export
-read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE,  hxl = FALSE, ...) {
+read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, ...) {
   assert_resource(resource)
   resource$read_resource(sheet = sheet,
                          layer = layer,
                          folder = folder,
                          simplify_json = simplify_json,
                          force_download = force_download,
-                         hxl = hxl,
                          ...)
 }
 
@@ -409,37 +345,6 @@ search_resources <- memoise::memoise(.search_resources)
 .pull_resource <- function(identifier = NULL, configuration = NULL, ...) {
   rs <- Resource$new()
   rs$pull(identifier = identifier, configuration = configuration, ...)
-}
-
-#' @rdname pull_resource
-#' @export
-pull_resource <- memoise::memoise(.pull_resource)
-
-#' Create resource from list
-#'
-#' Create resource from list
-#'
-#' @param initial_data List, list of data
-#'
-#'
-#' @return Resource the resource
-#' @export
-create_resource <- function(initial_data) {
-  Resource$new(initial_data)
-}
-
-#' Create resource in HDX
-#'
-#' Create resource in HDX
-#'
-#' @param resource Resource
-#' @param verbose Logical, verbose output if TRUE
-#'
-#'
-#' @return an HDX resource
-create.Resource <- function(resource, verbose = FALSE) {
-  assert_resource(resource)
-  resource$create(verbose = FALSE)
 }
 
 #' @rdname browse

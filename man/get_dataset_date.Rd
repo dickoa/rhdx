@@ -2,32 +2,24 @@
 % Please edit documentation in R/dataset.R
 \name{get_dataset_date}
 \alias{get_dataset_date}
-\alias{set_dataset_date}
-\title{Dataset date utilities}
+\title{Dataset date}
 \usage{
 get_dataset_date(dataset)
-
-set_dataset_date(dataset, date)
 }
 \arguments{
 \item{dataset}{Dataset}
-
-\item{date}{Date the date to add the metadata}
 }
 \value{
-Dataset dates or dataset date ranges
+Date, date of the dataset
 }
 \description{
-Sets and gets date Dataset
-}
-\details{
-Allow to add/modify the dataset dates
+Date of dataset
 }
 \examples{
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()
  res <- search_dataset(rows = 3L)
- set_dataset_date(res[[1]])
+ get_dataset_date(res[[1]])
 }
 }

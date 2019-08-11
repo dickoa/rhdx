@@ -25,14 +25,6 @@ Location <- R6::R6Class(
       self$data <- initial_data
     },
 
-    update_from_yaml = function(hdx_location_static_yaml) {
-      self$data <- yaml::read_yaml(hdx_location_static_yaml)
-    },
-
-    update_from_json = function(hdx_location_static_json) {
-      self$data <- jsonlite::read_json(hdx_location_static_json, simplifyVector = TRUE)
-    },
-
     pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
@@ -83,24 +75,6 @@ Location <- R6::R6Class(
     }
   )
 )
-
-#' @aliases Location
-Location$pull <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-  loc <- Location$new()
-  loc$pull(identifier = identifier,
-                    include_datasets = include_datasets,
-                    configuration = configuration, ...)
-}
-
-#' @aliases Location
-Location$list_all_locations <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-  loc <- Location$new()
-  loc$list_all_location(sort = sort,
-                        all_fields = all_fields,
-                        configuration = configuration, ...)
-}
-
-
 
 #' Read an HDX location
 #'
