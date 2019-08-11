@@ -9,7 +9,7 @@ public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus
 [![GitLab CI Build
 Status](https://gitlab.com/dickoa/rhdx/badges/master/build.svg)](https://gitlab.com/dickoa/rhdx/pipelines)
 [![Travis build
-status](https://travis-ci.org/dickoa/rhdx.svg?branch=master)](https://travis-ci.org/dickoa/rhdx)
+status](https://api.travis-ci.org/dickoa/rhdx.svg?branch=master)](https://travis-ci.org/dickoa/rhdx)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/gitlab/dickoa/rhdx?branch=master&svg=true)](https://ci.appveyor.com/project/dickoa/rhdx)
 [![Codecov Code
