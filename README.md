@@ -13,7 +13,7 @@ status](https://api.travis-ci.org/dickoa/rhdx.svg?branch=master)](https://travis
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/gitlab/dickoa/rhdx?branch=master&svg=true)](https://ci.appveyor.com/project/dickoa/rhdx)
 [![Codecov Code
-Coverage](https://codecov.io/gl/dickoa/rhdx/branch/master/graph/badge.svg)](https://codecov.io/gl/dickoa/rhdx)
+Coverage](https://codecov.io/gh/dickoa/rhdx/branch/master/graph/badge.svg)](https://codecov.io/gh/dickoa/rhdx)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rhdx)](https://cran.r-project.org/package=rhdx)
 [![License:
