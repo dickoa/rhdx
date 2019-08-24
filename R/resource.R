@@ -148,13 +148,6 @@ Resource <- R6::R6Class(
         stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)), call. = FALSE)
     },
 
-    pull = function(identifier, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_action("resource_show", list(id = identifier))
-      Resource$new(initial_data = res, configuration = configuration)
-    },
-
     get_file_type = function() {
       tolower(self$data$format)
     },
@@ -325,6 +318,16 @@ as_tibble.resources_list <- function(x, ...) {
   Reduce(rbind, l)
 }
 
+
+#' @noRd
+.pull_resource <- function(identifier, configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("resource_show", list(id = identifier))
+  Resource$new(initial_data = res, configuration = configuration)
+}
+
 #' Read an HDX resource
 #'
 #' Read an HDX resource
@@ -345,13 +348,6 @@ as_tibble.resources_list <- function(x, ...) {
 #'  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #'  res
 #' }
-.pull_resource <- function(identifier = NULL, configuration = NULL, ...) {
-  rs <- Resource$new()
-  rs$pull(identifier = identifier, configuration = configuration, ...)
-}
-
-#' @rdname pull_resource
-#' @export
 pull_resource <- memoise::memoise(.pull_resource)
 
 #' @rdname browse

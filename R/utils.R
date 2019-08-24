@@ -12,9 +12,6 @@ drop_nulls <- function(x) {
 }
 
 #' @noRd
-nc <- drop_nulls
-
-#' @noRd
 check_config_params <- function(hdx_site = NULL, hdx_key = NULL, hdx_config_file = NULL, read_only = NULL, user_agent = NULL) {
 
   if (!is.null(hdx_site) && !hdx_site %in% c("prod", "test", "feature", "demo"))
@@ -78,9 +75,10 @@ assert_organization <- function(x) {
 #' @noRd
 assert_location <- function(x) {
   loc <- countrycode::codelist$iso3c
-  cond <- any(grepl(x, loc, ignore.case = TRUE))
+  pattern <- paste0("^", x, "$")
+  cond <- any(grepl(pattern, loc, ignore.case = TRUE))
   if (!cond)
-    stop("Not a valid HDX condition!", call. = FALSE)
+    stop("Not a valid HDX Location, enter the ISO3 code of the country!", call. = FALSE)
   invisible(x)
 }
 
@@ -138,7 +136,7 @@ get_user_agent <- function(x) {
 #' @noRd
 read_hdx_json <- function(path, simplify_json = FALSE, ...) {
   check_packages("jsonlite")
-  jsonlite::read_json(path, simplifyVector = simplify_json, ...)
+  jsonlite::fromJSON(path, simplifyVector = simplify_json, ...)
 }
 
 #' @noRd

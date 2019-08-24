@@ -81,12 +81,12 @@ Dataset <- R6::R6Class(
                                  function(x) Resource$new(initial_data = x, configuration = configuration))
     },
 
-    pull = function(identifier, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_action("package_show", list(id = identifier))
-      Dataset$new(initial_data = res, configuration = configuration)
-    },
+    ## pull = function(identifier, configuration = NULL) {
+    ##   if (is.null(configuration) | !inherits(configuration, "Configuration"))
+    ##     configuration <- private$configuration
+    ##   res <- configuration$call_action("package_show", list(id = identifier))
+    ##   Dataset$new(initial_data = res, configuration = configuration)
+    ## },
 
     get_resource = function(index) {
       n_res <- self$data$num_resources
@@ -371,6 +371,15 @@ as_tibble.datasets_list <- function(x, ...) {
 }
 
 
+#' @noRd
+.pull_dataset <-  function(identifier, configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("package_show", list(id = identifier))
+  Dataset$new(initial_data = res, configuration = configuration)
+}
+
 #' Pull HDX dataset into R
 #'
 #' Read an HDX dataset from its name or id
@@ -382,6 +391,8 @@ as_tibble.datasets_list <- function(x, ...) {
 #' @rdname pull_dataset
 #' @return Dataset the dataset
 #'
+#' @importFrom memoise memoise
+#' @export
 #' @examples
 #' \dontrun{
 #' # Setting the config to use HDX default server
@@ -389,14 +400,6 @@ as_tibble.datasets_list <- function(x, ...) {
 #'  res <- pull_dataset("mali-3wop")
 #'  res
 #' }
-.pull_dataset <- function(identifier, configuration = NULL, ...) {
-  ds <- Dataset$new()
-  ds$pull(identifier, configuration = configuration, ...)
-}
-
-#' @rdname pull_dataset
-#' @importFrom memoise memoise
-#' @export
 pull_dataset <- memoise::memoise(.pull_dataset)
 
 
@@ -431,13 +434,7 @@ pull_dataset <- memoise::memoise(.pull_dataset)
 #' @export
 list_datasets <- memoise::memoise(.list_datasets)
 
-#' Count all datasets on HDX
-#'
-#' Count all datasets on HDX
-#' @param configuration an HDX Configuration object
-#' @rdname count_datasets
-#' @return An integer, the number of datasets
-#' @export
+#' @noRd
 .count_datasets  <-  function(configuration = NULL) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
@@ -446,8 +443,13 @@ list_datasets <- memoise::memoise(.list_datasets)
   stats$datasets$total
 }
 
+#' Count all datasets on HDX
+#'
+#' Count all datasets on HDX
+#' @param configuration an HDX Configuration object
 #' @rdname count_datasets
 #' @importFrom memoise memoise
+#' @return An integer, the number of datasets
 #' @export
 count_datasets <- memoise::memoise(.count_datasets)
 

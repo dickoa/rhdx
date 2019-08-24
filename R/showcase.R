@@ -31,24 +31,11 @@ Showcase <- R6::R6Class(
 
     },
 
-    pull = function(identifier = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_action("ckanext_showcase_show", body = list(id = identifier), verb = "post")
-      Showcase$new(initial_data = res, configuration = configuration)
-    },
-
     list_datasets = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
       res <- configuration$call_action("ckanext_showcase_package_list", body = list(showcase_id = showcase_id), verb = "post")
       res
-    },
-
-    list_tags = function() {
-      configuration <- private$configuration
-      showcase_id <- self$data$id
-      res <- configuration$call_action("ckanext_showcase_list", list(showcase_id = showcase_id))
     },
 
     browse = function() {
@@ -88,12 +75,14 @@ as.list.Showcase <- function(x, ...) {
   x$as_list()
 }
 
-#' @aliases Showcase
-.pull_showcase <- function(identifier = NULL, configuration = NULL) {
-  org <- Showcase$new()
-  org$pull(identifier = identifier, configuration = configuration)
+#' @noRd
+.pull_showcase = function(identifier = NULL, configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("ckanext_showcase_show", body = list(id = identifier), verb = "post")
+  Showcase$new(initial_data = res, configuration = configuration)
 }
-
 
 #' Read Showcase
 #'
@@ -114,33 +103,3 @@ as.list.Showcase <- function(x, ...) {
 #'  delete_resource(dataset, 1) # first resource
 #' }
 pull_showcase <- memoise::memoise(.pull_showcase)
-
-#' List showcases
-#'
-#' List showcases
-#'
-#' @param limit  Integer limit
-#' @param offset Integer offset
-#' @param configuration a Configuration
-#'
-#' @rdname list_showcases
-#' @return A vector of showcases names
-#'
-#' @examples
-#' \dontrun{
-#' # Setting the config to use HDX default server
-#'  set_rhdx_config()
-#'  list_showcases()
-#' }
-.list_showcases = function(configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
-    set_rhdx_config(configuration = configuration)
-  configuration <- get_rhdx_config()
-  res <- configuration$call_action("ckanext_showcase_list", body = list(), verb = "post")
-  res
-}
-
-#' @rdname list_showcases
-#' @importFrom memoise memoise
-#' @export
-list_showcases <- memoise::memoise(.list_showcases)

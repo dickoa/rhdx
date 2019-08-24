@@ -26,13 +26,6 @@ Organization <- R6::R6Class(
       self$data <- initial_data
     },
 
-    pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_action("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
-      Organization$new(initial_data = res, configuration = configuration)
-    },
-
     get_datasets = function() {
       if (!"packages" %in% names(self$data)) stop("No datasets available, please run Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
       list_of_ds <- lapply(self$data$packages, function(x) Dataset$new(initial_data = x))
@@ -69,11 +62,19 @@ as_tibble.Organization <- function(x, ...) {
   df
 }
 
-
 #' @export
 #' @aliases Organization
 as.list.Organization <- function(x, ...) {
   x$as_list()
+}
+
+#' @noRd
+.pull_organization  <-  function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
+  Organization$new(initial_data = res, configuration = configuration)
 }
 
 #' Read an HDX organization
@@ -84,16 +85,9 @@ as.list.Organization <- function(x, ...) {
 #' @param configuration an HDX configuration object
 #' @param include_datasets Logical, include datasets if TRUE
 #' @param ... Extra parameters
-#'
 #' @rdname pull_organization
 #'
 #' @return HDX organization
-.pull_organization <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-  org <- Organization$new()
-  org$pull(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
-}
-
-#' @rdname pull_organization
 #' @export
 pull_organization <- memoise::memoise(.pull_organization)
 
@@ -101,7 +95,6 @@ pull_organization <- memoise::memoise(.pull_organization)
 #' @export
 browse.Organization <- function(x, ...)
   x$browse()
-
 
 #' List HDX organization
 #'

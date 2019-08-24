@@ -35,13 +35,6 @@ User <- R6::R6Class(
                                       simplifyVector = TRUE)
     },
 
-    pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_action("user_show", list(id = identifier, include_datasets = include_datasets, ...))
-      User$new(initial_data = res, configuration = configuration)
-    },
-
     as_list = function() {
       self$data
     },
@@ -56,7 +49,6 @@ User <- R6::R6Class(
     }
   )
 )
-
 
 #' @export
 #' @aliases User
@@ -75,6 +67,13 @@ as.list.User <- function(x, ...) {
   x$as_list()
 }
 
+#' @noRd
+.pull_user  <-  function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+  if (is.null(configuration) | !inherits(configuration, "Configuration"))
+    configuration <- private$configuration
+  res <- configuration$call_action("user_show", list(id = identifier, include_datasets = include_datasets, ...))
+  User$new(initial_data = res, configuration = configuration)
+}
 
 #' Read an HDX user
 #'
@@ -96,16 +95,7 @@ as.list.User <- function(x, ...) {
 #'  res <- pull_user("xxxx")
 #'  res
 #' }
-.pull_user <- function(identifier, include_datasets = FALSE, configuration = NULL, ...) {
-  user <- User$new()
-  user$pull(identifier = identifier, include_datasets = include_datasets, configuration = configuration, ...)
-}
-
-#' @rdname pull_user
-#' @export
 pull_user <- memoise::memoise(.pull_user)
-
-
 
 #' List all users
 #' @param sort Logical user sorted is TRUE
@@ -125,7 +115,6 @@ pull_user <- memoise::memoise(.pull_user)
   res <- configuration$call_action("user_list", list(order_by = order_by, ...))
   res
 }
-
 
 #' @rdname list_users
 #' @export

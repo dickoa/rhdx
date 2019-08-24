@@ -26,13 +26,6 @@ Location <- R6::R6Class(
       self$data <- initial_data
     },
 
-    pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
-      if (is.null(configuration))
-        configuration <- private$configuration
-      res <- configuration$call_action("group_show", list(id = identifier, include_datasets = include_datasets, ...))
-      Location$new(initial_data = res, configuration = configuration)
-    },
-
     get_required_fields = function() {
       private$configuration$data$hdx_config$resource$required_fields
     },
@@ -67,6 +60,16 @@ Location <- R6::R6Class(
   )
 )
 
+#' @noRd
+.pull_location <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  identifier <- assert_location(tolower(identifier))
+  res <- configuration$call_action("group_show", list(id = identifier, include_datasets = include_datasets, ...))
+  Location$new(initial_data = res, configuration = configuration)
+}
+
 #' Read an HDX location
 #'
 #' Read an HDX location
@@ -78,6 +81,7 @@ Location <- R6::R6Class(
 #' @rdname pull_location
 #' @return Location
 #'
+#' @export
 #' @examples
 #' \dontrun{
 #' #Setting the config to use HDX default server
@@ -85,13 +89,6 @@ Location <- R6::R6Class(
 #'  res <- pull_location("mli")
 #'  res
 #' }
-.pull_location <- function(identifier = NULL, configuration = NULL, ...) {
-  loc <- Location$new()
-  loc$pull(identifier = identifier, configuration = configuration, ...)
-}
-
-#' @rdname pull_location
-#' @export
 pull_location <- memoise::memoise(.pull_location)
 
 #' @export
