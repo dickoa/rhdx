@@ -21,13 +21,13 @@ check_config_params <- function(hdx_site = NULL, hdx_key = NULL, hdx_config_file
     stop("hdx_site can be either `prod`, `test`, `feature` or `demo`", call. = FALSE)
 
   if (!is.null(read_only) && !is.logical(read_only))
-    stop("read_only should be take a logical, either `TRUE` or `FALSE`", call. = FALSE)
+    stop("read_only should take a logical value, either `TRUE` or `FALSE`", call. = FALSE)
 
   if (!is.null(user_agent) && !is.character(user_agent))
     stop("user_agent should be a character", call. = FALSE)
 
   if (!is.null(hdx_key) && !is_valid_uuid(hdx_key))
-    stop("hdx_key not valid!", call. = FALSE)
+    stop("HDX API key not valid!", call. = FALSE)
 
   if (!is.null(hdx_config_file) && !file.exists(hdx_config_file))
     stop("HDX config file not found!", call. = FALSE)
@@ -82,6 +82,19 @@ assert_location <- function(x) {
   if (!cond)
     stop("Not a valid HDX condition!", call. = FALSE)
   invisible(x)
+}
+
+#' @noRd
+parse_response <- function(res) {
+  if(!inherits(res, "HttpResponse"))
+    stop("Not a API call response object!", call. = FALSE)
+  if (res$status_code < 400) {
+    x <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)
+    x <- x$result
+  } else {
+    x <- list()
+  }
+  x
 }
 
 #' @noRd

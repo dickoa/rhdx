@@ -5,7 +5,7 @@
 #' @format NULL
 #' @usage NULL
 User <- R6::R6Class(
-  "User",
+  classname = "User",
 
   private = list(
     configuration = NULL
@@ -16,12 +16,13 @@ User <- R6::R6Class(
 
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- configuration_read()
+        private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
       }
-      if (is.null(initial_data)) initial_data <- list()
-      initial_data <- nc(initial_data)
+      if (is.null(initial_data))
+        initial_data <- list()
+      initial_data <- drop_nulls(initial_data)
       self$data <- initial_data
     },
 
@@ -30,25 +31,15 @@ User <- R6::R6Class(
     },
 
     update_from_json = function(hdx_user_static_json) {
-      self$data <- jsonlite::read_json(hdx_user_static_json,
-                                       simplifyVector = TRUE)
+      self$data <- jsonlite::fromJSON(hdx_user_static_json,
+                                      simplifyVector = TRUE)
     },
 
     pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("user_show", list(id = identifier, include_datasets = include_datasets, ...))
-      User$new(initial_data = res$result, configuration = configuration)
-    },
-
-    list_users = function(order_by = "number_created_packages", configuration = NULL, ...) {
-      if (!sort %in% c("name", "number_of_edits", "number_created_packages")) stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`")
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_remoteclient("user_list", list(order_by = order_by, ...))
-      if (!all_fields)
-        unlist(res$result)
-      res$result
+      res <- configuration$call_action("user_show", list(id = identifier, include_datasets = include_datasets, ...))
+      User$new(initial_data = res, configuration = configuration)
     },
 
     as_list = function() {
@@ -115,14 +106,27 @@ as.list.User <- function(x, ...) {
 pull_user <- memoise::memoise(.pull_user)
 
 
+
 #' List all users
 #' @param sort Logical user sorted is TRUE
 #' @param all_fields Logical if TRUE get all field
 #' @param configuration Configuration the configuration to use
 #' @param ... Extra parameters
 #'
+#' @rdname list_users
+#'
 #' @export
-list_users <- function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-  user <- User$new()
-  user$list_users(sort = sort, all_fields = all_fields, configuration = configuration, ...)
+.list_users  <-  function(order_by = "number_created_packages", configuration = NULL, ...) {
+  if (!order_by %in% c("name", "number_of_edits", "number_created_packages"))
+    stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`")
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("user_list", list(order_by = order_by, ...))
+  res
 }
+
+
+#' @rdname list_users
+#' @export
+list_users <- memoise::memoise(.list_users)

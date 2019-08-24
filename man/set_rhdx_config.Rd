@@ -32,12 +32,12 @@ Invisibly returns the rhdx config object
 Sets the configuration settings for using rhdx.
 }
 \details{
-Setting up a configuration will help you access and push data into HDX
+Setting up a configuration will help you access from an HDX server
 }
 \examples{
 \dontrun{
 # Setting the config to use HDX default server
-set_rhdx_config(hdx_site = "prod")
+set_rhdx_config(hdx_site = "demo")
 
 # You can check your configuration using \\code{get_rhdx_config}
 config <- get_rhdx_config()

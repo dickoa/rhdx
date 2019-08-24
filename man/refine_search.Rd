@@ -11,9 +11,9 @@ refine_search(datasets_list, format = NULL, locations = NULL,
 \arguments{
 \item{datasets_list}{A list of dataset}
 
-\item{format}{character Format of a resource in the dataset}
+\item{format}{Character Format of a resource in the dataset}
 
-\item{locations}{character Locations of the dataset}
+\item{locations}{Character Locations of the dataset}
 
 \item{hxl}{logical dataset with HXL tags}
 

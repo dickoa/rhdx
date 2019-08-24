@@ -2,17 +2,18 @@
 #'
 #' HDX Resource
 #'
+#' @importFrom tools file_path_as_absolute
 #' @format NULL
 #' @usage NULL
 #'
 #' @examples
 #' \dontrun{
 #'   set_rhdx_config()
-#'   resource <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+#'   resource <- pull_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
 #'   resource
 #' }
 Resource <- R6::R6Class(
-  "Resource",
+  classname = "Resource",
 
   private = list(
     configuration = NULL,
@@ -24,7 +25,7 @@ Resource <- R6::R6Class(
 
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- configuration_read()
+        private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
       }
@@ -150,17 +151,8 @@ Resource <- R6::R6Class(
     pull = function(identifier, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("resource_show", list(id = identifier))
-      Resource$new(initial_data = res$result, configuration = configuration)
-    },
-
-    search = function(query = "*:*", configuration = NULL, ...) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_remoteclient("resource_search", list(query = query, ...))
-      list_of_rs <- lapply(res$result$results, function(x) Resource$new(initial_data = x, configuration = configuration))
-      class(list_of_rs) <- "resources_list"
-      list_of_rs
+      res <- configuration$call_action("resource_show", list(id = identifier))
+      Resource$new(initial_data = res, configuration = configuration)
     },
 
     get_file_type = function() {
@@ -304,7 +296,6 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, s
                          ...)
 }
 
-
 #' Search resources
 #'
 #' Search Resources
@@ -313,14 +304,26 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, s
 #' @param query Character, a query
 #' @param configuration an HDX configuration object
 #' @param ... extra params
-.search_resources <- function(query = "*:*", configuration = NULL, ...) {
-  rs <- Resource$new()
-  rs$search(query = query, configuration = configuration, ...)
+.search_resources  <-  function(query = "*:*", configuration = NULL, ...) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("resource_search", list(query = query, ...))
+  list_of_rs <- lapply(res$results, function(x) Resource$new(initial_data = x, configuration = configuration))
+  class(list_of_rs) <- "resources_list"
+  list_of_rs
 }
 
 #' @rdname search_resources
 #' @export
 search_resources <- memoise::memoise(.search_resources)
+
+#' @export
+#' @aliases Resource
+as_tibble.resources_list <- function(x, ...) {
+  l <- lapply(x, as_tibble)
+  Reduce(rbind, l)
+}
 
 #' Read an HDX resource
 #'

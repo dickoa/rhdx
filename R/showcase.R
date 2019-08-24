@@ -5,7 +5,7 @@
 #' @format NULL
 #' @usage NULL
 Showcase <- R6::R6Class(
-  "Showcase",
+  classname = "Showcase",
 
   private = list(
     configuration = NULL
@@ -16,11 +16,12 @@ Showcase <- R6::R6Class(
     data = NULL,
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- configuration_read()
+        private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
       }
-      if (is.null(initial_data)) initial_data <- list()
+      if (is.null(initial_data))
+        initial_data <- list()
       initial_data <- drop_nulls(initial_data)
       self$data <- initial_data
       key <- names(initial_data)
@@ -33,26 +34,21 @@ Showcase <- R6::R6Class(
     pull = function(identifier = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("ckanext_showcase_show", list(id = identifier))
-      Showcase$new(initial_data = res$result, configuration = configuration)
+      res <- configuration$call_action("ckanext_showcase_show", body = list(id = identifier), verb = "post")
+      Showcase$new(initial_data = res, configuration = configuration)
     },
 
     list_datasets = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_list", data = list(showcase_id = showcase_id))
-      if (res$status_code != 200L)
-        stop("Dataset not added to the showcase")
-      res$result
+      res <- configuration$call_action("ckanext_showcase_package_list", body = list(showcase_id = showcase_id), verb = "post")
+      res
     },
 
     list_tags = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_list", list(showcase_id = showcase_id))
-      if (res$status_code != 200L)
-        stop("Tag not added to the showcase")
-      res$result
+      res <- configuration$call_action("ckanext_showcase_list", list(showcase_id = showcase_id))
     },
 
     browse = function() {
@@ -118,3 +114,33 @@ as.list.Showcase <- function(x, ...) {
 #'  delete_resource(dataset, 1) # first resource
 #' }
 pull_showcase <- memoise::memoise(.pull_showcase)
+
+#' List showcases
+#'
+#' List showcases
+#'
+#' @param limit  Integer limit
+#' @param offset Integer offset
+#' @param configuration a Configuration
+#'
+#' @rdname list_showcases
+#' @return A vector of showcases names
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  list_showcases()
+#' }
+.list_showcases = function(configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("ckanext_showcase_list", body = list(), verb = "post")
+  res
+}
+
+#' @rdname list_showcases
+#' @importFrom memoise memoise
+#' @export
+list_showcases <- memoise::memoise(.list_showcases)

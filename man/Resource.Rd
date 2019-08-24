@@ -10,7 +10,7 @@ HDX Resource
 \examples{
 \dontrun{
   set_rhdx_config()
-  resource <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+  resource <- pull_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
   resource
 }
 }

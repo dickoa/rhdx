@@ -5,7 +5,7 @@
 #' @format NULL
 #' @usage NULL
 Location <- R6::R6Class(
-  "Location",
+  classname = "Location",
 
   private = list(
     configuration = NULL
@@ -16,30 +16,21 @@ Location <- R6::R6Class(
 
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- configuration_read()
+        private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
       }
-      if (is.null(initial_data)) initial_data <- list()
-      initial_data <- nc(initial_data)
+      if (is.null(initial_data))
+        initial_data <- list()
+      initial_data <- drop_nulls(initial_data)
       self$data <- initial_data
     },
 
     pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("group_show", list(id = identifier, include_datasets = include_datasets, ...))
-      Location$new(initial_data = res$result, configuration = configuration)
-    },
-
-    list_all_locations = function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
-      if (!sort %in% c("name asc", "name", "package_count", "title")) stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
-      if (is.null(configuration))
-        configuration <- private$configuration
-      res <- configuration$call_remoteclient("group_list", list(sort = sort, all_fields = all_fields, ...))
-      if (!all_fields)
-        unlist(res$result)
-      res$result
+      res <- configuration$call_action("group_show", list(id = identifier, include_datasets = include_datasets, ...))
+      Location$new(initial_data = res, configuration = configuration)
     },
 
     get_required_fields = function() {
@@ -119,3 +110,37 @@ as_tibble.Location <- function(x, ...) {
 as.list.Location <- function(x, ...) {
   x$as_list()
 }
+
+#' List locations
+#'
+#' List locations
+#'
+#' @param limit  Integer limit
+#' @param offset Integer offset
+#' @param configuration a Configuration
+#'
+#' @rdname list_locations
+#' @return A vector of locations names
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  list_locations(limit = 10L)
+#' }
+.list_locations  <-  function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
+  if (!sort %in% c("name asc", "name", "package_count", "title"))
+    stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  res <- configuration$call_action("group_list", list(sort = sort, all_fields = all_fields, ...))
+  if (!all_fields)
+    res <- unlist(res)
+  res
+}
+
+#' @rdname list_locations
+#' @importFrom memoise memoise
+#' @export
+list_locations <- memoise::memoise(.list_locations)

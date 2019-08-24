@@ -65,9 +65,11 @@
 #' @format NULL
 #' @usage NULL
 #'
+#' @importFrom tools file_ext
 #' @importFrom yaml read_yaml
-#' @importFrom jsonlite read_json
+#' @importFrom jsonlite fromJSON
 #' @importFrom crul HttpClient
+#' @importFrom base64enc base64decode
 #'
 #' @examples
 #' \dontrun{
@@ -103,8 +105,8 @@ Configuration <- R6::R6Class(
                call. = FALSE)
         hdx_config <- switch(file_ext,
                              yml = yaml::read_yaml(hdx_config_file),
-                             json = jsonlite::read_json(hdx_config_file,
-                                                        simplifyVector = FALSE))
+                             json = jsonlite::fromJSON(hdx_config_file,
+                                                       simplifyVector = FALSE))
       }
 
       self$data$hdx_config <- hdx_config
@@ -124,7 +126,6 @@ Configuration <- R6::R6Class(
                                                      headers = headers,
                                                      opts = list(http_version = 2L,
                                                                  useragent = user_agent))
-      private$shared$configuration <- self
     },
 
     get_credentials = function() {
@@ -195,29 +196,38 @@ Configuration <- R6::R6Class(
       self$data$remoteclient
     },
 
+    call_action = function(action, ..., verb = "get") {
+      if (!verb %in% c("post", "get", "put", "patch"))
+        stop("Only `get`, `post`, `put` and `patch` are supported!")
+      cli <- self$data$remoteclient
+      action_path <- paste0("/api/3/action/", action)
+      res <- cli$verb(verb, path = action_path, ...)
+      parse_response(res)
+    },
+
     call_remoteclient = function(action, data = NULL, verb = "get", encode = "json", ...) {
       if (!verb %in% c("post", "get", "put", "patch"))
         stop("Only `get`, `post`, `put` and `patch` are supported!")
       cli <- self$data$remoteclient
+      action_url <- paste0("/api/3/action/", action)
       res <- switch(verb,
                     get = {
-                      res <- cli$get(path = paste0("/api/3/action/", action),
+                      res <- cli$get(path = action_path,
                                      query = data, ...)
                     },
                     post = {
-                      res <- cli$post(path = paste0("/api/3/action/", action),
+                      res <- cli$post(path = action_path,
                                       body = data, encode = encode, ...
-                      )
+                                      )
                     },
                     put = {
-                      res <- cli$put(path = paste0("/api/3/action/", action),
+                      res <- cli$put(path = action_path,
                                      body = data, encode = encode, ...)
                     },
                     patch = {
-                      res <- cli$patch(path = paste0("/api/3/action/", action),
+                      res <- cli$patch(path = action_path,
                                        body = data, encode = encode, ...)
                     })
-
       status_code <- res$status_code
       result <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result
       error <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$error
@@ -270,17 +280,19 @@ Configuration <- R6::R6Class(
   )
 )
 
-
-#' Read configuration
+#' Create an HDX configuration object
 #'
-#' Sets the configuration settings for using rhdx.
-#'
-configuration_read <- function() {
-  configuration <- .rhdx_env$configuration
-  assert_configuration(configuration)
-  configuration$read()
+#' Create and HDX configuration object
+#' @param hdx_site Character to specify which HDX server you want to use. Default to "prod".
+#' @param hdx_key Character for the CKAN API key, it is required to push data into HDX
+#' @param hdx_config List of HDX configuration
+#' @param hdx_config_file Character, path of the HDX config file in JSON and YAML format
+#' @param read_only Logical if `FALSE` and hdx_key provided is correct you can push metdata and data to HDX
+#' @return An HDX Configuration object
+#' @export
+create_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, hdx_config_file = NULL) {
+  Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, hdx_config_file = hdx_config_file)
 }
-
 
 #' Set rhdx config
 #'
@@ -296,7 +308,7 @@ configuration_read <- function() {
 #'
 #' @rdname set_rhdx_config
 #'
-#' @details Setting up a configuration will help you access and push data into HDX
+#' @details Setting up a configuration will help you access from an HDX server
 #'
 #'
 #' @return Invisibly returns the rhdx config object
@@ -305,16 +317,18 @@ configuration_read <- function() {
 #' @examples
 #' \dontrun{
 #' # Setting the config to use HDX default server
-#' set_rhdx_config(hdx_site = "prod")
+#' set_rhdx_config(hdx_site = "demo")
 #'
 #' # You can check your configuration using \code{get_rhdx_config}
 #' config <- get_rhdx_config()
 #' config
 #' }
 set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE, hdx_config = NULL, hdx_config_file = NULL, configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "Configuration")) {
     .rhdx_env$configuration <- configuration
-  .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, hdx_config_file = hdx_config_file)
+  } else {
+    .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key, read_only = read_only, hdx_config = hdx_config, hdx_config_file = hdx_config_file)
+  }
 }
 
 
@@ -349,8 +363,7 @@ get_rhdx_config <- function() {
 #' get_rhdx_config()
 #' }
 delete_rhdx_config <- function() {
-  configuration <- .rhdx_env$configuration
-  assert_configuration(configuration)
+  configuration <- get_rhdx_config()
   configuration$delete()
 }
 
@@ -362,7 +375,6 @@ delete_rhdx_config <- function() {
 #' @return A list
 #' @export
 hdx_general_statistics <- function() {
-  configuration <- .rhdx_env$configuration
-  assert_configuration(configuration)
+  configuration <- get_rhdx_config()
   configuration$general_statistics()
 }

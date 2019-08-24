@@ -7,23 +7,23 @@ License: MIT + file LICENSE
 LazyData: TRUE
 URL: https://gitlab.com/dickoa/rhdx
 BugReports: https://gitlab.com/dickoa/rhdx/issues
-VignetteBuilder: knitr
+Depends:
+    R (>= 3.5)
 Imports:
-    crul (>= 0.7.0),
-    methods,
+    crul (>= 0.8),
     magrittr,
-    jsonlite (>= 1.6.0),
+    jsonlite,
     yaml,
     readr,
     readxl,
     sf,
     stars,
     memoise,
-    hoardr (>= 0.5.2),
+    hoardr,
     tibble,
     countrycode
 Suggests:
-    roxygen2 (>= 6.1.1),
+    roxygen2,
     knitr,
     rmarkdown,
     testthat,
@@ -33,3 +33,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Encoding: UTF-8
 Language: en-US
+VignetteBuilder: knitr

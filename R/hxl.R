@@ -1,6 +1,7 @@
 #' Strip HXL tags from tibble
 #'
 #' Strip HXL tags from tibble
+#' @importFrom readr type_convert
 #' @param x a tibble with HXL tags
 #' @return tibble
 #' @noRd

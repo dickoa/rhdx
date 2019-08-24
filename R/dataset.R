@@ -55,7 +55,7 @@
 #'  acled_mali_rs
 #' }
 Dataset <- R6::R6Class(
-  "Dataset",
+  classname = "Dataset",
 
   private = list(
     configuration = NULL
@@ -67,11 +67,12 @@ Dataset <- R6::R6Class(
 
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- configuration_read()
+        private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
       }
-      if (is.null(initial_data)) initial_data <- list()
+      if (is.null(initial_data))
+        initial_data <- list()
       initial_data <- drop_nulls(initial_data)
       key <- names(initial_data)
       self$data <- initial_data
@@ -83,19 +84,15 @@ Dataset <- R6::R6Class(
     pull = function(identifier, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("package_show", list(id = identifier))
-      Dataset$new(initial_data = res$result, configuration = configuration)
+      res <- configuration$call_action("package_show", list(id = identifier))
+      Dataset$new(initial_data = res, configuration = configuration)
     },
 
     get_resource = function(index) {
       n_res <- self$data$num_resources
       if (index > n_res)
-        stop("You have ", n_res, " resources in this dataset", call. = FALSE)
+        stop("Just ", n_resources, "resource(s) available!", call. = FALSE)
       self$resources[[index]]
-    },
-
-    get_all_resources = function() {
-      self$resources
     },
 
     get_resources = function() {
@@ -107,7 +104,7 @@ Dataset <- R6::R6Class(
       if (n_resources == 0)
         stop("No resources to delete!", call. = FALSE)
       if (index > n_resources)
-        stop("Just ", n_resources, "resource(s) available!")
+        stop("Just ", n_resources, "resource(s) available!", call. = FALSE)
       self$data$resources[[index]] <- NULL
       self$resources[[index]] <- NULL
       self$data$num_resources <- max(0, self$data$num_resources - 1)
@@ -122,39 +119,6 @@ Dataset <- R6::R6Class(
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "dataset/", self$data$name))
-    },
-
-    search = function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      cc <- crul::Paginator$new(client = configuration$remoteclient(),
-                                by = "query_params",
-                                limit_param = "rows",
-                                offset_param = "start",
-                                limit = rows,
-                                limit_chunk = page_size)
-      suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"), list(q = query, ...)))
-      list_of_ds <- unlist(lapply(cc$parse(),
-                                  function(x) jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
-      list_of_ds <- lapply(list_of_ds,
-                           function(x) Dataset$new(initial_data = x, configuration = configuration))
-      class(list_of_ds) <- "datasets_list"
-      list_of_ds
-    },
-
-    list_datasets = function(limit = NULL, offset = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      data <- drop_nulls(list(offset = offset, limit = limit))
-      res <- configuration$call_remoteclient("package_list", data)
-      unlist(res$result)
-    },
-
-    list_showcases = function() {
-      configuration <- private$configuration
-      dataset_id <- self$data$id
-      res <- configuration$call_remoteclient("ckanext_showcase_list", list(package_id = dataset_id))
-      res$result
     },
 
     get_configuration = function() {
@@ -192,12 +156,20 @@ Dataset <- R6::R6Class(
       self$data$organization
     },
 
+    get_showcases = function() {
+      configuration <- private$configuration
+      id <- self$data$id
+      res <- configuration$call_action("ckanext_package_showcase_list", body = list(package_id = id), verb = "post")
+      lapply(res, function(r)
+        Showcase$new(initial_data = r, configuration = configuration))
+    },
+
     set_organization = function(organization) {
       self$data$organization <- organization
     },
 
     is_requestable = function() {
-      self$data$is_requestable_type
+      self$data$is_requestdata_type
     },
 
     get_required_fields = function() {
@@ -218,14 +190,6 @@ Dataset <- R6::R6Class(
       } else {
         TRUE
       }
-    },
-
-    count = function(configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      res <- configuration$call_remoteclient("package_search",
-                                             list(q = "*:*", rows = 1L))
-      res$result$count
     },
 
     as_list = function() {
@@ -350,25 +314,6 @@ delete_resources <- function(dataset) {
                    function(index) delete_resource(dataset, index)))
 }
 
-#' Gives the number of datasets available
-#'
-#' Gives the number of datasets available
-#'
-#' @param configuration Configuration, an HDX config object
-#' @return The number of datasets
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'  set_rhdx_config()
-#'  count_datasets()
-#' }
-count_datasets <- function(configuration = NULL) {
-  ds <- Dataset$new()
-  ds$count(configuration = configuration)
-}
-
-
 #' Search datasets on HDX
 #'
 #' Find dataset on HDX using Solr query
@@ -391,12 +336,26 @@ count_datasets <- function(configuration = NULL) {
 #'  # Setting the config to use HDX default server
 #'  search_datasets("displaced nigeria", rows = 3L)
 #' }
-.search_datasets <- function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
-  ds <- Dataset$new()
-  ds$search(query = query, rows = rows,
-            page_size = page_size,
-            configuration = configuration,
-            ...)
+.search_datasets  <-  function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  cc <- crul::Paginator$new(client = configuration$remoteclient(),
+                            by = "query_params",
+                            limit_param = "rows",
+                            offset_param = "start",
+                            limit = rows,
+                            limit_chunk = page_size)
+  suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"),
+                          list(q = query, ...)))
+  list_of_ds <- unlist(lapply(cc$parse(),
+                              function(x)
+                                jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
+  list_of_ds <- lapply(list_of_ds,
+                       function(x)
+                         Dataset$new(initial_data = x, configuration = configuration))
+  class(list_of_ds) <- "datasets_list"
+  list_of_ds
 }
 
 #' @rdname search_datasets
@@ -404,12 +363,19 @@ count_datasets <- function(configuration = NULL) {
 #' @export
 search_datasets <- memoise::memoise(.search_datasets)
 
+#' @export
+#' @aliases Dataset
+as_tibble.datasets_list <- function(x, ...) {
+  l <- lapply(x, as_tibble)
+  Reduce(rbind, l)
+}
+
 
 #' Pull HDX dataset into R
 #'
 #' Read an HDX dataset from its name or id
 #'
-#' @param identifier character dataset keyword
+#' @param identifier Character dataset keyword
 #' @param configuration a Configuration object
 #' @param ... Extra parameters
 #'
@@ -420,7 +386,7 @@ search_datasets <- memoise::memoise(.search_datasets)
 #' \dontrun{
 #' # Setting the config to use HDX default server
 #'  set_rhdx_config()
-#'  res <- read_dataset("mali-3wop")
+#'  res <- pull_dataset("mali-3wop")
 #'  res
 #' }
 .pull_dataset <- function(identifier, configuration = NULL, ...) {
@@ -429,8 +395,10 @@ search_datasets <- memoise::memoise(.search_datasets)
 }
 
 #' @rdname pull_dataset
+#' @importFrom memoise memoise
 #' @export
 pull_dataset <- memoise::memoise(.pull_dataset)
+
 
 #' List datasets
 #'
@@ -440,8 +408,8 @@ pull_dataset <- memoise::memoise(.pull_dataset)
 #' @param offset Integer offset
 #' @param configuration a Configuration
 #'
-#' @return A list of datasets names
-#' @export
+#' @rdname list_datasets
+#' @return A vector of datasets names
 #'
 #' @examples
 #' \dontrun{
@@ -449,12 +417,39 @@ pull_dataset <- memoise::memoise(.pull_dataset)
 #'  set_rhdx_config()
 #'  list_datasets(limit = 10L)
 #' }
-list_datasets <- function(limit = NULL, offset = NULL, configuration = NULL) {
-  ds <- Dataset$new()
-  ds$list_datasets(limit = limit,
-                   offset = offset,
-                   configuration = configuration)
+.list_datasets  <-  function(limit = NULL, offset = NULL, configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  data <- drop_nulls(list(offset = offset, limit = limit))
+  res <- configuration$call_action("package_list", data)
+  unlist(res)
 }
+
+#' @rdname list_datasets
+#' @importFrom memoise memoise
+#' @export
+list_datasets <- memoise::memoise(.list_datasets)
+
+#' Count all datasets on HDX
+#'
+#' Count all datasets on HDX
+#' @param configuration an HDX Configuration object
+#' @rdname count_datasets
+#' @return An integer, the number of datasets
+#' @export
+.count_datasets  <-  function(configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  stats <- hdx_general_statistics()
+  stats$datasets$total
+}
+
+#' @rdname count_datasets
+#' @importFrom memoise memoise
+#' @export
+count_datasets <- memoise::memoise(.count_datasets)
 
 #' @rdname browse
 #' @export
@@ -466,8 +461,8 @@ browse.Dataset <- function(x, ...)
 #' Filter a list of HDX datasets
 #'
 #' @param datasets_list A list of dataset
-#' @param format character Format of a resource in the dataset
-#' @param locations character Locations of the dataset
+#' @param format Character Format of a resource in the dataset
+#' @param locations Character Locations of the dataset
 #' @param organization Character Organizations sharing the dataset
 #' @param tags character Dataset with specified tags
 #' @param hxl logical dataset with HXL tags

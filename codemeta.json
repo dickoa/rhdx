@@ -17,7 +17,7 @@
     "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.1 Patched (2019-08-08 r76939)",
+  "runtimePlatform": "R version 3.6.1 Patched (2019-08-16 r77020)",
   "author": [
     {
       "@type": "Person",
@@ -39,7 +39,6 @@
       "@type": "SoftwareApplication",
       "identifier": "roxygen2",
       "name": "roxygen2",
-      "version": ">= 6.1.1",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -113,9 +112,15 @@
   "softwareRequirements": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "R",
+      "name": "R",
+      "version": ">= 3.5"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "crul",
       "name": "crul",
-      "version": ">= 0.7.0",
+      "version": ">= 0.8",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -123,11 +128,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=crul"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "methods",
-      "name": "methods"
     },
     {
       "@type": "SoftwareApplication",
@@ -145,7 +145,6 @@
       "@type": "SoftwareApplication",
       "identifier": "jsonlite",
       "name": "jsonlite",
-      "version": ">= 1.6.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -230,7 +229,6 @@
       "@type": "SoftwareApplication",
       "identifier": "hoardr",
       "name": "hoardr",
-      "version": ">= 0.5.2",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -266,9 +264,10 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "48.339KB",
+  "fileSize": "46.065KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
   "contributor": {},
   "copyrightHolder": {},
-  "funder": {}
+  "funder": {},
+  "developmentStatus": "http://www.repostatus.org/#wip"
 }

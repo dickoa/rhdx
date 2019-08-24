@@ -10,7 +10,7 @@
 pull_dataset(identifier, configuration = NULL, ...)
 }
 \arguments{
-\item{identifier}{character dataset keyword}
+\item{identifier}{Character dataset keyword}
 
 \item{configuration}{a Configuration object}
 
@@ -26,7 +26,7 @@ Read an HDX dataset from its name or id
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()
- res <- read_dataset("mali-3wop")
+ res <- pull_dataset("mali-3wop")
  res
 }
 }

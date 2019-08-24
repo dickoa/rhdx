@@ -5,7 +5,7 @@
 #' @format NULL
 #' @usage NULL
 Organization <- R6::R6Class(
-  "Organization",
+  classname = "Organization",
 
   private = list(
     configuration = NULL
@@ -16,33 +16,21 @@ Organization <- R6::R6Class(
 
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
-        private$configuration <- configuration_read()
+        private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
       }
-      if (is.null(initial_data)) initial_data <- list()
-      initial_data <- nc(initial_data)
+      if (is.null(initial_data))
+        initial_data <- list()
+      initial_data <- drop_nulls(initial_data)
       self$data <- initial_data
     },
 
     pull = function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
       if (is.null(configuration) | !inherits(configuration, "Configuration"))
         configuration <- private$configuration
-      res <- configuration$call_remoteclient("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
-      Organization$new(initial_data = res$result, configuration = configuration)
-    },
-
-    list_organizations = function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
-      if (!sort %in% c("name asc", "name", "package_count", "title"))
-        stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
-      if (is.null(configuration) | !inherits(configuration, "Configuration"))
-        configuration <- private$configuration
-      data <- drop_nulls(list(sort = sort, all_fields = all_fields, include_dataset_count = include_dataset_count,
-                              include_groups = include_groups, include_user = include_user, include_tags = include_tags))
-      res <- configuration$call_remoteclient("organization_list", data)
-      if (isFALSE(all_fields))
-        unlist(res$result)
-      res$result
+      res <- configuration$call_action("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
+      Organization$new(initial_data = res, configuration = configuration)
     },
 
     get_datasets = function() {
@@ -119,18 +107,29 @@ browse.Organization <- function(x, ...)
 #'
 #' List HDX organization
 #'
-#' @param sort character resource uuid
-#' @param all_fields an HDX configuration object
+#' @param sort Character how to sort the results. Default is "name asc"
+#' @param all_fields Logical, include all fields
 #' @param include_dataset_count Logical include count in the result
 #' @param include_groups Logical, whether or not to include locations
 #' @param include_user Logical, whether or not to include user
 #' @param include_tags Logical whether or not to include tags
 #' @param configuration Configuration
 #' @param ... extra paramaters
-
-#' @return A list of organization
-#' @export
-list_organizations <- function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
-    org <- Organization$new()
-    org$list_organizations(sort = sort, all_fields = all_fields, include_user = include_user, include_groups = include_groups, include_tags = include_tags, include_dataset_count = include_dataset_count, configuration = configuration, ...)
+#'
+#' @rdname list_organizations
+#' @return A list of organizations on HDX
+.list_organizations  <-  function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  data <- drop_nulls(list(sort = sort, all_fields = all_fields, include_dataset_count = include_dataset_count,
+                          include_groups = include_groups, include_user = include_user, include_tags = include_tags))
+  res <- configuration$call_action("organization_list", data)
+  if (isFALSE(all_fields))
+    res <- unlist(res)
+  res
 }
+
+#' @rdname list_organizations
+#' @export
+list_organizations <- memoise::memoise(.list_organizations)
