@@ -69,7 +69,6 @@
 #' @importFrom yaml read_yaml
 #' @importFrom jsonlite fromJSON
 #' @importFrom crul HttpClient
-#' @importFrom base64enc base64decode
 #'
 #' @examples
 #' \dontrun{
