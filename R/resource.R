@@ -76,6 +76,7 @@ Resource <- R6::R6Class(
       switch(
         format,
         csv = read_hdx_csv(path, hxl = hxl),
+        `zipped csv` = read_hdx_csv(path, hxl = hxl),
         excel = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
         xlsx = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
         xls = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
