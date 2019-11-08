@@ -61,6 +61,7 @@ Location <- R6::R6Class(
 )
 
 #' @noRd
+#' @rdname pull_location
 .pull_location <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
@@ -76,6 +77,7 @@ Location <- R6::R6Class(
 #'
 #' @param identifier Character location uuid
 #' @param configuration Configuration a configuration object
+#' @param include_datasets Logical whether to include or not dataset
 #' @param ... Extra parameters
 #'
 #' @rdname pull_location
@@ -108,23 +110,8 @@ as.list.Location <- function(x, ...) {
   x$as_list()
 }
 
-#' List locations
-#'
-#' List locations
-#'
-#' @param limit  Integer limit
-#' @param offset Integer offset
-#' @param configuration a Configuration
-#'
+#' @noRd
 #' @rdname list_locations
-#' @return A vector of locations names
-#'
-#' @examples
-#' \dontrun{
-#' # Setting the config to use HDX default server
-#'  set_rhdx_config()
-#'  list_locations(limit = 10L)
-#' }
 .list_locations  <-  function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
   if (!sort %in% c("name asc", "name", "package_count", "title"))
     stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
@@ -137,7 +124,25 @@ as.list.Location <- function(x, ...) {
   res
 }
 
+
+#' List locations
+#'
+#' List locations
+#'
+#' @param limit  Integer limit
+#' @param offset Integer offset
+#' @param configuration a Configuration
+#'
+#' @return A vector of locations names
+#'
 #' @rdname list_locations
 #' @importFrom memoise memoise
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  list_locations(limit = 10L)
+#' }
 list_locations <- memoise::memoise(.list_locations)

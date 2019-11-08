@@ -68,10 +68,13 @@ as.list.User <- function(x, ...) {
 }
 
 #' @noRd
+#' @rdname pull_user
 .pull_user  <-  function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   if (is.null(configuration) | !inherits(configuration, "Configuration"))
     configuration <- private$configuration
+
   res <- configuration$call_action("user_show", list(id = identifier, include_datasets = include_datasets, ...))
+
   User$new(initial_data = res, configuration = configuration)
 }
 
@@ -97,15 +100,7 @@ as.list.User <- function(x, ...) {
 #' }
 pull_user <- memoise::memoise(.pull_user)
 
-#' List all users
-#' @param sort Logical user sorted is TRUE
-#' @param all_fields Logical if TRUE get all field
-#' @param configuration Configuration the configuration to use
-#' @param ... Extra parameters
-#'
-#' @rdname list_users
-#'
-#' @export
+#' @noRd
 .list_users  <-  function(order_by = "number_created_packages", configuration = NULL, ...) {
   if (!order_by %in% c("name", "number_of_edits", "number_created_packages"))
     stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`")
@@ -116,6 +111,18 @@ pull_user <- memoise::memoise(.pull_user)
   res
 }
 
+#' List all users
+#' @param order_by Logical user sorted is TRUE
+#' @param configuration Configuration the configuration to use
+#' @param ... Extra parameters
+#'
 #' @rdname list_users
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Setting the config to use HDX default server
+#'  set_rhdx_config()
+#'  list_user()
+#' }
 list_users <- memoise::memoise(.list_users)
