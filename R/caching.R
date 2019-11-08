@@ -47,7 +47,6 @@ NULL
 #'
 #'
 #' @return list of files in the cache
-#' @importFrom rappdirs user_cache_dir
 #' @export
 rhdx_cache_dir <- function() {
   assert_cache(rhdx_cache)
