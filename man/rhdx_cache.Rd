@@ -4,7 +4,7 @@
 \alias{rhdx_cache}
 \title{Caching}
 \description{
-Manage cached HDX Dataset with \pkg{hoardr}
+Manage cached HDX downloaded resources with \pkg{hoardr}
 }
 \details{
 The default cache directory is

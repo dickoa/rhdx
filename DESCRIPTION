@@ -1,6 +1,6 @@
 Package: rhdx
 Title: Client for the Humanitarian Data Exchange platform API
-Description: Client for the Humanitarian Data Exchange platform API. Allows to search and download datasets into R.
+Description: Client for the Humanitarian Data Exchange (HDX) platform API. Allows to search and download HDX datasets into R.
 Version: 0.1.0.9000
 Authors@R: person("Dicko", "Ahmadou", email = "mail@ahmadoudicko.com", role = c("aut", "cre"))
 License: MIT + file LICENSE
@@ -28,7 +28,8 @@ Suggests:
     rmarkdown,
     testthat,
     covr,
-    vcr (>= 0.2.2)
+    webmockr,
+    vcr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Encoding: UTF-8

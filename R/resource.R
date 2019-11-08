@@ -45,22 +45,31 @@ Resource <- R6::R6Class(
 
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
-      rhdx_cache$mkdir()
+
+
       if (is.null(folder)) {
-        folder <- rhdx_cache$cache_path_get()
+        folder <- rhdx_cache_dir()
       }
+
+      if (!dir.exists(folder))
+        dir.create(folder)
+
       if (is.null(filename)) {
         filename <- basename(self$data$url)
         if (!is.null(self$data$resource_type) && self$data$resource_type == "api")
           filename <- gsub("\\?.*", "", filename)
       }
-      path <- file.path(folder, filename)
-      rhdx_cache$cache_path_set(path)
-      if (!file.exists(path) | force)
-        download.file(url = self$data$url, destfile = path,
-                      mode = "wb", quiet = quiet, ...)
+
+      file_path <- file.path(folder, filename)
+
+      if (!file.exists(file_path) | force)
+        download.file(url = self$data$url,
+                      destfile = file_path,
+                      mode = "wb",
+                      quiet = quiet, ...)
+
       private$download_folder_ <- tools::file_path_as_absolute(folder)
-      invisible(tools::file_path_as_absolute(path))
+      invisible(tools::file_path_as_absolute(file_path))
     },
 
     download_folder = function() {
@@ -68,59 +77,72 @@ Resource <- R6::R6Class(
     },
 
     read_resource = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet = TRUE, ...) {
+
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+
+      file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+
       format <- self$get_file_type()
+
       hxl <- any(grepl("hxl", get_tags_name(self$get_dataset()), ignore.case = TRUE))
-      switch(
-        format,
-        csv = read_hdx_csv(path, hxl = hxl),
-        `zipped csv` = read_hdx_csv(path, hxl = hxl),
-        excel = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
-        xlsx = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
-        xls = read_hdx_excel(path = path, sheet = sheet, hxl = hxl),
-        json = read_hdx_json(path, simplify_json = simplify_json),
-        geojson = read_hdx_vector(path, layer),
-        geotiff = read_hdx_raster(path = path, zipped = FALSE),
-        kmz = read_hdx_vector(path = path, layer = layer),
-        `zipped shapefile` = read_hdx_vector(path = path, layer = layer),
-        `zipped geodatabase` = read_hdx_vector(path = path, layer = layer, zipped = FALSE),
-        `zipped kml` = read_hdx_vector(path = path, layer = layer),
-        `zipped geopackage` = read_hdx_vector(path = path, layer = layer),
-        `zipped geotiff` = read_hdx_raster(path = path))
+
+      switch(format,
+             csv = read_hdx_csv(file_path, hxl = hxl),
+             `zipped csv` = read_hdx_csv(file_path, hxl = hxl),
+             excel = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
+             xlsx = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
+             xls = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
+             json = read_hdx_json(file_path, simplify_json = simplify_json),
+             geojson = read_hdx_vector(file_path, layer),
+             geotiff = read_hdx_raster(file_path, zipped = FALSE),
+             kmz = read_hdx_vector(file_path, layer = layer),
+             `zipped shapefile` = read_hdx_vector(file_path, layer = layer),
+             `zipped geodatabase` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
+             `zipped kml` = read_hdx_vector(file_path, layer = layer),
+             `zipped geopackage` = read_hdx_vector(file_path, layer = layer),
+             `zipped geotiff` = read_hdx_raster(file_path))
     },
 
     get_layers = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
+
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+
+      file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+
       format <- self$get_file_type()
+
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
                                 "zipped geopackage", "kmz", "zipped kml")
       if (!format %in% supported_geo_format)
         stop("This (spatial) data format is not yet supported", call. = FALSE)
+
       switch(format,
-             geojson = get_hdx_layers_(path, zipped = FALSE),
-             `zipped shapefile` = get_hdx_layers_(path),
-             `zipped geodatabase` = get_hdx_layers_(path, zipped = FALSE),
-             `zipped geopackage` = get_hdx_layers_(path),
-             kmz = get_hdx_layers_(path),
-             `zipped kml` = get_hdx_layers_(path))
+             geojson = get_hdx_layers_(file_path, zipped = FALSE),
+             `zipped shapefile` = get_hdx_layers_(file_path),
+             `zipped geodatabase` = get_hdx_layers_(file_path, zipped = FALSE),
+             `zipped geopackage` = get_hdx_layers_(file_path),
+             kmz = get_hdx_layers_(file_path),
+             `zipped kml` = get_hdx_layers_(file_path))
     },
 
     get_sheets = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
+
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
-      path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+
+      file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+
       format <- self$get_file_type()
+
       if (!format %in% c("xlsx", "xls", "excel"))
         stop("`get_sheets work only with Excel file", call. = FALSE)
-      switch(
-        format,
-        excel = get_hdx_sheets_(path = path),
-        xlsx = get_hdx_sheets_(path = path),
-        xls = get_hdx_sheets_(path = path))
+
+      switch(format,
+             excel = get_hdx_sheets_(file_path),
+             xlsx = get_hdx_sheets_(file_path),
+             xls = get_hdx_sheets_(file_path))
     },
 
     get_dataset = function() {
@@ -144,9 +166,11 @@ Resource <- R6::R6Class(
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
       if (check_dataset_id)
+        # remove package_id
         n1 <- setdiff(n1, "package_id")
       if (!all(n1 %in% n2))
-        stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)), call. = FALSE)
+        stop(sprintf("Field %s is missing in the dataset!\n",
+                     setdiff(n1, n2)), call. = FALSE)
     },
 
     get_file_type = function() {

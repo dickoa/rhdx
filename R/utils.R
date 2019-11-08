@@ -83,6 +83,11 @@ assert_location <- function(x) {
 }
 
 #' @noRd
+assert_cache <- function(x)
+  if (!inherits(x, "HoardClient"))
+    stop("Not a `hoardr` cache object", call. = FALSE)
+
+#' @noRd
 parse_response <- function(res) {
   if(!inherits(res, "HttpResponse"))
     stop("Not a API call response object!", call. = FALSE)
@@ -133,16 +138,60 @@ get_user_agent <- function(x) {
   header
 }
 
+#' Strip HXL tags from tibble
+#'
+#' Strip HXL tags from tibble
+#' @importFrom readr type_convert
+#' @param x a tibble with HXL tags
+#' @return tibble
 #' @noRd
-read_hdx_json <- function(path, simplify_json = FALSE, ...) {
-  check_packages("jsonlite")
-  jsonlite::fromJSON(path, simplifyVector = simplify_json, ...)
+strip_hxl <- function(x) {
+  tbl <- tibble::as_tibble(x)
+  schema_row <- find_schema_row(tbl)
+  base_tbl <- if (schema_row > 0) {
+    new_tbl <- tbl[-1 * 1L:schema_row, ]
+    suppressMessages(readr::type_convert(new_tbl))
+  } else {
+    tbl
+  }
+  base_tbl
 }
 
 #' @noRd
-read_hdx_csv <- function(path, hxl = FALSE, ...) {
+#' @author Dirk Schumascher
+find_schema_row <- function(tbl) {
+  stopifnot(is.data.frame(tbl))
+  if (any(is_valid_tag(colnames(tbl)))) {
+    return(0)
+  } else {
+    for (i in seq_len(pmin(nrow(tbl), 25))) {
+      row <- unlist(apply(tbl[i, ], 2, as.character))
+      if (any(is_valid_tag(row))) {
+        return(i)
+      }
+    }
+  }
+  -1
+}
+
+#' @noRd
+#' @author Dirk Schumascher
+is_valid_tag <- function(tag) {
+  ltag <- tolower(trimws(tag))
+  pattern <- "^#[a-z][a-z0-9_]*(\\s+(\\+|-)\\s*[a-z][a-z0-9_]*)*"
+  grepl(x = ltag, pattern = pattern)
+}
+
+#' @noRd
+read_hdx_json <- function(file, simplify_json = FALSE, ...) {
+  check_packages("jsonlite")
+  jsonlite::fromJSON(file, simplifyVector = simplify_json, ...)
+}
+
+#' @noRd
+read_hdx_csv <- function(file, hxl = FALSE, ...) {
   check_packages("readr")
-  df <- readr::read_csv(path, ...)
+  df <- readr::read_csv(file, ...)
   if (isTRUE(hxl))
     df <- strip_hxl(df)
   df
@@ -150,60 +199,62 @@ read_hdx_csv <- function(path, hxl = FALSE, ...) {
 
 
 #' @noRd
-read_hdx_excel <- function(path = NULL, sheet = NULL, hxl = FALSE, ...) {
+read_hdx_excel <- function(file = NULL, sheet = NULL, hxl = FALSE, ...) {
   check_packages("readxl")
   if (is.null(sheet)) {
-    sheet <- readxl::excel_sheets(path)[[1]]
+    sheet <- readxl::excel_sheets(file)[[1]]
     cat("Reading sheet: ", sheet, "\n")
   }
-  df <- readxl::read_excel(path, sheet = sheet, ...)
+  df <- readxl::read_excel(file, sheet = sheet, ...)
   if (isTRUE(hxl))
     df <- strip_hxl(df)
   df
 }
 
 #' @noRd
-get_hdx_layers_ <- function(path = NULL, zipped = TRUE) {
+get_hdx_layers_ <- function(file = NULL, zipped = TRUE) {
   check_packages("sf")
   if (zipped)
-    path <- file.path("/vsizip", path)
-  sf::st_layers(path)
+    file <- file.path("/vsizip", file)
+  sf::st_layers(file)
 }
 
 #' @noRd
-get_hdx_sheets_ <- function(path = NULL) {
+get_hdx_sheets_ <- function(file = NULL) {
   check_packages("readxl")
-  readxl::excel_sheets(path)
+  readxl::excel_sheets(file)
 }
 
 #' @noRd
-read_hdx_vector <- function(path = NULL, layer = NULL, zipped = TRUE, ...) {
+read_hdx_vector <- function(file = NULL, layer = NULL, zipped = TRUE, ...) {
   check_packages("sf")
   if (zipped)
-    path <- file.path("/vsizip", path)
+    file <- file.path("/vsizip", file)
   if (is.null(layer)) {
-    layer <- sf::st_layers(path)[[1]][1]
+    layer <- sf::st_layers(file)[[1]][1]
     message("reading layer: ", layer, "\n")
   }
-  sf::read_sf(dsn = path, layer = layer, ...)
+  sf::read_sf(dsn = file, layer = layer, ...)
 }
 
 #' @noRd
-read_hdx_raster <- function(path = NULL, zipped = TRUE, ...) {
+read_hdx_raster <- function(file = NULL, zipped = TRUE, ...) {
   check_packages("stars")
   if (zipped)
-    path <- file.path("/vsizip", path)
-  stars::read_stars(path, ...)
+    file <- file.path("/vsizip", file)
+  stars::read_stars(file, ...)
 }
 
 #' @noRd
+#' @param z object to display
+#' inspired by Scott Chamberlain function sift_res
 #' @importFrom stats na.omit
-sift_res <- function(z, key = "name") {
+sift_res <- function(z, key = "name", n = 5) {
   if (!is.null(z) && length(z) > 0) {
     if (!key %in% names(z)) key <- "name"
     r <- na.omit(vapply(z,
                         function(x) if (length(x) > 0) paste0(x[[key]], ", ") else "",
-                        FUN.VALUE = "character")[1:5])
+                        FUN.VALUE = "character")[1:n])
     gsub(", $", "", paste0(r, collapse = ""))
   } else {
     ""

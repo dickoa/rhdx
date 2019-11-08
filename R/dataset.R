@@ -218,20 +218,6 @@ Dataset <- R6::R6Class(
   )
 )
 
-#' Create dataset in HDX
-#'
-#' Create dataset in HDX
-#'
-#' @param dataset Dataset the dataset we want to push online
-#' @param upload_resources Upload resources online
-#' @param verbose Logical Silent output if FALSE
-#' @return an HDX dataset
-#' @export
-push_dataset <- function(dataset, upload_resources = TRUE, verbose = FALSE) {
-  assert_dataset(dataset)
-  dataset$push(upload_resources = upload_resources, verbose = verbose)
-}
-
 #' @export
 #' @aliases Dataset
 as.list.Dataset <- function(x, ...) {

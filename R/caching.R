@@ -1,8 +1,7 @@
 #' Caching
 #'
-#' Manage cached HDX Dataset with \pkg{hoardr}
+#' Manage cached HDX downloaded resources with \pkg{hoardr}
 #'
-#' @export
 #' @name rhdx_cache
 #'
 #' @details The default cache directory is
@@ -42,3 +41,41 @@
 #' # set a different cache path from the default
 #' }
 NULL
+
+
+#' List of files available in the cache
+#'
+#'
+#' @return list of files in the cache
+#' @importFrom rappdirs user_cache_dir
+#' @export
+rhdx_cache_dir <- function() {
+  assert_cache(rhdx_cache)
+  rhdx_cache$cache_path_get()
+}
+
+#' List of files available in the cache
+#'
+#' @return list of files in the cache
+#' @export
+rhdx_cache_list <- function() {
+  assert_cache(rhdx_cache)
+  list.files(rhdx_cache$cache_path_get())
+}
+
+#' Delete file from cache
+#'
+#' @param file Character, the file to delete
+#' @export
+rhdx_cache_delete <- function(file) {
+  assert_cache(rhdx_cache)
+  rhdx_cache$delete(file)
+}
+
+#' Clear cache
+#'
+#' @export
+rhdx_cache_clear <- function() {
+  assert_cache(rhdx_cache)
+  rhdx_cache$delete_all()
+}
