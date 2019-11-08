@@ -5,7 +5,7 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "rhdx",
-  "description": "Client for the Humanitarian Data Exchange platform API. Allows to search and download datasets into R.",
+  "description": "Client for the Humanitarian Data Exchange (HDX) platform API. Allows to search and download HDX datasets into R.",
   "name": "rhdx: Client for the Humanitarian Data Exchange platform API",
   "codeRepository": "https://gitlab.com/dickoa/rhdx",
   "issueTracker": "https://gitlab.com/dickoa/rhdx/issues",
@@ -17,7 +17,7 @@
     "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.1 Patched (2019-08-16 r77020)",
+  "runtimePlatform": "R version 3.6.1 Patched (2019-10-25 r77334)",
   "author": [
     {
       "@type": "Person",
@@ -97,9 +97,20 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "webmockr",
+      "name": "webmockr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=webmockr"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "vcr",
       "name": "vcr",
-      "version": ">= 0.2.2",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -264,7 +275,7 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "45.783KB",
+  "fileSize": "46.012KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
   "contributor": {},
   "copyrightHolder": {},
