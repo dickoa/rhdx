@@ -4,8 +4,13 @@
 \alias{create_rhdx_config}
 \title{Create an HDX configuration object}
 \usage{
-create_rhdx_config(hdx_site = "prod", hdx_key = NULL,
-  read_only = TRUE, hdx_config = NULL, hdx_config_file = NULL)
+create_rhdx_config(
+  hdx_site = "prod",
+  hdx_key = NULL,
+  read_only = TRUE,
+  hdx_config = NULL,
+  hdx_config_file = NULL
+)
 }
 \arguments{
 \item{hdx_site}{Character to specify which HDX server you want to use. Default to "prod".}

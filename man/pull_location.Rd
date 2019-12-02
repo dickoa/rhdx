@@ -4,11 +4,17 @@
 \alias{pull_location}
 \title{Read an HDX location}
 \usage{
-pull_location(identifier = NULL, include_datasets = FALSE,
-  configuration = NULL, ...)
+pull_location(
+  identifier = NULL,
+  include_datasets = FALSE,
+  configuration = NULL,
+  ...
+)
 }
 \arguments{
 \item{identifier}{Character location uuid}
+
+\item{include_datasets}{Logical whether to include or not dataset}
 
 \item{configuration}{Configuration a configuration object}
 

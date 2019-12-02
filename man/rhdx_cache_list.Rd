@@ -2,7 +2,7 @@
 % Please edit documentation in R/caching.R
 \name{rhdx_cache_list}
 \alias{rhdx_cache_list}
-\title{List of files available in the cache}
+\title{List of files available in the cache directory}
 \usage{
 rhdx_cache_list()
 }
@@ -10,5 +10,5 @@ rhdx_cache_list()
 list of files in the cache
 }
 \description{
-List of files available in the cache
+List of files available in the cache directory
 }

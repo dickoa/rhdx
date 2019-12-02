@@ -4,8 +4,15 @@
 \alias{read_resource}
 \title{Read resource}
 \usage{
-read_resource(resource, sheet = NULL, layer = NULL, folder = NULL,
-  simplify_json = TRUE, force_download = FALSE, ...)
+read_resource(
+  resource,
+  sheet = NULL,
+  layer = NULL,
+  folder = NULL,
+  simplify_json = TRUE,
+  force_download = FALSE,
+  ...
+)
 }
 \arguments{
 \item{resource}{Resource, an HDX resource}

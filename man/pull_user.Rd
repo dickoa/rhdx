@@ -4,8 +4,12 @@
 \alias{pull_user}
 \title{Read an HDX user}
 \usage{
-pull_user(identifier = NULL, include_datasets = FALSE,
-  configuration = NULL, ...)
+pull_user(
+  identifier = NULL,
+  include_datasets = FALSE,
+  configuration = NULL,
+  ...
+)
 }
 \arguments{
 \item{identifier}{character user keyword}

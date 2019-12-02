@@ -4,8 +4,14 @@
 \alias{download_resource}
 \title{Download an HDX resource}
 \usage{
-download_resource(resource, folder = NULL, filename = NULL,
-  quiet = FALSE, force = FALSE, ...)
+download_resource(
+  resource,
+  folder = NULL,
+  filename = NULL,
+  quiet = FALSE,
+  force = FALSE,
+  ...
+)
 }
 \arguments{
 \item{resource}{Resource, an HDX resource}

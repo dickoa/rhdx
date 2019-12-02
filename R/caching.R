@@ -42,18 +42,16 @@
 #' }
 NULL
 
-
-#' List of files available in the cache
+#' Print the cache directory
 #'
-#'
-#' @return list of files in the cache
+#' @return the cache directory
 #' @export
 rhdx_cache_dir <- function() {
   assert_cache(rhdx_cache)
   rhdx_cache$cache_path_get()
 }
 
-#' List of files available in the cache
+#' List of files available in the cache directory
 #'
 #' @return list of files in the cache
 #' @export
@@ -62,7 +60,7 @@ rhdx_cache_list <- function() {
   list.files(rhdx_cache$cache_path_get())
 }
 
-#' Delete file from cache
+#' Delete a given file from cache
 #'
 #' @param file Character, the file to delete
 #' @export
@@ -71,7 +69,7 @@ rhdx_cache_delete <- function(file) {
   rhdx_cache$delete(file)
 }
 
-#' Clear cache
+#' Clear cache directory
 #'
 #' @export
 rhdx_cache_clear <- function() {

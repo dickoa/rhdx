@@ -245,6 +245,16 @@ read_hdx_raster <- function(file = NULL, zipped = TRUE, ...) {
   stars::read_stars(file, ...)
 }
 
+
+#' Encode URL from proxy.hxlstandard
+#'
+#' URL using are partially encoded we need to change space into %20
+#'
+#' @return Character encoded url
+#' @noRd
+url_encode_proxy <- function(url)
+  gsub("\\s", "%20", url)
+
 #' @noRd
 #' @param z object to display
 #' inspired by Scott Chamberlain function sift_res

@@ -2,10 +2,10 @@
 % Please edit documentation in R/caching.R
 \name{rhdx_cache_clear}
 \alias{rhdx_cache_clear}
-\title{Clear cache}
+\title{Clear cache directory}
 \usage{
 rhdx_cache_clear()
 }
 \description{
-Clear cache
+Clear cache directory
 }

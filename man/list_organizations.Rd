@@ -5,15 +5,27 @@
 \alias{list_organizations}
 \title{List HDX organization}
 \usage{
-.list_organizations(sort = "name asc", all_fields = FALSE,
-  include_dataset_count = TRUE, include_groups = FALSE,
-  include_user = FALSE, include_tags = FALSE, configuration = NULL,
-  ...)
+.list_organizations(
+  sort = "name asc",
+  all_fields = FALSE,
+  include_dataset_count = TRUE,
+  include_groups = FALSE,
+  include_user = FALSE,
+  include_tags = FALSE,
+  configuration = NULL,
+  ...
+)
 
-list_organizations(sort = "name asc", all_fields = FALSE,
-  include_dataset_count = TRUE, include_groups = FALSE,
-  include_user = FALSE, include_tags = FALSE, configuration = NULL,
-  ...)
+list_organizations(
+  sort = "name asc",
+  all_fields = FALSE,
+  include_dataset_count = TRUE,
+  include_groups = FALSE,
+  include_user = FALSE,
+  include_tags = FALSE,
+  configuration = NULL,
+  ...
+)
 }
 \arguments{
 \item{sort}{Character how to sort the results. Default is "name asc"}

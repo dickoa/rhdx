@@ -8,7 +8,7 @@ Manage cached HDX downloaded resources with \pkg{hoardr}
 }
 \details{
 The default cache directory is
-\code{~/.cache/R/rhdx_cache}, but you can set
+\verb{~/.cache/R/rhdx_cache}, but you can set
 your own path using \code{cache_path_set()}
 
 \code{cache_delete} only accepts 1 file name, while

@@ -51,19 +51,20 @@ Resource <- R6::R6Class(
         folder <- rhdx_cache_dir()
       }
 
-      if (!dir.exists(folder))
-        dir.create(folder)
-
       if (is.null(filename)) {
-        filename <- basename(self$data$url)
-        if (!is.null(self$data$resource_type) && self$data$resource_type == "api")
-          filename <- gsub("\\?.*", "", filename)
+        filename <- gsub("\\?.*", "", self$data$url)
+        filename <- basename(filename)
       }
+
+      url <- self$data$url
+
+      if (grepl("proxy.hxlstandard", url))
+        url <- url_encode_proxy(url)
 
       file_path <- file.path(folder, filename)
 
       if (!file.exists(file_path) | force)
-        download.file(url = self$data$url,
+        download.file(url = url,
                       destfile = file_path,
                       mode = "wb",
                       quiet = quiet, ...)

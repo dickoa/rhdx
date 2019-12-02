@@ -4,8 +4,12 @@
 \alias{pull_organization}
 \title{Read an HDX organization}
 \usage{
-pull_organization(identifier = NULL, include_datasets = FALSE,
-  configuration = NULL, ...)
+pull_organization(
+  identifier = NULL,
+  include_datasets = FALSE,
+  configuration = NULL,
+  ...
+)
 }
 \arguments{
 \item{identifier}{character resource uuid}

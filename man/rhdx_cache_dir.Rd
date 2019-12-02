@@ -2,13 +2,13 @@
 % Please edit documentation in R/caching.R
 \name{rhdx_cache_dir}
 \alias{rhdx_cache_dir}
-\title{List of files available in the cache}
+\title{Print the cache directory}
 \usage{
 rhdx_cache_dir()
 }
 \value{
-list of files in the cache
+the cache directory
 }
 \description{
-List of files available in the cache
+Print the cache directory
 }

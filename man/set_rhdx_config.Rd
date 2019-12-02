@@ -5,8 +5,14 @@
 \alias{get_rhdx_config}
 \title{Set rhdx config}
 \usage{
-set_rhdx_config(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
-  hdx_config = NULL, hdx_config_file = NULL, configuration = NULL)
+set_rhdx_config(
+  hdx_site = "prod",
+  hdx_key = NULL,
+  read_only = TRUE,
+  hdx_config = NULL,
+  hdx_config_file = NULL,
+  configuration = NULL
+)
 
 get_rhdx_config()
 }
@@ -39,7 +45,7 @@ Setting up a configuration will help you access from an HDX server
 # Setting the config to use HDX default server
 set_rhdx_config(hdx_site = "demo")
 
-# You can check your configuration using \\code{get_rhdx_config}
+# You can check your configuration using \code{get_rhdx_config}
 config <- get_rhdx_config()
 config
 }

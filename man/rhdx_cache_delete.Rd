@@ -2,7 +2,7 @@
 % Please edit documentation in R/caching.R
 \name{rhdx_cache_delete}
 \alias{rhdx_cache_delete}
-\title{Delete file from cache}
+\title{Delete a given file from cache}
 \usage{
 rhdx_cache_delete(file)
 }
@@ -10,5 +10,5 @@ rhdx_cache_delete(file)
 \item{file}{Character, the file to delete}
 }
 \description{
-Delete file from cache
+Delete a given file from cache
 }

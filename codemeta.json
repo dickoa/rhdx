@@ -17,7 +17,7 @@
     "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.1 Patched (2019-10-25 r77334)",
+  "runtimePlatform": "R version 3.6.1 Patched (2019-11-15 r77425)",
   "author": [
     {
       "@type": "Person",
@@ -275,7 +275,7 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "46.012KB",
+  "fileSize": "48.188KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
   "contributor": {},
   "copyrightHolder": {},

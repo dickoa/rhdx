@@ -4,9 +4,16 @@
 \alias{refine_search}
 \title{Filter a list of HDX datasets}
 \usage{
-refine_search(datasets_list, format = NULL, locations = NULL,
-  hxl = FALSE, tags = NULL, organization = NULL, cod = FALSE,
-  requestable = FALSE)
+refine_search(
+  datasets_list,
+  format = NULL,
+  locations = NULL,
+  hxl = FALSE,
+  tags = NULL,
+  organization = NULL,
+  cod = FALSE,
+  requestable = FALSE
+)
 }
 \arguments{
 \item{datasets_list}{A list of dataset}

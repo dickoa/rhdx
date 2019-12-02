@@ -5,11 +5,21 @@
 \alias{search_datasets}
 \title{Search datasets on HDX}
 \usage{
-.search_datasets(query = "*:*", rows = 10L, page_size = 1000L,
-  configuration = NULL, ...)
+.search_datasets(
+  query = "*:*",
+  rows = 10L,
+  page_size = 1000L,
+  configuration = NULL,
+  ...
+)
 
-search_datasets(query = "*:*", rows = 10L, page_size = 1000L,
-  configuration = NULL, ...)
+search_datasets(
+  query = "*:*",
+  rows = 10L,
+  page_size = 1000L,
+  configuration = NULL,
+  ...
+)
 }
 \arguments{
 \item{query}{Character Query (in Solr format). Defaults to ‘\emph{:}’}
