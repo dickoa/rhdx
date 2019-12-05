@@ -117,7 +117,7 @@ Resource <- R6::R6Class(
 
       file_path <- self$download(folder = download_folder, quiet = quiet_download, force = force_download, ...)
 
-      format <- self$get_file_type()
+      format <- self$get_format()
 
       hxl <- any(grepl("hxl", get_tags_name(self$get_dataset()), ignore.case = TRUE))
 
@@ -154,7 +154,7 @@ Resource <- R6::R6Class(
 
       file_path <- self$download(folder = download_folder, quiet = quiet_download, force = force_download, ...)
 
-      format <- self$get_file_type()
+      format <- self$get_format()
 
       supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
                                 "zipped geopackage", "kmz", "zipped kml")
@@ -186,7 +186,7 @@ Resource <- R6::R6Class(
 
       file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
 
-      format <- self$get_file_type()
+      format <- self$get_format()
 
       if (!format %in% c("xlsx", "xls", "excel"))
         stop("`get_sheets work only with Excel file", call. = FALSE)
