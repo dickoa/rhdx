@@ -56,15 +56,21 @@
 #' }
 Dataset <- R6::R6Class(
   classname = "Dataset",
-
   private = list(
     configuration = NULL
   ),
-
   public = list(
+    #' @field resources of datasets resource
     resources = NULL,
+    #' @field data placeholder for Dataset field element
     data = list(),
 
+    #' @description
+    #' Create a new Dataset object
+    #'
+    #' @param initial_data list with required field to create a dataset
+    #' @param configuration a Configuration object
+    #' @return A Dataset object
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- get_rhdx_config()
@@ -81,24 +87,31 @@ Dataset <- R6::R6Class(
                                  function(x) Resource$new(initial_data = x, configuration = configuration))
     },
 
-    ## pull = function(identifier, configuration = NULL) {
-    ##   if (is.null(configuration) | !inherits(configuration, "Configuration"))
-    ##     configuration <- private$configuration
-    ##   res <- configuration$call_action("package_show", list(id = identifier))
-    ##   Dataset$new(initial_data = res, configuration = configuration)
-    ## },
-
+    #' @description
+    #' Get a specific resource of the dataset
+    #'
+    #' @param index, the index of the resource to access
+    #' @return a Resource object, the selected resource
     get_resource = function(index) {
       n_res <- self$data$num_resources
       if (index > n_res)
-        stop("Just ", n_resources, "resource(s) available!", call. = FALSE)
+        stop("Just ", n_res, "resource(s) available!", call. = FALSE)
       self$resources[[index]]
     },
 
+    #' @description
+    #' Get all resources of the dataset
+    #'
+    #' @return a list of Resource objects, all resources available in the dataset
     get_resources = function() {
       self$resources
     },
 
+    #' @description
+    #' Delete a resource by its index
+    #'
+    #' @param index, the index of the resource to delete
+    #' @return
     delete_resource = function(index = 1L) {
       n_resources <- self$data$num_resources
       if (n_resources == 0)
@@ -110,21 +123,35 @@ Dataset <- R6::R6Class(
       self$data$num_resources <- max(0, self$data$num_resources - 1)
     },
 
+    #' @description
+    #' Delete all resources from a dataset
+    #'
+    #' @return
     delete_resources = function() {
       self$resources <- NULL
       self$data$resources <- NULL
       self$data$num_resources <- NULL
     },
 
+    #' @description
+    #' Browse the dataset page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "dataset/", self$data$name))
     },
 
+    #' @description
+    #' Get the current configuration in use
+    #'
+    #' @return A configuration object, the configuration in use
     get_configuration = function() {
       private$configuration
     },
 
+    #' @description
+    #' Get the dataset date
+    #'
+    #' @return a date, the dataset date.
     get_dataset_date = function() {
       date <- self$data$dataset_date
       if (is.null(date))
@@ -132,30 +159,63 @@ Dataset <- R6::R6Class(
       date
     },
 
+    #' @description
+    #' Set the dataset date
+    #'
+    #' @param date a character, by default with the format month/day/year
+    #' @param format the format of the date supplied
+    #' @return
     set_dataset_date = function(date, format = "%m/%d/%Y") {
       self$data$dataset_date <- format.Date(date, format = format)
     },
 
+    #' @description
+    #' Get dataset update frequency
+    #'
+    #' @return a character, the dataset update frequency
     get_update_frequency = function() {
       self$data$data_update_frequency
     },
 
+    #' Get dataset tags
+    #'
+    #' @return a list of Tag objects, datasets tags
     get_tags = function() {
-      self$data$tags
+      lapply(self$data$tags, function(x)
+        pull_tag(x$id))
     },
 
+    #' @description
+    #' Get the datasets location
+    #'
+    #' @return a list of Location objects, all locations covered by the dataset
     get_locations = function() {
-      self$data$groups
+      lapply(self$data$groups, function(x)
+        pull_location(x$id))
     },
 
+    #' @description
+    #' Get the dataset maintainer
+    #'
+    #' @return An User object, the maintainer of the dataset
     get_maintainer = function() {
-      self$data$maintainer
+      id <- self$data$maintainer
+      pull_user(id)
     },
 
+    #' @description
+    #' Get the dataset organization
+    #'
+    #' @return an Organization object, the organization that shared the data
     get_organization = function() {
-      self$data$organization
+      id <- self$data$organization$id
+      pull_organization(id)
     },
 
+    #' @description
+    #' Get the Showcase associated to the dataset
+    #'
+    #' @return a Showcase object containing the dataset
     get_showcases = function() {
       configuration <- private$configuration
       id <- self$data$id
@@ -164,14 +224,29 @@ Dataset <- R6::R6Class(
         Showcase$new(initial_data = r, configuration = configuration))
     },
 
+    #' @description
+    #' Set organization for a dataset
+    #'
+    #' @param organization Organization
+    #' @return
     set_organization = function(organization) {
-      self$data$organization <- organization
+      assert_organization(organization)
+      self$data$organization <- organization$data
     },
 
+    #' @description
+    #' Check if the dataset is requestable
+    #'
+    #' @return a logical value, `TRUE` if it's a requestable dataset
     is_requestable = function() {
       self$data$is_requestdata_type
     },
 
+
+    #' @description
+    #' Get dataset required fields
+    #'
+    #' @return list of required fields for a dataset
     get_required_fields = function() {
       if (!is.null(self$is_requestable()) && self$is_requestable()) {
         fields <- private$configuration$data$hdx_config$`dataset-requestable`$required_fields
@@ -181,6 +256,10 @@ Dataset <- R6::R6Class(
       fields
     },
 
+    #' @description
+    #' Check dataset required field
+    #'
+    #' @return a logical value, TRUE if the the dataset is not missing a required field and throws an error otherwise
     check_required_fields = function() {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
@@ -192,10 +271,16 @@ Dataset <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Get dataset field into list
+    #'
+    #' @return a list with dataset field
     as_list = function() {
       self$data
     },
 
+    #' @description
+    #' Print a Dataset object
     print = function() {
       if (!is.null(self$is_requestable()) && self$is_requestable()) {
         cat(paste0("<HDX Requestable Dataset> ", self$data$id), "\n")
@@ -564,7 +649,7 @@ get_locations_name <- function(dataset) {
 #' }
 get_tags_name <- function(dataset) {
   assert_dataset(dataset)
-  vapply(dataset$get_tags(), function(tag) tag$name, character(1))
+  vapply(dataset$data$tags, function(tag) tag$name, character(1))
 }
 
 #' Dataset organization name
@@ -586,7 +671,7 @@ get_tags_name <- function(dataset) {
 #' }
 get_organization_name <- function(dataset) {
   assert_dataset(dataset)
-  dataset$get_organization()[["name"]]
+  dataset$data$organization$name
 }
 
 #' Dataset resources format
@@ -614,7 +699,7 @@ get_formats <- function(dataset) {
 }
 
 
-#' Dataset date
+#' Get the Dataset date
 #'
 #' Date of dataset
 #'

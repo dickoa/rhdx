@@ -5,6 +5,11 @@
 \title{HDX Resource}
 \description{
 HDX Resource
+
+HDX Resource
+}
+\details{
+HDX Resource
 }
 \examples{
 \dontrun{
@@ -12,6 +17,13 @@ HDX Resource
   resource <- pull_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
   resource
 }
+}
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{data}}{placeholder for Resource field element}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -23,10 +35,8 @@ HDX Resource
 \item \href{#method-get_layers}{\code{Resource$get_layers()}}
 \item \href{#method-get_sheets}{\code{Resource$get_sheets()}}
 \item \href{#method-get_dataset}{\code{Resource$get_dataset()}}
-\item \href{#method-get_file_to_upload}{\code{Resource$get_file_to_upload()}}
 \item \href{#method-get_required_fields}{\code{Resource$get_required_fields()}}
 \item \href{#method-check_required_field}{\code{Resource$check_required_field()}}
-\item \href{#method-get_file_type}{\code{Resource$get_file_type()}}
 \item \href{#method-get_format}{\code{Resource$get_format()}}
 \item \href{#method-as_list}{\code{Resource$as_list()}}
 \item \href{#method-browse}{\code{Resource$browse()}}
@@ -37,14 +47,28 @@ HDX Resource
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
 \subsection{Method \code{new()}}{
+Create a new Resource object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$new(initial_data = NULL, configuration = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{initial_data}}{list with required field to create a resource}
+
+\item{\code{configuration}}{a Configuration object}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new Resource object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-download"></a>}}
 \subsection{Method \code{download()}}{
+Download a HDX resource
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$download(
   folder = NULL,
@@ -55,106 +79,207 @@ HDX Resource
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{folder}}{a character, folder to save the dataset}
+
+\item{\code{filename}}{a character, filename of the dataset}
+
+\item{\code{quiet}}{a logical value, silent download if TRUE}
+
+\item{\code{force}}{a logical value, force download}
+
+\item{\code{...}}{other \code{download.file} parameters}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a character, the file path
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-download_folder"></a>}}
 \subsection{Method \code{download_folder()}}{
+Get the download folder for the latest downloaded resource
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$download_folder()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a character, folder with the latest downloaded resource
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-read_resource"></a>}}
 \subsection{Method \code{read_resource()}}{
+Read a Resource object directly into memory
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$read_resource(
   sheet = NULL,
   layer = NULL,
-  folder = NULL,
+  download_folder = NULL,
   simplify_json = TRUE,
   force_download = FALSE,
-  quiet = TRUE,
+  quiet_download = TRUE,
   ...
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sheet}}{a character value, only for resource in Excel format}
+
+\item{\code{layer}}{a character value, only for spatial (vector) resource}
+
+\item{\code{download_folder}}{a character value, folder to save the downloaded resource}
+
+\item{\code{simplify_json}}{a logical value}
+
+\item{\code{force_download}}{a logical value, if TRUE force download}
+
+\item{\code{quiet_download}}{a logical value, if TRUE silent download}
+
+\item{\code{...}}{other parameters to \verb{$download}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a \code{tibble}, a \code{sf}, a \code{stars} or a \code{list} depending on the type of resource read
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_layers"></a>}}
 \subsection{Method \code{get_layers()}}{
+Get spatial (vector) resource list of layers
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Resource$get_layers(folder = NULL, quiet = TRUE, force_download = FALSE, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Resource$get_layers(
+  download_folder = NULL,
+  quiet_download = TRUE,
+  force_download = FALSE,
+  ...
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{download_folder}}{a character value, folder to save the downloaded resource}
+
+\item{\code{quiet_download}}{a logical value, if TRUE silent download}
+
+\item{\code{force_download}}{a logical value, if TRUE force download}
+
+\item{\code{...}}{other parameters to \verb{$download}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a the list of layers available in the resource
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_sheets"></a>}}
 \subsection{Method \code{get_sheets()}}{
+Get the list of sheets name of resource
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Resource$get_sheets(folder = NULL, quiet = TRUE, force_download = FALSE, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Resource$get_sheets(
+  download_folder = NULL,
+  quiet_download = TRUE,
+  force_download = FALSE,
+  ...
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{download_folder}}{a character value, folder to save the downloaded resource}
+
+\item{\code{quiet_download}}{a logical value, if TRUE silent download}
+
+\item{\code{force_download}}{a logical value, if TRUE force download}
+
+\item{\code{...}}{other parameters to \verb{$download}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a the list of layers available in the resource
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_dataset"></a>}}
 \subsection{Method \code{get_dataset()}}{
+Get the resource dataset.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$get_dataset()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a Dataset, the dataset containing the resource
 }
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_file_to_upload"></a>}}
-\subsection{Method \code{get_file_to_upload()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Resource$get_file_to_upload()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_required_fields"></a>}}
 \subsection{Method \code{get_required_fields()}}{
+Get dataset required fields
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$get_required_fields()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+list of required fields for a resource
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-check_required_field"></a>}}
 \subsection{Method \code{check_required_field()}}{
+Check dataset required field
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$check_required_field(check_dataset_id = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{check_dataset_id}}{logical whether to check or not dataset id}
 }
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_file_type"></a>}}
-\subsection{Method \code{get_file_type()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Resource$get_file_type()}\if{html}{\out{</div>}}
+\if{html}{\out{</div>}}
 }
-
+\subsection{Returns}{
+a logical value, TRUE if the the resource is not missing a required field and throws an error otherwise
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_format"></a>}}
 \subsection{Method \code{get_format()}}{
+Get the file format
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$get_format()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a character, the file format of the resource
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
 \subsection{Method \code{as_list()}}{
+Get resource field into list
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$as_list()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list with resource field
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
 \subsection{Method \code{browse()}}{
+Browse the resource page on HDX
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$browse()}\if{html}{\out{</div>}}
 }
@@ -163,10 +288,14 @@ HDX Resource
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
 \subsection{Method \code{print()}}{
+Print a Resource object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$print()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

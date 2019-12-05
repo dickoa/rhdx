@@ -12,8 +12,15 @@ User <- R6::R6Class(
   ),
 
   public = list(
+    #' @field data placeholder for Dataset field element
     data = NULL,
 
+    #' @description
+    #' Create a new
+    #'
+    #' @param initial_data list of field required to create a dataset
+    #' @param configuration Configuration configuration to use
+    #' @return a new User object
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- get_rhdx_config()
@@ -26,19 +33,16 @@ User <- R6::R6Class(
       self$data <- initial_data
     },
 
-    update_from_yaml = function(hdx_user_static_yaml) {
-      self$data <- yaml::read_yaml(hdx_user_static_yaml)
-    },
-
-    update_from_json = function(hdx_user_static_json) {
-      self$data <- jsonlite::fromJSON(hdx_user_static_json,
-                                      simplifyVector = TRUE)
-    },
-
+    #' @description
+    #' Get dataset field into list
+    #'
+    #' @return a list with dataset field
     as_list = function() {
       self$data
     },
 
+    #' @description
+    #' Print a User object
     print = function() {
       cat(paste0("<HDX User> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -71,10 +75,9 @@ as.list.User <- function(x, ...) {
 #' @rdname pull_user
 .pull_user  <-  function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
   if (is.null(configuration) | !inherits(configuration, "Configuration"))
-    configuration <- private$configuration
-
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
   res <- configuration$call_action("user_show", list(id = identifier, include_datasets = include_datasets, ...))
-
   User$new(initial_data = res, configuration = configuration)
 }
 

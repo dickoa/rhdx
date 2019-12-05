@@ -12,8 +12,15 @@ Organization <- R6::R6Class(
   ),
 
   public = list(
+    #' @field data placeholder for the Organization fields element
     data = NULL,
 
+    #' @description
+    #' Create a Organization object
+    #'
+    #' @param initial_data list with required field to create a dataset
+    #' @param configuration a Configuration object
+    #' @return A Organization object
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- get_rhdx_config()
@@ -26,21 +33,35 @@ Organization <- R6::R6Class(
       self$data <- initial_data
     },
 
+
+    #' @description
+    #' Get the list of datasets
+    #' @return list of Dataset objects
     get_datasets = function() {
-      if (!"packages" %in% names(self$data)) stop("No datasets available, please run Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
-      list_of_ds <- lapply(self$data$packages, function(x) Dataset$new(initial_data = x))
+      if (!"packages" %in% names(self$data))
+        stop("No datasets available, please run Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
+      list_of_ds <- lapply(self$data$packages,
+                           function(x) Dataset$new(initial_data = x))
       list_of_ds
     },
 
+    #' @description
+    #' Browse the Organization page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "organization/", self$data$name))
     },
 
+    #' @description
+    #' Get dataset field into list
+    #'
+    #' @return a list with organization field element
     as_list = function() {
       self$data
     },
 
+    #' @description
+    #' Print a Dataset object
     print = function() {
       cat(paste0("<HDX Organization> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")

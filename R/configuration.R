@@ -79,8 +79,20 @@ Configuration <- R6::R6Class(
   classname = "Configuration",
   private = list(shared = .rhdx_env),
   public = list(
+    #' @field data all info in list.
     data = list(),
 
+
+    #' @description
+    #' Create a new Configuration object.
+    #'
+    #' @param hdx_site character the server instance to use
+    #' @param hdx_key character, the HDX API key
+    #' @param hdx_config configuration in a list
+    #' @param hdx_config_file a character value config file. default is the config supplied in the package
+    #' @param read_only a logical value indicating if you want to just read or be also able to write on the HDX server. You will need a API key to write.
+    #' @param user_agent a character value, User agent
+    #' @return A new Configuration object.
     initialize = function(hdx_site = "prod", hdx_key = NULL,
                           hdx_config = NULL, hdx_config_file = NULL,
                           read_only = TRUE, user_agent = NULL) {
@@ -127,6 +139,10 @@ Configuration <- R6::R6Class(
                                                                  useragent = user_agent))
     },
 
+    #' @description
+    #' Configuration credentials when using a HDX API key
+    #'
+    #' @return the username and password associated to the HDX API key
     get_credentials = function() {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
       lapply(self$data$hdx_config[[hdx_site]][c("username", "password")],
@@ -139,6 +155,12 @@ Configuration <- R6::R6Class(
              })
     },
 
+
+    #' @description
+    #' Create or revoke read only status
+    #'
+    #' @param read_only a logical value indicating if you want to just read or be also able to write on the HDX server. You will need a API key to write.
+    #' @return
     set_read_only = function(read_only = TRUE) {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
       headers <- NULL
@@ -152,23 +174,30 @@ Configuration <- R6::R6Class(
                                                                  useragent = get_user_agent()))
     },
 
+    #' @description
+    #' Specify a HDX API key
+    #'
+    #' @param hdx_key a character with key
+    #' @return
     set_hdx_key = function(hdx_key) {
       if (!is_valid_uuid(key))
         stop("key not valid!", call. = FALSE)
       self$data$hdx_key <- hdx_key
     },
 
+    #' @description
+    #' Specify a HDX API key
+    #'
+    #' @return a character, the HDX API key
     get_hdx_key = function() {
       self$data$hdx_key
     },
 
-    load_hdx_key = function(path) {
-      key <- readLines(path)
-      if (!is_valid_uuid(key))
-        stop("key not valid!", call. = FALSE)
-      self$data$hdx_key <- key
-    },
-
+    #' @description
+    #' Specify a HDX server to use
+    #'
+    #' @param hdx_site a character, the server type to use, `prod`, `test`, `feature` or `demo`
+    #' @return a character, the HDX API key
     set_hdx_site = function(hdx_site = "prod") {
       if (!hdx_site %in% c("prod", "test", "feature", "demo"))
         stop("hdx_site can be either `prod`, `test`, `feature` or `demo`",
@@ -182,19 +211,39 @@ Configuration <- R6::R6Class(
                                                                  useragent = get_user_agent()))
     },
 
+    #' @description
+    #' Get the HDX server in use
+    #'
+    #' @return the server type
     get_hdx_site = function() {
       self$data$hdx_site
     },
 
+    #' @description
+    #' Get the HDX server URL in use
+    #'
+    #' @return the server URL
     get_hdx_site_url = function() {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
       self$data$hdx_config[[hdx_site]]$url
     },
 
+    #' @description
+    #' Get remoteclient
+    #'
+    #' @return
     remoteclient = function() {
       self$data$remoteclient
     },
 
+
+    #' @description
+    #' Call the client to the HDX API
+    #'
+    #' @param action a character
+    #' @param ... parameters for each verb used
+    #' @param verb a character the verb used, `post`, `get`, `put` or `patch`
+    #' @return list a with status code and results
     call_action = function(action, ..., verb = "get") {
       if (!verb %in% c("post", "get", "put", "patch"))
         stop("Only `get`, `post`, `put` and `patch` are supported!")
@@ -204,39 +253,23 @@ Configuration <- R6::R6Class(
       parse_response(res)
     },
 
-    call_remoteclient = function(action, data = NULL, verb = "get", encode = "json", ...) {
-      if (!verb %in% c("post", "get", "put", "patch"))
-        stop("Only `get`, `post`, `put` and `patch` are supported!")
-      cli <- self$data$remoteclient
-      action_url <- paste0("/api/3/action/", action)
-      res <- switch(verb,
-                    get = {
-                      res <- cli$get(path = action_path,
-                                     query = data, ...)
-                    },
-                    post = {
-                      res <- cli$post(path = action_path,
-                                      body = data, encode = encode, ...
-                                      )
-                    },
-                    put = {
-                      res <- cli$put(path = action_path,
-                                     body = data, encode = encode, ...)
-                    },
-                    patch = {
-                      res <- cli$patch(path = action_path,
-                                       body = data, encode = encode, ...)
-                    })
-      status_code <- res$status_code
-      result <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$result
-      error <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)$error
-      drop_nulls(list(status_code = status_code, error = error, result = result))
-    },
-
+    #' @description
+    #' Show Configuration object
+    #'
+    #' @return Configuration object
     read = function() {
       self
     },
 
+    #' @description
+    #' Setup Configuration object
+    #'
+    #' @param hdx_site a character value, the server
+    #' @param hdx_config a list
+    #' @param configuration a character
+    #' @param hdx_key a character value, the API key
+    #' @param read_only a logical value read only
+    #' @return
     setup = function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
                      hdx_config = NULL, configuration = NULL) {
       if (!hdx_site %in% c("prod", "test", "feature", "demo"))
@@ -251,24 +284,43 @@ Configuration <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Delete configuration
+    #'
+    #' @return
     delete = function() {
       private$shared$configuration <- NULL
     },
 
+    #' Access global configuration
+    #'
+    #' @return list with info
     get_global_config = function() {
       self$data$hdx_config
     },
 
+    #' @description
+    #' Get general  statistics about the server
+    #'
+    #' @return list with statistics about the server
     general_statistics = function() {
       res <- self$data$remoteclient$get(path = "/api/3/action/hdx_general_statistics")
       jsonlite::fromJSON(res$parse(encoding = "UTF-8"),
                          simplifyVector = TRUE)$result
     },
 
+    #' @description
+    #' Convert configuration to list
+    #'
+    #' @return configuration in list format
     as_list = function() {
       self$data
     },
 
+    #' @description
+    #' Print Configuration object
+    #'
+    #' @return
     print = function() {
       cat("<HDX Configuration> ", sep = "\n")
       cat(paste0("  HDX site: ", self$get_hdx_site()), sep = "\n")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataset.R
 \name{get_dataset_date}
 \alias{get_dataset_date}
-\title{Dataset date}
+\title{Get the Dataset date}
 \usage{
 get_dataset_date(dataset)
 }

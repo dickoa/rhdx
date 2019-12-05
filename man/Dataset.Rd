@@ -5,6 +5,11 @@
 \title{HDX Dataset}
 \description{
 HDX Dataset
+
+HDX Dataset
+}
+\details{
+HDX Dataset
 Dataset class containing all logic for accessing,
 creating, and updating datasets and associated resources.
 }
@@ -57,6 +62,15 @@ Get dataset date as string.
  acled_mali_rs
 }
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{resources}}{of datasets resource}
+
+\item{\code{data}}{placeholder for Dataset field element}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -87,46 +101,90 @@ Get dataset date as string.
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
 \subsection{Method \code{new()}}{
+Create a new Dataset object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$new(initial_data = NULL, configuration = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{initial_data}}{list with required field to create a dataset}
+
+\item{\code{configuration}}{a Configuration object}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A Dataset object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_resource"></a>}}
 \subsection{Method \code{get_resource()}}{
+Get a specific resource of the dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_resource(index)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{index, }}{the index of the resource to access}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a Resource object, the selected resource
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_resources"></a>}}
 \subsection{Method \code{get_resources()}}{
+Get all resources of the dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_resources()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list of Resource objects, all resources available in the dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-delete_resource"></a>}}
 \subsection{Method \code{delete_resource()}}{
+Delete a resource by its index
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$delete_resource(index = 1L)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{index, }}{the index of the resource to delete}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-delete_resources"></a>}}
 \subsection{Method \code{delete_resources()}}{
+Delete all resources from a dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$delete_resources()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
 \subsection{Method \code{browse()}}{
+Browse the dataset page on HDX
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$browse()}\if{html}{\out{</div>}}
 }
@@ -135,34 +193,60 @@ Get dataset date as string.
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_configuration"></a>}}
 \subsection{Method \code{get_configuration()}}{
+Get the current configuration in use
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_configuration()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A configuration object, the configuration in use
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_dataset_date"></a>}}
 \subsection{Method \code{get_dataset_date()}}{
+Get the dataset date
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_dataset_date()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a date, the dataset date.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_dataset_date"></a>}}
 \subsection{Method \code{set_dataset_date()}}{
+Set the dataset date
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$set_dataset_date(date, format = "\%m/\%d/\%Y")}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{date}}{a character, by default with the format month/day/year}
+
+\item{\code{format}}{the format of the date supplied}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_update_frequency"></a>}}
 \subsection{Method \code{get_update_frequency()}}{
+Get dataset update frequency
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_update_frequency()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a character, the dataset update frequency
+Get dataset tags
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_tags"></a>}}
@@ -171,82 +255,129 @@ Get dataset date as string.
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_tags()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list of Tag objects, datasets tags
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_locations"></a>}}
 \subsection{Method \code{get_locations()}}{
+Get the datasets location
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_locations()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list of Location objects, all locations covered by the dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_maintainer"></a>}}
 \subsection{Method \code{get_maintainer()}}{
+Get the dataset maintainer
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_maintainer()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An User object, the maintainer of the dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_organization"></a>}}
 \subsection{Method \code{get_organization()}}{
+Get the dataset organization
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_organization()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+an Organization object, the organization that shared the data
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_showcases"></a>}}
 \subsection{Method \code{get_showcases()}}{
+Get the Showcase associated to the dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_showcases()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a Showcase object containing the dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_organization"></a>}}
 \subsection{Method \code{set_organization()}}{
+Set organization for a dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$set_organization(organization)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{organization}}{Organization}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-is_requestable"></a>}}
 \subsection{Method \code{is_requestable()}}{
+Check if the dataset is requestable
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$is_requestable()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a logical value, \code{TRUE} if it's a requestable dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_required_fields"></a>}}
 \subsection{Method \code{get_required_fields()}}{
+Get dataset required fields
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_required_fields()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+list of required fields for a dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-check_required_fields"></a>}}
 \subsection{Method \code{check_required_fields()}}{
+Check dataset required field
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$check_required_fields()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a logical value, TRUE if the the dataset is not missing a required field and throws an error otherwise
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
 \subsection{Method \code{as_list()}}{
+Get dataset field into list
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$as_list()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list with dataset field
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
 \subsection{Method \code{print()}}{
+Print a Dataset object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$print()}\if{html}{\out{</div>}}
 }

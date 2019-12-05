@@ -21,8 +21,15 @@ Resource <- R6::R6Class(
   ),
 
   public = list(
+    #' @field data placeholder for Resource field element
     data = NULL,
 
+    #' @description
+    #' Create a new Resource object
+    #'
+    #' @param initial_data list with required field to create a resource
+    #' @param configuration a Configuration object
+    #' @return A new Resource object
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- get_rhdx_config()
@@ -43,6 +50,15 @@ Resource <- R6::R6Class(
       self$data <- initial_data
     },
 
+    #' @description
+    #' Download a HDX resource
+    #'
+    #' @param folder a character, folder to save the dataset
+    #' @param filename a character, filename of the dataset
+    #' @param quiet a logical value, silent download if TRUE
+    #' @param force a logical value, force download
+    #' @param ... other `download.file` parameters
+    #' @return a character, the file path
     download = function(folder = NULL, filename = NULL,
                         quiet = TRUE, force = FALSE, ...) {
 
@@ -73,16 +89,33 @@ Resource <- R6::R6Class(
       invisible(tools::file_path_as_absolute(file_path))
     },
 
+
+    #' @description
+    #' Get the download folder for the latest downloaded resource
+    #'
+    #' @return a character, folder with the latest downloaded resource
     download_folder = function() {
       tools::file_path_as_absolute(private$download_folder_)
     },
 
-    read_resource = function(sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet = TRUE, ...) {
+    #' @description
+    #' Read a Resource object directly into memory
+    #'
+    #'
+    #' @param sheet a character value, only for resource in Excel format
+    #' @param layer a character value, only for spatial (vector) resource
+    #' @param download_folder a character value, folder to save the downloaded resource
+    #' @param simplify_json a logical value
+    #' @param force_download a logical value, if TRUE force download
+    #' @param quiet_download a logical value, if TRUE silent download
+    #' @param ... other parameters to `$download`
+    #' @return a `tibble`, a `sf`, a `stars` or a `list` depending on the type of resource read
+    read_resource = function(sheet = NULL, layer = NULL, download_folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet_download = TRUE, ...) {
 
-      if (!is.null(private$download_folder_) & is.null(folder))
+      if (!is.null(private$download_folder_) & is.null(download_folder))
         folder <- self$download_folder()
 
-      file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+      file_path <- self$download(folder = download_folder, quiet = quiet_download, force = force_download, ...)
 
       format <- self$get_file_type()
 
@@ -105,12 +138,21 @@ Resource <- R6::R6Class(
              `zipped geotiff` = read_hdx_raster(file_path))
     },
 
-    get_layers = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
+    #' @description
+    #' Get spatial (vector) resource list of layers
+    #'
+    #'
+    #' @param download_folder a character value, folder to save the downloaded resource
+    #' @param force_download a logical value, if TRUE force download
+    #' @param quiet_download a logical value, if TRUE silent download
+    #' @param ... other parameters to `$download`
+    #' @return a the list of layers available in the resource
+    get_layers = function(download_folder = NULL, quiet_download = TRUE, force_download = FALSE, ...) {
 
-      if (!is.null(private$download_folder_) & is.null(folder))
+      if (!is.null(private$download_folder_) & is.null(download_folder))
         folder <- self$download_folder()
 
-      file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+      file_path <- self$download(folder = download_folder, quiet = quiet_download, force = force_download, ...)
 
       format <- self$get_file_type()
 
@@ -128,7 +170,16 @@ Resource <- R6::R6Class(
              `zipped kml` = get_hdx_layers_(file_path))
     },
 
-    get_sheets = function(folder = NULL, quiet = TRUE, force_download = FALSE, ...) {
+    #' @description
+    #' Get the list of sheets name of resource
+    #'
+    #'
+    #' @param download_folder a character value, folder to save the downloaded resource
+    #' @param force_download a logical value, if TRUE force download
+    #' @param quiet_download a logical value, if TRUE silent download
+    #' @param ... other parameters to `$download`
+    #' @return a the list of layers available in the resource
+    get_sheets = function(download_folder = NULL, quiet_download = TRUE, force_download = FALSE, ...) {
 
       if (!is.null(private$download_folder_) & is.null(folder))
         folder <- self$download_folder()
@@ -146,23 +197,30 @@ Resource <- R6::R6Class(
              xls = get_hdx_sheets_(file_path))
     },
 
+    #' @description
+    #' Get the resource dataset.
+    #' @return a Dataset, the dataset containing the resource
     get_dataset = function() {
-      package_id <- self$data$package_id
-      if (is.null(package_id)) {
-        stop("Resource has no package id!", call. = FALSE)
+      dataset_id <- self$data$package_id
+      if (is.null(dataset_id)) {
+        stop("Resource has no dataset id!", call. = FALSE)
       } else {
-        pull_dataset(package_id)
+        pull_dataset(dataset_id)
       }
     },
 
-    get_file_to_upload = function() {
-      self$data$file_to_upload
-    },
-
+    #' @description
+    #' Get dataset required fields
+    #'
+    #' @return list of required fields for a resource
     get_required_fields = function() {
       private$configuration$data$hdx_config$resource$required_fields
     },
 
+    #' @description
+    #' Check dataset required field
+    #' @param check_dataset_id logical whether to check or not dataset id
+    #' @return a logical value, TRUE if the the resource is not missing a required field and throws an error otherwise
     check_required_field = function(check_dataset_id = FALSE) {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
@@ -174,18 +232,23 @@ Resource <- R6::R6Class(
                      setdiff(n1, n2)), call. = FALSE)
     },
 
-    get_file_type = function() {
-      tolower(self$data$format)
-    },
-
+    #' @description
+    #' Get the file format
+    #' @return a character, the file format of the resource
     get_format = function() {
       tolower(self$data$format)
     },
 
+    #' @description
+    #' Get resource field into list
+    #'
+    #' @return a list with resource field
     as_list = function() {
       self$data
     },
 
+    #' @description
+    #' Browse the resource page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       dataset_id <- self$data$package_id
@@ -193,6 +256,10 @@ Resource <- R6::R6Class(
       browseURL(url = paste0(url, "dataset/", dataset_id, "/resource/", resource_id))
     },
 
+    #' @description
+    #' Print a Resource object
+    #'
+    #' @return
     print = function() {
       cat(paste0("<HDX Resource> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -258,7 +325,7 @@ download_resource <- function(resource, folder = NULL, filename = NULL, quiet = 
 #'
 #' @return the layers name
 #' @export
-get_layers <- function(resource, folder = NULL, quiet = TRUE) {
+get_resource_layers <- function(resource, folder = NULL, quiet = TRUE) {
   assert_resource(resource)
   resource$get_layers(folder = folder, quiet = quiet)
 }
@@ -274,7 +341,7 @@ get_layers <- function(resource, folder = NULL, quiet = TRUE) {
 #'
 #' @return the names of the sheets of XLS(X) resources
 #' @export
-get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
+get_resource_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
   assert_resource(resource)
   resource$get_sheets(folder = folder, quiet = quiet, ...)
 }
@@ -286,11 +353,21 @@ get_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
 #'
 #' @return A character, the format of the resource
 #' @export
-get_format <- function(resource) {
+get_resource_format <- function(resource) {
   assert_resource(resource)
   resource$get_format()
 }
 
+#' Get the dataset containing the resource
+#'
+#' @param resource Resource, an HDX resource
+#'
+#' @return a Dataset, the dataset containing the resource
+#' @export
+get_resource_dataset <- function(resource) {
+  assert_resource(resource)
+  resource$get_dataset()
+}
 
 #' Read resource
 #'
@@ -299,19 +376,21 @@ get_format <- function(resource) {
 #'
 #' @param sheet Character, the name of the sheet to read if XLS(X) resources. The first sheet is read by default.
 #' @param layer Character, the name of the layer to read if spatial data. The first sheet is read by default.
-#' @param folder Character, the path of the folder to store the downloaded data
+#' @param download_folder Character, the path of the folder to store the downloaded data
 #' @param simplify_json Logical, if TRUE simplifies nested lists into vectors and data frames for JSON resources
 #' @param force_download Logical, force download if TRUE
+#' @param quiet_download logical, silent download
 #' @param ... Extra parameters
-#' @return an `tbl`, a `list` or a `sf` object depending on the type of resource you are reading
+#' @return an `tibble`, a `list`, a `stars` or a `sf` object depending on the type of resource you are reading
 #' @export
-read_resource <- function(resource, sheet = NULL, layer = NULL, folder = NULL, simplify_json = TRUE, force_download = FALSE, ...) {
+read_resource <- function(resource, sheet = NULL, layer = NULL, download_folder = NULL, simplify_json = TRUE, force_download = FALSE, quiet_download = TRUE, ...) {
   assert_resource(resource)
   resource$read_resource(sheet = sheet,
                          layer = layer,
-                         folder = folder,
+                         download_folder = download_folder,
                          simplify_json = simplify_json,
                          force_download = force_download,
+                         quiet_download = quiet_download,
                          ...)
 }
 

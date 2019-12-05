@@ -12,8 +12,17 @@ Showcase <- R6::R6Class(
   ),
 
   public = list(
+    #' @field datasets list of datasets using this showcase
     datasets = NULL,
+    #' @field data the field info into list
     data = NULL,
+
+    #' @description
+    #' Create a new Showcase object
+    #'
+    #' @param initial_data list, data with required field to create Showcase
+    #' @param configuration Configuration, configuration to use
+    #' @return a new Showcase object
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- get_rhdx_config()
@@ -31,6 +40,9 @@ Showcase <- R6::R6Class(
 
     },
 
+    #' @description
+    #' List datasets using the Showcase
+    #' @return a list of dataset
     list_datasets = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
@@ -38,15 +50,24 @@ Showcase <- R6::R6Class(
       res
     },
 
+
+    #' @description
+    #' Browse the Showcase page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "showcase/", self$data$name))
     },
 
+    #' @description
+    #' Get dataset field into list
+    #'
+    #' @return a list with showcase field info
     as_list = function() {
       self$data
     },
 
+    #' @description
+    #' Print a Showcase object
     print = function() {
       cat(paste0("<HDX Showcase> ", self$data$id), "\n")
       cat("  Title: ", self$data$title, "\n", sep = "")

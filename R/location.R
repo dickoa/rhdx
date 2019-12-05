@@ -12,8 +12,15 @@ Location <- R6::R6Class(
   ),
 
   public = list(
+    #' @field data placeholder location
     data = NULL,
 
+    #' @description
+    #' Create a new Location object
+    #'
+    #' @param initial_data list with required field to create a dataset
+    #' @param configuration a Configuration object
+    #' @return A Location object
     initialize = function(initial_data = NULL, configuration = NULL) {
       if (is.null(configuration) | !inherits(configuration, "Configuration")) {
         private$configuration <- get_rhdx_config()
@@ -26,10 +33,18 @@ Location <- R6::R6Class(
       self$data <- initial_data
     },
 
+    #' @description
+    #' Get dataset required fields
+    #'
+    #' @return list of required fields for a dataset
     get_required_fields = function() {
       private$configuration$data$hdx_config$resource$required_fields
     },
 
+    #' @description
+    #' Check dataset required field
+    #'
+    #' @return a logical value, TRUE if the the dataset is not missing a required field and throws an error otherwise
     check_required_fields = function() {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
@@ -41,16 +56,24 @@ Location <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Browser the Location page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
       browseURL(url = paste0(url, "group/", self$data$name))
     },
 
+    #' @description
+    #' Get location field into list
+    #'
+    #' @return a list with dataset field
     as_list = function() {
       self$data
     },
 
-    print = function(x, ...) {
+    #' @description
+    #' Print a Dataset object
+    print = function() {
     cat(paste0("<HDX Location> ", self$data$id), "\n")
     cat("  Name: ", self$data$name, "\n", sep = "")
     cat("  Display Name: ", self$data$display_name, "\n", sep = "")

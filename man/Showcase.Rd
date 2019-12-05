@@ -5,6 +5,20 @@
 \title{HDX Showcase}
 \description{
 HDX Showcase
+
+HDX Showcase
+}
+\details{
+HDX Showcase
+}
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{datasets}}{list of datasets using this showcase}
+
+\item{\code{data}}{the field info into list}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -20,22 +34,40 @@ HDX Showcase
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
 \subsection{Method \code{new()}}{
+Create a new Showcase object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Showcase$new(initial_data = NULL, configuration = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{initial_data}}{list, data with required field to create Showcase}
+
+\item{\code{configuration}}{Configuration, configuration to use}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+a new Showcase object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-list_datasets"></a>}}
 \subsection{Method \code{list_datasets()}}{
+List datasets using the Showcase
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Showcase$list_datasets()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list of dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
 \subsection{Method \code{browse()}}{
+Browse the Showcase page on HDX
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Showcase$browse()}\if{html}{\out{</div>}}
 }
@@ -44,14 +76,19 @@ HDX Showcase
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
 \subsection{Method \code{as_list()}}{
+Get dataset field into list
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Showcase$as_list()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a list with showcase field info
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
 \subsection{Method \code{print()}}{
+Print a Showcase object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Showcase$print()}\if{html}{\out{</div>}}
 }

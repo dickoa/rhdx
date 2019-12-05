@@ -8,9 +8,10 @@ read_resource(
   resource,
   sheet = NULL,
   layer = NULL,
-  folder = NULL,
+  download_folder = NULL,
   simplify_json = TRUE,
   force_download = FALSE,
+  quiet_download = TRUE,
   ...
 )
 }
@@ -21,16 +22,18 @@ read_resource(
 
 \item{layer}{Character, the name of the layer to read if spatial data. The first sheet is read by default.}
 
-\item{folder}{Character, the path of the folder to store the downloaded data}
+\item{download_folder}{Character, the path of the folder to store the downloaded data}
 
 \item{simplify_json}{Logical, if TRUE simplifies nested lists into vectors and data frames for JSON resources}
 
 \item{force_download}{Logical, force download if TRUE}
 
+\item{quiet_download}{logical, silent download}
+
 \item{...}{Extra parameters}
 }
 \value{
-an \code{tbl}, a \code{list} or a \code{sf} object depending on the type of resource you are reading
+an \code{tibble}, a \code{list}, a \code{stars} or a \code{sf} object depending on the type of resource you are reading
 }
 \description{
 Read resource
