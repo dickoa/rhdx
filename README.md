@@ -201,7 +201,7 @@ package, we added a `simplify_json` option to get a `vector` or a
 
 ``` r
 idp_nga_rs <- get_resource(ds, 1)
-idp_nga_df <- read_resource(idp_nga_rs, simplify_json = TRUE, folder = tempdir())
+idp_nga_df <- read_resource(idp_nga_rs, simplify_json = TRUE, download_folder = tempdir())
 idp_nga_df
 ## $results
 ##   iso iso3 geo_name year conflict_new_displacements
@@ -259,7 +259,7 @@ idp_nga_df <-
   search_datasets("displaced Nigeria", rows = 2) %>%
   pluck(1) %>%
   get_resource(1) %>% ## get the first resource
-  read_resource(simplify_json = TRUE, folder = tempdir()) ## the file will be downloaded in a temporary directory
+  read_resource(simplify_json = TRUE, download_folder = tempdir()) ## the file will be downloaded in a temporary directory
 
 idp_nga_df
 ## $results
