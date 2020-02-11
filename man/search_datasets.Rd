@@ -3,10 +3,11 @@
 \name{.search_datasets}
 \alias{.search_datasets}
 \alias{search_datasets}
-\title{Search datasets on HDX}
+\title{Search for datasets on HDX}
 \usage{
 .search_datasets(
   query = "*:*",
+  filter_query = NULL,
   rows = 10L,
   page_size = 1000L,
   configuration = NULL,
@@ -15,6 +16,7 @@
 
 search_datasets(
   query = "*:*",
+  filter_query = NULL,
   rows = 10L,
   page_size = 1000L,
   configuration = NULL,
@@ -22,9 +24,11 @@ search_datasets(
 )
 }
 \arguments{
-\item{query}{Character Query (in Solr format). Defaults to ‘\emph{:}’}
+\item{query}{Query terms, use solr format and default to "\emph{:}" (match everything)}
 
-\item{rows}{Number of matching rows to return. Defaults to 10.}
+\item{filter_query}{Filter Query results}
+
+\item{rows}{Number of matching records to return. Defaults to 10.}
 
 \item{page_size}{Integer Size of page to return. Defaults to 1000.}
 
@@ -36,7 +40,7 @@ search_datasets(
 A list of HDX datasets
 }
 \description{
-Find dataset on HDX using Solr query
+Search for datasets on HDX
 }
 \details{
 Search and find datasets on HDX

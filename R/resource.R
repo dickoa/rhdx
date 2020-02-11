@@ -181,10 +181,10 @@ Resource <- R6::R6Class(
     #' @return a the list of layers available in the resource
     get_sheets = function(download_folder = NULL, quiet_download = TRUE, force_download = FALSE, ...) {
 
-      if (!is.null(private$download_folder_) & is.null(folder))
+      if (!is.null(private$download_folder_) & is.null(download_folder))
         folder <- self$download_folder()
 
-      file_path <- self$download(folder = folder, quiet = quiet, force = force_download, ...)
+      file_path <- self$download(folder = download_folder, quiet = quiet, force = force_download, ...)
 
       format <- self$get_format()
 
@@ -325,9 +325,9 @@ download_resource <- function(resource, folder = NULL, filename = NULL, quiet = 
 #'
 #' @return the layers name
 #' @export
-get_resource_layers <- function(resource, folder = NULL, quiet = TRUE) {
+get_resource_layers <- function(resource, download_folder = NULL, quiet = TRUE) {
   assert_resource(resource)
-  resource$get_layers(folder = folder, quiet = quiet)
+  resource$get_layers(download_folder = download_folder, quiet = quiet)
 }
 
 
@@ -341,9 +341,9 @@ get_resource_layers <- function(resource, folder = NULL, quiet = TRUE) {
 #'
 #' @return the names of the sheets of XLS(X) resources
 #' @export
-get_resource_sheets <- function(resource, folder = NULL, quiet = TRUE, ...) {
+get_resource_sheets <- function(resource, download_folder = NULL, quiet = TRUE, ...) {
   assert_resource(resource)
-  resource$get_sheets(folder = folder, quiet = quiet, ...)
+  resource$get_sheets(download_folder = download_folder, quiet = quiet, ...)
 }
 
 #' Get the file format of the resource

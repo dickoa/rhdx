@@ -1,66 +1,15 @@
 #' HDX Dataset
 #'
-#' HDX Dataset
 #' Dataset class containing all logic for accessing,
 #' creating, and updating datasets and associated resources.
 #'
-#'
-#' @section Details:
-#' **Methods**
-#'   \describe{
-#'     \item{`Dataset$new(initial_data, configuration)`}{
-#'       Dataset class enabling operations on datasets and associated resources
-#'     }
-#'
-#'   \item{`check_required_fields()`}{
-#'      Check that metadata for dataset and its resources is complete.
-#'     }
-#'
-#'    \item{`create(upload_resources)`}{
-#'     Check if dataset exists in HDX and if so, update it, otherwise create it
-#'     }
-#'
-#'    \item{`get_configuration(identifier, configuration)`}{
-#'       Returns the actual config used to get the dataset
-#'     }
-#'
-#'    \item{`get_dataset_date()`}{
-#'       Get dataset date as string.
-#'     }
-#'
-#'     \item{`pull(identifier, configuration)`}{
-#'       Reads the dataset given by identifier from HDX and returns Dataset object
-#'     }
-#'
-#'     \item{`get_resource(index)`}{
-#'       Get one resource from dataset by index
-#'     }
-#'
-#'     \item{`get_resources()`}{
-#'       Get dataset’s resources
-#'     }
-#'
-#'     \item{`get_update_frequency()`}{
-#'       Get expected update frequency.
-#'     }
-#'   }
-#'
-#' @format NULL
-#' @usage NULL
-#'
-#' @examples
-#' \dontrun{
-#'  set_rhdx_config(hdx_site = "prod")
-#'  acled_mali_rs <- pull_dataset("acled-data-for-mali")
-#'  acled_mali_rs
-#' }
 Dataset <- R6::R6Class(
   classname = "Dataset",
   private = list(
     configuration = NULL
   ),
   public = list(
-    #' @field resources of datasets resource
+    #' @field resources list of Resource object within the dataset
     resources = NULL,
     #' @field data placeholder for Dataset field element
     data = list(),
@@ -385,12 +334,13 @@ delete_resources <- function(dataset) {
                    function(index) delete_resource(dataset, index)))
 }
 
-#' Search datasets on HDX
+#' Search for datasets on HDX
 #'
-#' Find dataset on HDX using Solr query
+#' Search for datasets on HDX
 #'
-#' @param query Character Query (in Solr format). Defaults to ‘*:*’
-#' @param rows Number of matching rows to return. Defaults to 10.
+#' @param query Query terms, use solr format and default to "*:*" (match everything)
+#' @param filter_query Filter Query results
+#' @param rows Number of matching records to return. Defaults to 10.
 #' @param page_size Integer Size of page to return. Defaults to 1000.
 #' @param configuration Configuration object.
 #' @param ... Extra parameters
@@ -407,7 +357,7 @@ delete_resources <- function(dataset) {
 #'  # Setting the config to use HDX default server
 #'  search_datasets("displaced nigeria", rows = 3L)
 #' }
-.search_datasets  <-  function(query = "*:*", rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+.search_datasets  <-  function(query = "*:*", filter_query = NULL, rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
@@ -418,7 +368,7 @@ delete_resources <- function(dataset) {
                             limit = rows,
                             limit_chunk = page_size)
   suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"),
-                          list(q = query, ...)))
+                          list(q = query, fq = filter_query, ...)))
   list_of_ds <- unlist(lapply(cc$parse(),
                               function(x)
                                 jsonlite::fromJSON(x, simplifyVector = FALSE)$result$results), recursive = FALSE)
@@ -440,7 +390,6 @@ as_tibble.datasets_list <- function(x, ...) {
   l <- lapply(x, as_tibble)
   Reduce(rbind, l)
 }
-
 
 #' @noRd
 .pull_dataset <-  function(identifier, configuration = NULL) {

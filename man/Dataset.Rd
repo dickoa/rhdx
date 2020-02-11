@@ -9,63 +9,13 @@ HDX Dataset
 HDX Dataset
 }
 \details{
-HDX Dataset
 Dataset class containing all logic for accessing,
 creating, and updating datasets and associated resources.
-}
-\section{Details}{
-
-\strong{Methods}
-\describe{
-\item{\code{Dataset$new(initial_data, configuration)}}{
-Dataset class enabling operations on datasets and associated resources
-}
-
-\item{\code{check_required_fields()}}{
-Check that metadata for dataset and its resources is complete.
-}
-
-\item{\code{create(upload_resources)}}{
-Check if dataset exists in HDX and if so, update it, otherwise create it
-}
-
-\item{\code{get_configuration(identifier, configuration)}}{
-Returns the actual config used to get the dataset
-}
-
-\item{\code{get_dataset_date()}}{
-Get dataset date as string.
-}\preformatted{\\item\{`pull(identifier, configuration)`\}\{
-  Reads the dataset given by identifier from HDX and returns Dataset object
-\}
-
-\\item\{`get_resource(index)`\}\{
-  Get one resource from dataset by index
-\}
-
-\\item\{`get_resources()`\}\{
-  Get dataset’s resources
-\}
-
-\\item\{`get_update_frequency()`\}\{
-  Get expected update frequency.
-\}
-}
-
-}
-}
-
-\examples{
-\dontrun{
- set_rhdx_config(hdx_site = "prod")
- acled_mali_rs <- pull_dataset("acled-data-for-mali")
- acled_mali_rs
-}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{resources}}{of datasets resource}
+\item{\code{resources}}{list of Resource object within the dataset}
 
 \item{\code{data}}{placeholder for Dataset field element}
 }
