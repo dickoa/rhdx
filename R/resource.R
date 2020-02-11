@@ -320,7 +320,7 @@ download_resource <- function(resource, folder = NULL, filename = NULL, quiet = 
 #'
 #' List layers available in spatial resources on HDX
 #' @param resource Resource, an HDX resource
-#' @param folder Character, path of the directory where you will store the data
+#' @param download_folder Character, path of the directory where you will store the data
 #' @param quiet Logical, no progress bar from download (default = FALSE)
 #'
 #' @return the layers name
@@ -335,7 +335,7 @@ get_resource_layers <- function(resource, download_folder = NULL, quiet = TRUE) 
 #'
 #'  Get the names of the sheets of XLS(X) resources
 #' @param resource Resource, an HDX resource
-#' @param folder Character, path of the directory where you will store the data
+#' @param download_folder Character, path of the directory where you will store the data
 #' @param quiet Logical, no progress bar from download (default = FALSE)
 #' @param ... extra parameters
 #'
@@ -394,14 +394,8 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, download_folder 
                          ...)
 }
 
-#' Search resources
-#'
-#' Search Resources
-#'
 #' @rdname search_resources
-#' @param query Character, a query
-#' @param configuration an HDX configuration object
-#' @param ... extra params
+#' @noRd
 .search_resources  <-  function(query = "*:*", configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
@@ -412,6 +406,13 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, download_folder 
   list_of_rs
 }
 
+#' Search resources
+#'
+#' Search Resources
+#'
+#' @param query Character, a query
+#' @param configuration a Configuration object
+#' @param ... extra params
 #' @rdname search_resources
 #' @export
 search_resources <- memoise::memoise(.search_resources)

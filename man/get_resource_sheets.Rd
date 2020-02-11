@@ -4,12 +4,12 @@
 \alias{get_resource_sheets}
 \title{Get the names of the sheets of XLS(X) resources}
 \usage{
-get_resource_sheets(resource, folder = NULL, quiet = TRUE, ...)
+get_resource_sheets(resource, download_folder = NULL, quiet = TRUE, ...)
 }
 \arguments{
 \item{resource}{Resource, an HDX resource}
 
-\item{folder}{Character, path of the directory where you will store the data}
+\item{download_folder}{Character, path of the directory where you will store the data}
 
 \item{quiet}{Logical, no progress bar from download (default = FALSE)}
 

@@ -334,29 +334,8 @@ delete_resources <- function(dataset) {
                    function(index) delete_resource(dataset, index)))
 }
 
-#' Search for datasets on HDX
-#'
-#' Search for datasets on HDX
-#'
-#' @param query Query terms, use solr format and default to "*:*" (match everything)
-#' @param filter_query Filter Query results
-#' @param rows Number of matching records to return. Defaults to 10.
-#' @param page_size Integer Size of page to return. Defaults to 1000.
-#' @param configuration Configuration object.
-#' @param ... Extra parameters
-#'
 #' @rdname search_datasets
-#'
-#' @details Search and find datasets on HDX
-#'
-#'
-#' @return A list of HDX datasets
-#'
-#' @examples
-#' \dontrun{
-#'  # Setting the config to use HDX default server
-#'  search_datasets("displaced nigeria", rows = 3L)
-#' }
+#' @noRd
 .search_datasets  <-  function(query = "*:*", filter_query = NULL, rows = 10L, page_size = 1000L, configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
@@ -379,6 +358,28 @@ delete_resources <- function(dataset) {
   list_of_ds
 }
 
+
+#' Search for datasets on HDX
+#'
+#' Search for datasets on HDX
+#'
+#' @param query Query terms, use solr format and default to "*:*" (match everything)
+#' @param filter_query Filter Query results
+#' @param rows Number of matching records to return. Defaults to 10.
+#' @param page_size Integer Size of page to return. Defaults to 1000.
+#' @param configuration Configuration object.
+#' @param ... Extra parameters
+#'
+#' @details Search and find datasets on HDX
+#'
+#'
+#' @return A list of HDX datasets
+#'
+#' @examples
+#' \dontrun{
+#'  # Setting the config to use HDX default server
+#'  search_datasets("displaced nigeria", rows = 3L)
+#' }
 #' @rdname search_datasets
 #' @importFrom memoise memoise
 #' @export

@@ -4,12 +4,12 @@
 \alias{get_resource_layers}
 \title{List layers available in spatial resources on HDX}
 \usage{
-get_resource_layers(resource, folder = NULL, quiet = TRUE)
+get_resource_layers(resource, download_folder = NULL, quiet = TRUE)
 }
 \arguments{
 \item{resource}{Resource, an HDX resource}
 
-\item{folder}{Character, path of the directory where you will store the data}
+\item{download_folder}{Character, path of the directory where you will store the data}
 
 \item{quiet}{Logical, no progress bar from download (default = FALSE)}
 }
