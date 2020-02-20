@@ -14,10 +14,10 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.1",
+    "version": "3.6.3",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.1 Patched (2019-11-15 r77425)",
+  "runtimePlatform": "R version 3.6.3 beta (2020-02-18 r77829)",
   "author": [
     {
       "@type": "Person",
@@ -275,7 +275,7 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "52.745KB",
+  "fileSize": "35.896KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
   "contributor": {},
   "copyrightHolder": {},

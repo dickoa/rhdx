@@ -132,6 +132,7 @@ Resource <- R6::R6Class(
              geotiff = read_hdx_raster(file_path, zipped = FALSE),
              kmz = read_hdx_vector(file_path, layer = layer),
              `zipped shapefile` = read_hdx_vector(file_path, layer = layer),
+             `zipped shapefiles` = read_hdx_vector(file_path, layer = layer),
              `zipped geodatabase` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
              `zipped kml` = read_hdx_vector(file_path, layer = layer),
              `zipped geopackage` = read_hdx_vector(file_path, layer = layer),
@@ -156,7 +157,7 @@ Resource <- R6::R6Class(
 
       format <- self$get_format()
 
-      supported_geo_format <- c("geojson", "zipped shapefile", "zipped geodatabase",
+      supported_geo_format <- c("geojson", "zipped shapefile", "zipped shapefiles", "zipped geodatabase",
                                 "zipped geopackage", "kmz", "zipped kml")
       if (!format %in% supported_geo_format)
         stop("This (spatial) data format is not yet supported", call. = FALSE)
@@ -164,6 +165,7 @@ Resource <- R6::R6Class(
       switch(format,
              geojson = get_hdx_layers_(file_path, zipped = FALSE),
              `zipped shapefile` = get_hdx_layers_(file_path),
+             `zipped shapefiles` = get_hdx_layers_(file_path),
              `zipped geodatabase` = get_hdx_layers_(file_path, zipped = FALSE),
              `zipped geopackage` = get_hdx_layers_(file_path),
              kmz = get_hdx_layers_(file_path),

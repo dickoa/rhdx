@@ -191,7 +191,6 @@ Dataset <- R6::R6Class(
       self$data$is_requestdata_type
     },
 
-
     #' @description
     #' Get dataset required fields
     #'
@@ -268,7 +267,7 @@ as_tibble.Dataset <- function(x, ...) {
                  requestable = x$is_requestable(),
                  locations_name = list(get_locations_name(x)),
                  organization_name = get_organization_name(x),
-                 resources_format = list(get_formats(x)),
+                 resources_format = list(get_resources_formats(x)),
                  tags_name = list(get_tags_name(x)),
                  resources = list(x$get_resources()),
                  dataset = list(x))
@@ -334,9 +333,10 @@ delete_resources <- function(dataset) {
                    function(index) delete_resource(dataset, index)))
 }
 
+#' need to solve the issue with start and paginator
 #' @rdname search_datasets
 #' @noRd
-.search_datasets  <-  function(query = "*:*", filter_query = NULL, rows = 10L, page_size = 1000L, configuration = NULL, ...) {
+.search_datasets  <-  function(query = "*:*", filter_query = NULL, rows = 10L, start = 0L, page_size = 1000L, configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
@@ -363,9 +363,10 @@ delete_resources <- function(dataset) {
 #'
 #' Search for datasets on HDX
 #'
-#' @param query Query terms, use solr format and default to "*:*" (match everything)
-#' @param filter_query Filter Query results
-#' @param rows Number of matching records to return. Defaults to 10.
+#' @param query Character Query terms, use solr format and default to "*:*" (match everything)
+#' @param filter_query Character Filter Query results
+#' @param rows Integer Number of matching records to return. Defaults to 10.
+#' @param start Integer the offset in the complete result for where the set of returned datasets should begin.
 #' @param page_size Integer Size of page to return. Defaults to 1000.
 #' @param configuration Configuration object.
 #' @param ... Extra parameters
@@ -510,7 +511,7 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
   lgl <- !logical(length = length(datasets_list))
 
   if (!is.null(format)) {
-    lgl_format <- vapply(datasets_list, function(dataset) format %in% get_formats(dataset), logical(1))
+    lgl_format <- vapply(datasets_list, function(dataset) format %in% get_resources_formats(dataset), logical(1))
     lgl <- lgl & lgl_format
   }
 
@@ -640,9 +641,9 @@ get_organization_name <- function(dataset) {
 #' # Setting the config to use HDX default server
 #'  set_rhdx_config()
 #'  res <- search_dataset(rows = 3L)
-#'  get_formats(res[[1]])
+#'  get_resources_formats(res[[1]])
 #' }
-get_formats <- function(dataset) {
+get_resources_formats <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_resources(),
          function(resource) resource$get_format(), character(1))

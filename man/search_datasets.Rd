@@ -8,17 +8,20 @@ search_datasets(
   query = "*:*",
   filter_query = NULL,
   rows = 10L,
+  start = 0L,
   page_size = 1000L,
   configuration = NULL,
   ...
 )
 }
 \arguments{
-\item{query}{Query terms, use solr format and default to "\emph{:}" (match everything)}
+\item{query}{Character Query terms, use solr format and default to "\emph{:}" (match everything)}
 
-\item{filter_query}{Filter Query results}
+\item{filter_query}{Character Filter Query results}
 
-\item{rows}{Number of matching records to return. Defaults to 10.}
+\item{rows}{Integer Number of matching records to return. Defaults to 10.}
+
+\item{start}{Integer the offset in the complete result for where the set of returned datasets should begin.}
 
 \item{page_size}{Integer Size of page to return. Defaults to 1000.}
 
