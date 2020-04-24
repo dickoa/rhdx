@@ -31,6 +31,7 @@ HDX Organization
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a Organization object
 \subsection{Usage}{
@@ -52,6 +53,7 @@ A Organization object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_datasets"></a>}}
+\if{latex}{\out{\hypertarget{method-get_datasets}{}}}
 \subsection{Method \code{get_datasets()}}{
 Get the list of datasets
 \subsection{Usage}{
@@ -64,6 +66,7 @@ list of Dataset objects
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
+\if{latex}{\out{\hypertarget{method-browse}{}}}
 \subsection{Method \code{browse()}}{
 Browse the Organization page on HDX
 \subsection{Usage}{
@@ -73,6 +76,7 @@ Browse the Organization page on HDX
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Get dataset field into list
 \subsection{Usage}{
@@ -85,6 +89,7 @@ a list with organization field element
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print a Dataset object
 \subsection{Usage}{
@@ -94,6 +99,7 @@ Print a Dataset object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

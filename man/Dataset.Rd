@@ -50,6 +50,7 @@ creating, and updating datasets and associated resources.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new Dataset object
 \subsection{Usage}{
@@ -71,6 +72,7 @@ A Dataset object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_resource"></a>}}
+\if{latex}{\out{\hypertarget{method-get_resource}{}}}
 \subsection{Method \code{get_resource()}}{
 Get a specific resource of the dataset
 \subsection{Usage}{
@@ -90,6 +92,7 @@ a Resource object, the selected resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_resources"></a>}}
+\if{latex}{\out{\hypertarget{method-get_resources}{}}}
 \subsection{Method \code{get_resources()}}{
 Get all resources of the dataset
 \subsection{Usage}{
@@ -102,6 +105,7 @@ a list of Resource objects, all resources available in the dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-delete_resource"></a>}}
+\if{latex}{\out{\hypertarget{method-delete_resource}{}}}
 \subsection{Method \code{delete_resource()}}{
 Delete a resource by its index
 \subsection{Usage}{
@@ -115,24 +119,20 @@ Delete a resource by its index
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-delete_resources"></a>}}
+\if{latex}{\out{\hypertarget{method-delete_resources}{}}}
 \subsection{Method \code{delete_resources()}}{
 Delete all resources from a dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$delete_resources()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
+\if{latex}{\out{\hypertarget{method-browse}{}}}
 \subsection{Method \code{browse()}}{
 Browse the dataset page on HDX
 \subsection{Usage}{
@@ -142,6 +142,7 @@ Browse the dataset page on HDX
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_configuration"></a>}}
+\if{latex}{\out{\hypertarget{method-get_configuration}{}}}
 \subsection{Method \code{get_configuration()}}{
 Get the current configuration in use
 \subsection{Usage}{
@@ -154,6 +155,7 @@ A configuration object, the configuration in use
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_dataset_date"></a>}}
+\if{latex}{\out{\hypertarget{method-get_dataset_date}{}}}
 \subsection{Method \code{get_dataset_date()}}{
 Get the dataset date
 \subsection{Usage}{
@@ -166,6 +168,7 @@ a date, the dataset date.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_dataset_date"></a>}}
+\if{latex}{\out{\hypertarget{method-set_dataset_date}{}}}
 \subsection{Method \code{set_dataset_date()}}{
 Set the dataset date
 \subsection{Usage}{
@@ -181,12 +184,10 @@ Set the dataset date
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_update_frequency"></a>}}
+\if{latex}{\out{\hypertarget{method-get_update_frequency}{}}}
 \subsection{Method \code{get_update_frequency()}}{
 Get dataset update frequency
 \subsection{Usage}{
@@ -200,6 +201,7 @@ Get dataset tags
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_tags"></a>}}
+\if{latex}{\out{\hypertarget{method-get_tags}{}}}
 \subsection{Method \code{get_tags()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Dataset$get_tags()}\if{html}{\out{</div>}}
@@ -211,6 +213,7 @@ a list of Tag objects, datasets tags
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_locations"></a>}}
+\if{latex}{\out{\hypertarget{method-get_locations}{}}}
 \subsection{Method \code{get_locations()}}{
 Get the datasets location
 \subsection{Usage}{
@@ -223,6 +226,7 @@ a list of Location objects, all locations covered by the dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_maintainer"></a>}}
+\if{latex}{\out{\hypertarget{method-get_maintainer}{}}}
 \subsection{Method \code{get_maintainer()}}{
 Get the dataset maintainer
 \subsection{Usage}{
@@ -235,6 +239,7 @@ An User object, the maintainer of the dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_organization"></a>}}
+\if{latex}{\out{\hypertarget{method-get_organization}{}}}
 \subsection{Method \code{get_organization()}}{
 Get the dataset organization
 \subsection{Usage}{
@@ -247,6 +252,7 @@ an Organization object, the organization that shared the data
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_showcases"></a>}}
+\if{latex}{\out{\hypertarget{method-get_showcases}{}}}
 \subsection{Method \code{get_showcases()}}{
 Get the Showcase associated to the dataset
 \subsection{Usage}{
@@ -259,6 +265,7 @@ a Showcase object containing the dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_organization"></a>}}
+\if{latex}{\out{\hypertarget{method-set_organization}{}}}
 \subsection{Method \code{set_organization()}}{
 Set organization for a dataset
 \subsection{Usage}{
@@ -272,12 +279,10 @@ Set organization for a dataset
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-is_requestable"></a>}}
+\if{latex}{\out{\hypertarget{method-is_requestable}{}}}
 \subsection{Method \code{is_requestable()}}{
 Check if the dataset is requestable
 \subsection{Usage}{
@@ -290,6 +295,7 @@ a logical value, \code{TRUE} if it's a requestable dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_required_fields"></a>}}
+\if{latex}{\out{\hypertarget{method-get_required_fields}{}}}
 \subsection{Method \code{get_required_fields()}}{
 Get dataset required fields
 \subsection{Usage}{
@@ -302,6 +308,7 @@ list of required fields for a dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-check_required_fields"></a>}}
+\if{latex}{\out{\hypertarget{method-check_required_fields}{}}}
 \subsection{Method \code{check_required_fields()}}{
 Check dataset required field
 \subsection{Usage}{
@@ -314,6 +321,7 @@ a logical value, TRUE if the the dataset is not missing a required field and thr
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Get dataset field into list
 \subsection{Usage}{
@@ -326,6 +334,7 @@ a list with dataset field
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print a Dataset object
 \subsection{Usage}{
@@ -335,6 +344,7 @@ Print a Dataset object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -33,6 +33,7 @@ HDX Showcase
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new Showcase object
 \subsection{Usage}{
@@ -54,6 +55,7 @@ a new Showcase object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-list_datasets"></a>}}
+\if{latex}{\out{\hypertarget{method-list_datasets}{}}}
 \subsection{Method \code{list_datasets()}}{
 List datasets using the Showcase
 \subsection{Usage}{
@@ -66,6 +68,7 @@ a list of dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
+\if{latex}{\out{\hypertarget{method-browse}{}}}
 \subsection{Method \code{browse()}}{
 Browse the Showcase page on HDX
 \subsection{Usage}{
@@ -75,6 +78,7 @@ Browse the Showcase page on HDX
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Get dataset field into list
 \subsection{Usage}{
@@ -87,6 +91,7 @@ a list with showcase field info
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print a Showcase object
 \subsection{Usage}{
@@ -96,6 +101,7 @@ Print a Showcase object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

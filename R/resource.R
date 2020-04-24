@@ -260,8 +260,6 @@ Resource <- R6::R6Class(
 
     #' @description
     #' Print a Resource object
-    #'
-    #' @return
     print = function() {
       cat(paste0("<HDX Resource> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")
@@ -440,9 +438,8 @@ as_tibble.resources_list <- function(x, ...) {
 #'
 #' Read an HDX resource
 #'
-#' @param identifier character resource uuid
-#' @param configuration an HDX configuration object
-#' @param ... Extra parameters
+#' @param identifier Character resource uuid
+#' @param configuration a Configuration object
 #'
 #' @rdname pull_resource
 #'

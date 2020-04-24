@@ -9,4 +9,5 @@
 ^pkgdown$               # Remove de pkgdown directory
 ^\.gitlab-ci\.yml$
 ^\.travis\.yml$
+^\appveyor\.yml$
 ^codemeta\.json$

@@ -152,8 +152,9 @@ as.list.Location <- function(x, ...) {
 #'
 #' List locations
 #'
-#' @param limit  Integer limit
-#' @param offset Integer offset
+#' @param sort Character sorting of the search results. Default: “name asc”, the allowed fields are ‘name’, ‘package_count’ and ‘title’
+#' @param all_fields Logical if TRUE returns list instead of just names
+#' @param ... Extra parameters to group_list https://docs.ckan.org/en/ckan-2.8.2/api/index.html#ckan.logic.action.get.group_list
 #' @param configuration a Configuration
 #'
 #' @return A vector of locations names

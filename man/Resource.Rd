@@ -46,6 +46,7 @@ HDX Resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new Resource object
 \subsection{Usage}{
@@ -67,6 +68,7 @@ A new Resource object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-download"></a>}}
+\if{latex}{\out{\hypertarget{method-download}{}}}
 \subsection{Method \code{download()}}{
 Download a HDX resource
 \subsection{Usage}{
@@ -100,6 +102,7 @@ a character, the file path
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-download_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-download_folder}{}}}
 \subsection{Method \code{download_folder()}}{
 Get the download folder for the latest downloaded resource
 \subsection{Usage}{
@@ -112,6 +115,7 @@ a character, folder with the latest downloaded resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-read_resource"></a>}}
+\if{latex}{\out{\hypertarget{method-read_resource}{}}}
 \subsection{Method \code{read_resource()}}{
 Read a Resource object directly into memory
 \subsection{Usage}{
@@ -151,6 +155,7 @@ a \code{tibble}, a \code{sf}, a \code{stars} or a \code{list} depending on the t
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_layers"></a>}}
+\if{latex}{\out{\hypertarget{method-get_layers}{}}}
 \subsection{Method \code{get_layers()}}{
 Get spatial (vector) resource list of layers
 \subsection{Usage}{
@@ -181,6 +186,7 @@ a the list of layers available in the resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_sheets"></a>}}
+\if{latex}{\out{\hypertarget{method-get_sheets}{}}}
 \subsection{Method \code{get_sheets()}}{
 Get the list of sheets name of resource
 \subsection{Usage}{
@@ -211,6 +217,7 @@ a the list of layers available in the resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_dataset"></a>}}
+\if{latex}{\out{\hypertarget{method-get_dataset}{}}}
 \subsection{Method \code{get_dataset()}}{
 Get the resource dataset.
 \subsection{Usage}{
@@ -223,6 +230,7 @@ a Dataset, the dataset containing the resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_required_fields"></a>}}
+\if{latex}{\out{\hypertarget{method-get_required_fields}{}}}
 \subsection{Method \code{get_required_fields()}}{
 Get dataset required fields
 \subsection{Usage}{
@@ -235,6 +243,7 @@ list of required fields for a resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-check_required_field"></a>}}
+\if{latex}{\out{\hypertarget{method-check_required_field}{}}}
 \subsection{Method \code{check_required_field()}}{
 Check dataset required field
 \subsection{Usage}{
@@ -254,6 +263,7 @@ a logical value, TRUE if the the resource is not missing a required field and th
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_format"></a>}}
+\if{latex}{\out{\hypertarget{method-get_format}{}}}
 \subsection{Method \code{get_format()}}{
 Get the file format
 \subsection{Usage}{
@@ -266,6 +276,7 @@ a character, the file format of the resource
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Get resource field into list
 \subsection{Usage}{
@@ -278,6 +289,7 @@ a list with resource field
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
+\if{latex}{\out{\hypertarget{method-browse}{}}}
 \subsection{Method \code{browse()}}{
 Browse the resource page on HDX
 \subsection{Usage}{
@@ -287,18 +299,17 @@ Browse the resource page on HDX
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print a Resource object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

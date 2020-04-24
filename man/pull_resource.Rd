@@ -7,11 +7,9 @@
 pull_resource(identifier, configuration = NULL)
 }
 \arguments{
-\item{identifier}{character resource uuid}
+\item{identifier}{Character resource uuid}
 
-\item{configuration}{an HDX configuration object}
-
-\item{...}{Extra parameters}
+\item{configuration}{a Configuration object}
 }
 \value{
 Resource

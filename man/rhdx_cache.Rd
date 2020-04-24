@@ -2,48 +2,59 @@
 % Please edit documentation in R/caching.R
 \name{rhdx_cache}
 \alias{rhdx_cache}
-\title{Caching}
+\alias{rhdx_cache_set_dir}
+\alias{rhdx_cache_get_dir}
+\alias{rhdx_cache_list}
+\alias{rhdx_cache_delete}
+\alias{rhdx_cache_clear}
+\title{Caching HDX downloaded files}
+\usage{
+rhdx_cache_set_dir(path)
+
+rhdx_cache_get_dir()
+
+rhdx_cache_list()
+
+rhdx_cache_delete(file)
+
+rhdx_cache_clear()
+}
+\arguments{
+\item{path}{Character directory to set}
+
+\item{file}{Character, the file to delete}
+}
+\value{
+the cache directory
+
+the cache directory
+
+list of files in the cache
+}
 \description{
-Manage cached HDX downloaded resources with \pkg{hoardr}
+Manage cached HDX downloaded files
 }
 \details{
 The default cache directory is
 \verb{~/.cache/R/rhdx_cache}, but you can set
-your own path using \code{cache_path_set()}
-
-\code{cache_delete} only accepts 1 file name, while
-\code{cache_delete_all} doesn't accept any names, but deletes all files.
-For deleting many specific files, use \code{cache_delete} in a \code{\link[=lapply]{lapply()}}
-type call
+your own path using \code{rhdx_cache_set_dir()}
 }
-\section{Useful user functions}{
-
-\itemize{
-\item \code{rhdx_cache$cache_path_get()} get cache path
-\item \code{rhdx_cache$cache_path_set()} set cache path
-\item \code{rhdx_cache$list()} returns a character vector of full path file names
-\item \code{rhdx_cache$files()} returns file objects with metadata
-\item \code{rhdx_cache$details()} returns files with details
-\item \code{rhdx_cache$delete()} delete specific files
-\item \code{rhdx_cache$delete_all()} delete all files, returns nothing
-}
-}
-
 \examples{
 \dontrun{
 rhdx_cache
+## change the default cache directory
+tmp <- tempdir()
+rhdx_cache_set_dir(tmp)
 
-# list files in cache
-rhdx_cache$list()
+## print current cache directory
+rhdx_cache_get_dir()
 
-# delete certain database files
-# rhdx_cache$delete("file path")
-# rhdx_cache$list()
+## List available files in the current cache directory
+rhdx_cache_list()
 
-# delete all files in cache
-# rhdx_cache$delete_all()
-# rhdx_cache$list()
+l <- rhdx_cache_list()[1] ## get the first file
+rhdx_cache_delete(l) ## delete it
 
-# set a different cache path from the default
+rhdx_cache_clear() ## delete all cached files
 }
 }

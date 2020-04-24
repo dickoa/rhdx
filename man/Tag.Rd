@@ -29,6 +29,7 @@ HDX tag
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new Tag object
 \subsection{Usage}{
@@ -50,6 +51,7 @@ a Tag object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Tag object to list
 \subsection{Usage}{
@@ -62,18 +64,17 @@ a list with of tag fields element
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print a Tag object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tag$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

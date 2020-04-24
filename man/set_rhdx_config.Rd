@@ -28,8 +28,6 @@ get_rhdx_config()
 \item{hdx_config_file}{Character, path of the HDX config file in JSON and YAML format}
 
 \item{configuration}{Configuration object.}
-
-\item{...}{Extra parameters}
 }
 \value{
 Invisibly returns the rhdx config object

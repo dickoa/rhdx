@@ -1,57 +1,60 @@
-#' Caching
+#' Caching HDX downloaded files
 #'
-#' Manage cached HDX downloaded resources with \pkg{hoardr}
+#' Manage cached HDX downloaded files
 #'
 #' @name rhdx_cache
 #'
 #' @details The default cache directory is
 #' `~/.cache/R/rhdx_cache`, but you can set
-#' your own path using `cache_path_set()`
+#' your own path using `rhdx_cache_set_dir()`
 #'
-#' `cache_delete` only accepts 1 file name, while
-#' `cache_delete_all` doesn't accept any names, but deletes all files.
-#' For deleting many specific files, use `cache_delete` in a [lapply()]
-#' type call
-#'
-#' @section Useful user functions:
-#' \itemize{
-#'  \item `rhdx_cache$cache_path_get()` get cache path
-#'  \item `rhdx_cache$cache_path_set()` set cache path
-#'  \item `rhdx_cache$list()` returns a character vector of full path file names
-#'  \item `rhdx_cache$files()` returns file objects with metadata
-#'  \item `rhdx_cache$details()` returns files with details
-#'  \item `rhdx_cache$delete()` delete specific files
-#'  \item `rhdx_cache$delete_all()` delete all files, returns nothing
-#' }
 #'
 #' @examples \dontrun{
 #' rhdx_cache
+#' ## change the default cache directory
+#' tmp <- tempdir()
+#' rhdx_cache_set_dir(tmp)
 #'
-#' # list files in cache
-#' rhdx_cache$list()
+#' ## print current cache directory
+#' rhdx_cache_get_dir()
 #'
-#' # delete certain database files
-#' # rhdx_cache$delete("file path")
-#' # rhdx_cache$list()
+#' ## List available files in the current cache directory
+#' rhdx_cache_list()
 #'
-#' # delete all files in cache
-#' # rhdx_cache$delete_all()
-#' # rhdx_cache$list()
+#' l <- rhdx_cache_list()[1] ## get the first file
+#' rhdx_cache_delete(l) ## delete it
 #'
-#' # set a different cache path from the default
+#' rhdx_cache_clear() ## delete all cached files
 #' }
 NULL
 
-#' Print the cache directory
+#' Set the cache directory
+#'
+#' @rdname rhdx_cache
+#'
+#' @param path Character directory to set
 #'
 #' @return the cache directory
 #' @export
-rhdx_cache_dir <- function() {
+rhdx_cache_set_dir <- function(path) {
+  assert_cache(rhdx_cache)
+  rhdx_cache$cache_path_set(path)
+}
+
+#' Print the cache directory
+#'
+#' @rdname rhdx_cache
+#'
+#' @return the cache directory
+#' @export
+rhdx_cache_get_dir <- function() {
   assert_cache(rhdx_cache)
   rhdx_cache$cache_path_get()
 }
 
 #' List of files available in the cache directory
+#'
+#' @rdname rhdx_cache
 #'
 #' @return list of files in the cache
 #' @export
@@ -62,7 +65,10 @@ rhdx_cache_list <- function() {
 
 #' Delete a given file from cache
 #'
+#' @rdname rhdx_cache
+#'
 #' @param file Character, the file to delete
+#'
 #' @export
 rhdx_cache_delete <- function(file) {
   assert_cache(rhdx_cache)
@@ -70,6 +76,8 @@ rhdx_cache_delete <- function(file) {
 }
 
 #' Clear cache directory
+#'
+#' @rdname rhdx_cache
 #'
 #' @export
 rhdx_cache_clear <- function() {

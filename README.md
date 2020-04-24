@@ -7,7 +7,7 @@
 there has not yet been a stable, usable release suitable for the
 public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![GitLab CI Build
-Status](https://gitlab.com/dickoa/rhdx/badges/master/build.svg)](https://gitlab.com/dickoa/rhdx/pipelines)
+Status](https://gitlab.com/dickoa/rhdx/badges/master/pipeline.svg)](https://gitlab.com/dickoa/rhdx/pipelines)
 [![Travis build
 status](https://api.travis-ci.org/dickoa/rhdx.svg?branch=master)](https://travis-ci.org/dickoa/rhdx)
 [![AppVeyor build

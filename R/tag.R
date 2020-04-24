@@ -43,8 +43,6 @@ Tag <- R6::R6Class(
 
     #' @description
     #' Print a Tag object
-    #'
-    #' @return
     print = function() {
       cat(paste0("<HDX Tag> ", self$data$id), "\n")
       cat("  Name: ", self$data$name, "\n", sep = "")

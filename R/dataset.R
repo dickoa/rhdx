@@ -60,7 +60,6 @@ Dataset <- R6::R6Class(
     #' Delete a resource by its index
     #'
     #' @param index, the index of the resource to delete
-    #' @return
     delete_resource = function(index = 1L) {
       n_resources <- self$data$num_resources
       if (n_resources == 0)
@@ -74,8 +73,6 @@ Dataset <- R6::R6Class(
 
     #' @description
     #' Delete all resources from a dataset
-    #'
-    #' @return
     delete_resources = function() {
       self$resources <- NULL
       self$data$resources <- NULL
@@ -113,7 +110,6 @@ Dataset <- R6::R6Class(
     #'
     #' @param date a character, by default with the format month/day/year
     #' @param format the format of the date supplied
-    #' @return
     set_dataset_date = function(date, format = "%m/%d/%Y") {
       self$data$dataset_date <- format.Date(date, format = format)
     },
@@ -177,7 +173,6 @@ Dataset <- R6::R6Class(
     #' Set organization for a dataset
     #'
     #' @param organization Organization
-    #' @return
     set_organization = function(organization) {
       assert_organization(organization)
       self$data$organization <- organization$data
@@ -408,7 +403,6 @@ as_tibble.datasets_list <- function(x, ...) {
 #'
 #' @param identifier Character dataset keyword
 #' @param configuration a Configuration object
-#' @param ... Extra parameters
 #'
 #' @rdname pull_dataset
 #' @return Dataset the dataset

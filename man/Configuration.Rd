@@ -106,6 +106,7 @@ get_rhd_config()
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new Configuration object.
 \subsection{Usage}{
@@ -142,6 +143,7 @@ A new Configuration object.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_credentials"></a>}}
+\if{latex}{\out{\hypertarget{method-get_credentials}{}}}
 \subsection{Method \code{get_credentials()}}{
 Configuration credentials when using a HDX API key
 \subsection{Usage}{
@@ -154,6 +156,7 @@ the username and password associated to the HDX API key
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_read_only"></a>}}
+\if{latex}{\out{\hypertarget{method-set_read_only}{}}}
 \subsection{Method \code{set_read_only()}}{
 Create or revoke read only status
 \subsection{Usage}{
@@ -167,12 +170,10 @@ Create or revoke read only status
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_hdx_key"></a>}}
+\if{latex}{\out{\hypertarget{method-set_hdx_key}{}}}
 \subsection{Method \code{set_hdx_key()}}{
 Specify a HDX API key
 \subsection{Usage}{
@@ -186,12 +187,10 @@ Specify a HDX API key
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_hdx_key"></a>}}
+\if{latex}{\out{\hypertarget{method-get_hdx_key}{}}}
 \subsection{Method \code{get_hdx_key()}}{
 Specify a HDX API key
 \subsection{Usage}{
@@ -204,6 +203,7 @@ a character, the HDX API key
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_hdx_site"></a>}}
+\if{latex}{\out{\hypertarget{method-set_hdx_site}{}}}
 \subsection{Method \code{set_hdx_site()}}{
 Specify a HDX server to use
 \subsection{Usage}{
@@ -223,6 +223,7 @@ a character, the HDX API key
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_hdx_site"></a>}}
+\if{latex}{\out{\hypertarget{method-get_hdx_site}{}}}
 \subsection{Method \code{get_hdx_site()}}{
 Get the HDX server in use
 \subsection{Usage}{
@@ -235,6 +236,7 @@ the server type
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_hdx_site_url"></a>}}
+\if{latex}{\out{\hypertarget{method-get_hdx_site_url}{}}}
 \subsection{Method \code{get_hdx_site_url()}}{
 Get the HDX server URL in use
 \subsection{Usage}{
@@ -247,6 +249,7 @@ the server URL
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-remoteclient"></a>}}
+\if{latex}{\out{\hypertarget{method-remoteclient}{}}}
 \subsection{Method \code{remoteclient()}}{
 Get remoteclient
 \subsection{Usage}{
@@ -254,11 +257,12 @@ Get remoteclient
 }
 
 \subsection{Returns}{
-
+a crul::HttpClient
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-call_action"></a>}}
+\if{latex}{\out{\hypertarget{method-call_action}{}}}
 \subsection{Method \code{call_action()}}{
 Call the client to the HDX API
 \subsection{Usage}{
@@ -282,6 +286,7 @@ list a with status code and results
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-read"></a>}}
+\if{latex}{\out{\hypertarget{method-read}{}}}
 \subsection{Method \code{read()}}{
 Show Configuration object
 \subsection{Usage}{
@@ -294,6 +299,7 @@ Configuration object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-setup"></a>}}
+\if{latex}{\out{\hypertarget{method-setup}{}}}
 \subsection{Method \code{setup()}}{
 Setup Configuration object
 \subsection{Usage}{
@@ -321,12 +327,10 @@ Setup Configuration object
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-delete"></a>}}
+\if{latex}{\out{\hypertarget{method-delete}{}}}
 \subsection{Method \code{delete()}}{
 Delete configuration
 \subsection{Usage}{
@@ -339,6 +343,7 @@ Access global configuration
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_global_config"></a>}}
+\if{latex}{\out{\hypertarget{method-get_global_config}{}}}
 \subsection{Method \code{get_global_config()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Configuration$get_global_config()}\if{html}{\out{</div>}}
@@ -350,6 +355,7 @@ list with info
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-general_statistics"></a>}}
+\if{latex}{\out{\hypertarget{method-general_statistics}{}}}
 \subsection{Method \code{general_statistics()}}{
 Get general  statistics about the server
 \subsection{Usage}{
@@ -362,6 +368,7 @@ list with statistics about the server
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Convert configuration to list
 \subsection{Usage}{
@@ -374,18 +381,17 @@ configuration in list format
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print Configuration object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Configuration$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

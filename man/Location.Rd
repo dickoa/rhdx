@@ -32,6 +32,7 @@ HDX location mostly countries
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new Location object
 \subsection{Usage}{
@@ -53,6 +54,7 @@ A Location object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_required_fields"></a>}}
+\if{latex}{\out{\hypertarget{method-get_required_fields}{}}}
 \subsection{Method \code{get_required_fields()}}{
 Get dataset required fields
 \subsection{Usage}{
@@ -65,6 +67,7 @@ list of required fields for a dataset
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-check_required_fields"></a>}}
+\if{latex}{\out{\hypertarget{method-check_required_fields}{}}}
 \subsection{Method \code{check_required_fields()}}{
 Check dataset required field
 \subsection{Usage}{
@@ -77,6 +80,7 @@ a logical value, TRUE if the the dataset is not missing a required field and thr
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-browse"></a>}}
+\if{latex}{\out{\hypertarget{method-browse}{}}}
 \subsection{Method \code{browse()}}{
 Browser the Location page on HDX
 \subsection{Usage}{
@@ -86,6 +90,7 @@ Browser the Location page on HDX
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_list"></a>}}
+\if{latex}{\out{\hypertarget{method-as_list}{}}}
 \subsection{Method \code{as_list()}}{
 Get location field into list
 \subsection{Usage}{
@@ -98,6 +103,7 @@ a list with dataset field
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Print a Dataset object
 \subsection{Usage}{
@@ -107,6 +113,7 @@ Print a Dataset object
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

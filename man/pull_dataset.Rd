@@ -10,8 +10,6 @@ pull_dataset(identifier, configuration = NULL)
 \item{identifier}{Character dataset keyword}
 
 \item{configuration}{a Configuration object}
-
-\item{...}{Extra parameters}
 }
 \value{
 Dataset the dataset

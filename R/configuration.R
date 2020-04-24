@@ -160,7 +160,6 @@ Configuration <- R6::R6Class(
     #' Create or revoke read only status
     #'
     #' @param read_only a logical value indicating if you want to just read or be also able to write on the HDX server. You will need a API key to write.
-    #' @return
     set_read_only = function(read_only = TRUE) {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
       headers <- NULL
@@ -178,7 +177,6 @@ Configuration <- R6::R6Class(
     #' Specify a HDX API key
     #'
     #' @param hdx_key a character with key
-    #' @return
     set_hdx_key = function(hdx_key) {
       if (!is_valid_uuid(key))
         stop("key not valid!", call. = FALSE)
@@ -230,8 +228,7 @@ Configuration <- R6::R6Class(
 
     #' @description
     #' Get remoteclient
-    #'
-    #' @return
+    #' @return a crul::HttpClient
     remoteclient = function() {
       self$data$remoteclient
     },
@@ -269,7 +266,6 @@ Configuration <- R6::R6Class(
     #' @param configuration a character
     #' @param hdx_key a character value, the API key
     #' @param read_only a logical value read only
-    #' @return
     setup = function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
                      hdx_config = NULL, configuration = NULL) {
       if (!hdx_site %in% c("prod", "test", "feature", "demo"))
@@ -319,8 +315,6 @@ Configuration <- R6::R6Class(
 
     #' @description
     #' Print Configuration object
-    #'
-    #' @return
     print = function() {
       cat("<HDX Configuration> ", sep = "\n")
       cat(paste0("  HDX site: ", self$get_hdx_site()), sep = "\n")
@@ -355,7 +349,6 @@ create_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TR
 #' @param hdx_config_file Character, path of the HDX config file in JSON and YAML format
 #' @param read_only Logical if `FALSE` and hdx_key provided is correct you can push metdata and data to HDX
 #' @param configuration Configuration object.
-#' @param ... Extra parameters
 #'
 #' @rdname set_rhdx_config
 #'

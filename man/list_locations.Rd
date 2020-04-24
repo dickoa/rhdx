@@ -12,11 +12,13 @@ list_locations(
 )
 }
 \arguments{
+\item{sort}{Character sorting of the search results. Default: “name asc”, the allowed fields are ‘name’, ‘package_count’ and ‘title’}
+
+\item{all_fields}{Logical if TRUE returns list instead of just names}
+
 \item{configuration}{a Configuration}
 
-\item{limit}{Integer limit}
-
-\item{offset}{Integer offset}
+\item{...}{Extra parameters to group_list https://docs.ckan.org/en/ckan-2.8.2/api/index.html#ckan.logic.action.get.group_list}
 }
 \value{
 A vector of locations names
