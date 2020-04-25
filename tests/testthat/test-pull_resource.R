@@ -1,4 +1,4 @@
-context("pull_resource")
+context("resource")
 
 test_that("Resource must returns the correct output", {
   skip_on_cran()

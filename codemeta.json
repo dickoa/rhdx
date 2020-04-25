@@ -5,8 +5,8 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "rhdx",
-  "description": "Client for the Humanitarian Data Exchange (HDX) platform API. Allows to search and download HDX datasets into R.",
-  "name": "rhdx: Client for the Humanitarian Data Exchange platform API",
+  "description": "Client for the Humanitarian Data Exchange (HDX) platform API <https://data.humdata.org>.\n    Allows to search and download HDX datasets into R.",
+  "name": "rhdx: A Client for the Humanitarian Data Exchange platform API",
   "codeRepository": "https://gitlab.com/dickoa/rhdx",
   "issueTracker": "https://gitlab.com/dickoa/rhdx/issues",
   "license": "https://spdx.org/licenses/MIT",
@@ -21,16 +21,16 @@
   "author": [
     {
       "@type": "Person",
-      "givenName": "Dicko",
-      "familyName": "Ahmadou",
+      "givenName": "Ahmadou",
+      "familyName": "Dicko",
       "email": "mail@ahmadoudicko.com"
     }
   ],
   "maintainer": [
     {
       "@type": "Person",
-      "givenName": "Dicko",
-      "familyName": "Ahmadou",
+      "givenName": "Ahmadou",
+      "familyName": "Dicko",
       "email": "mail@ahmadoudicko.com"
     }
   ],
@@ -262,6 +262,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "base64enc",
+      "name": "base64enc",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=base64enc"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "countrycode",
       "name": "countrycode",
       "provider": {
@@ -275,10 +287,12 @@
   ],
   "releaseNotes": "https://github.com/dickoa/rhdx/blob/master/NEWS.md",
   "readme": "https://github.com/dickoa/rhdx/blob/master/README.md",
-  "fileSize": "37.184KB",
+  "fileSize": "44.015KB",
   "contIntegration": "https://codecov.io/gl/dickoa/rhdx",
   "contributor": {},
   "copyrightHolder": {},
   "funder": {},
-  "developmentStatus": "http://www.repostatus.org/#wip"
+  "developmentStatus": "http://www.repostatus.org/#wip",
+  "applicationCategory": "DataAccess",
+  "keywords": ["database", "open-data", "hdx", "ckan", "humanitarian", "api", "data", "dataset"]
 }

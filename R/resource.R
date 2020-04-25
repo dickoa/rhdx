@@ -64,7 +64,7 @@ Resource <- R6::R6Class(
 
 
       if (is.null(folder)) {
-        folder <- rhdx_cache_dir()
+        folder <- rhdx_cache_get_dir()
       }
 
       if (is.null(filename)) {
@@ -393,6 +393,15 @@ read_resource <- function(resource, sheet = NULL, layer = NULL, download_folder 
                          quiet_download = quiet_download,
                          ...)
 }
+
+
+#' @export
+#' @aliases Resource
+as_tibble.resources_list <- function(x, ...) {
+  l <- lapply(x, as_tibble)
+  Reduce(rbind, l)
+}
+
 
 #' @rdname search_resources
 #' @noRd

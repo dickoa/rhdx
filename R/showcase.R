@@ -97,7 +97,7 @@ as.list.Showcase <- function(x, ...) {
 }
 
 #' @noRd
-.pull_showcase = function(identifier = NULL, configuration = NULL) {
+.pull_showcase <- function(identifier = NULL, configuration = NULL) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()

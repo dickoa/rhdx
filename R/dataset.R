@@ -53,7 +53,11 @@ Dataset <- R6::R6Class(
     #'
     #' @return a list of Resource objects, all resources available in the dataset
     get_resources = function() {
-      self$resources
+      l <- self$resources
+      if (is.null(l))
+        l <- list()
+      class(l) <- "resources_list"
+      l
     },
 
     #' @description
@@ -65,7 +69,7 @@ Dataset <- R6::R6Class(
       if (n_resources == 0)
         stop("No resources to delete!", call. = FALSE)
       if (index > n_resources)
-        stop("Just ", n_resources, "resource(s) available!", call. = FALSE)
+        stop("Just ", n_resources, " resource(s) available!", call. = FALSE)
       self$data$resources[[index]] <- NULL
       self$resources[[index]] <- NULL
       self$data$num_resources <- max(0, self$data$num_resources - 1)
@@ -76,7 +80,7 @@ Dataset <- R6::R6Class(
     delete_resources = function() {
       self$resources <- NULL
       self$data$resources <- NULL
-      self$data$num_resources <- NULL
+      self$data$num_resources <- 0
     },
 
     #' @description
@@ -260,7 +264,7 @@ as_tibble.Dataset <- function(x, ...) {
                  dataset_name = x$data$name,
                  dataset_date = x$get_dataset_date(),
                  requestable = x$is_requestable(),
-                 locations_name = list(get_locations_name(x)),
+                 locations_name = list(get_locations_names(x)),
                  organization_name = get_organization_name(x),
                  resources_format = list(get_resources_formats(x)),
                  tags_name = list(get_tags_name(x)),
@@ -324,8 +328,8 @@ delete_resource <- function(dataset, index) {
 #' @export
 delete_resources <- function(dataset) {
   assert_dataset(dataset)
-  invisible(lapply(seq(dataset$data$num_resources),
-                   function(index) delete_resource(dataset, index)))
+  dataset$delete_resources()
+  dataset
 }
 
 #' need to solve the issue with start and paginator
@@ -542,7 +546,7 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
   }
 
   if (!is.null(locations)) {
-    lgl_locs <- lapply(datasets_list, function(dataset) vapply(locations, function(loc) loc %in% get_locations_name(dataset), logical(1)))
+    lgl_locs <- lapply(datasets_list, function(dataset) vapply(locations, function(loc) loc %in% get_locations_names(dataset), logical(1)))
     lgl_locs <- vapply(lgl_locs, function(x) Reduce(`|`, x), logical(1))
     lgl <- lgl & lgl_locs
   }
@@ -566,12 +570,12 @@ refine_search <- function(datasets_list, format = NULL, locations = NULL, hxl = 
 #' # Setting the config to use HDX default server
 #'  set_rhdx_config()
 #'  res <- search_dataset(rows = 3L)
-#'  get_locations_name(res[[1]])
+#'  get_locations_names(res[[1]])
 #' }
-get_locations_name <- function(dataset) {
+get_locations_names <- function(dataset) {
   assert_dataset(dataset)
   vapply(dataset$get_locations(),
-         function(location) location$name, character(1))
+         function(location) location$data$name, character(1))
 }
 
 #' Dataset tags name

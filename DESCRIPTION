@@ -1,8 +1,11 @@
 Package: rhdx
-Title: Client for the Humanitarian Data Exchange platform API
-Description: Client for the Humanitarian Data Exchange (HDX) platform API. Allows to search and download HDX datasets into R.
+Title: A Client for the Humanitarian Data Exchange platform API
+Description: Client for the Humanitarian Data Exchange (HDX) platform API <https://data.humdata.org>.
+    Allows to search and download HDX datasets into R.
 Version: 0.1.0.9000
-Authors@R: person("Dicko", "Ahmadou", email = "mail@ahmadoudicko.com", role = c("aut", "cre"))
+Authors@R: person("Ahmadou", "Dicko",
+		  email = "mail@ahmadoudicko.com",
+		  role = c("aut", "cre"))
 License: MIT + file LICENSE
 LazyData: TRUE
 URL: https://gitlab.com/dickoa/rhdx
@@ -21,6 +24,7 @@ Imports:
     memoise,
     hoardr,
     tibble,
+    base64enc,
     countrycode
 Suggests:
     roxygen2,
@@ -35,3 +39,5 @@ RoxygenNote: 7.1.0
 Encoding: UTF-8
 Language: en-US
 VignetteBuilder: knitr
+X-schema.org-applicationCategory: Data Access
+X-schema.org-keywords: database, open-data, hdx, ckan, humanitarian, api, data, dataset

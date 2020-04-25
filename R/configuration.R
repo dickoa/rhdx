@@ -1,66 +1,7 @@
 #' HDX Configuration
 #'
-#' HDX Configuration allow to connect to an HDX server and setup project where you can interact with the HDX platform
-#'
-#' @details
-#' **Methods**
-#'   \describe{
-#'     \item{`create(hdx_site, hdx_key, read_only, hdx_key_file, hdx_config,
-#'            hdx_config_yaml, hdx_config_json, project_config, project_config_yaml, project_config_json, configuration)`}{
-#'       Create a HDX Configuration
-#'     }
-#'     \item{`get_credentials()`}{
-#'       Setup a HDX Configuration object
-#'     }
-#'     \item{`set_read_only(read_only)`}{
-#'       Read a Configuration object
-#'     }
-#'
-#'     \item{`set_hdx_key(hdx_key)`}{
-#'       Provides an API key
-#'     }
-#'
-#'     \item{`load_hdx_key(path)`}{
-#'       Provides an API key from path
-#'     }
-#'
-#'     \item{`get_hdx_key()`}{
-#'       Get the HDX server site in use.
-#'     }
-#'
-#'     \item{`set_hdx_key(hdx_site)`}{
-#'       Set the HDX server site to use.
-#'     }
-#'
-#'    \item{`get_hdx_key()`}{
-#'      Get the API key
-#'    }
-#'
-#'    \item{`get_hdx_key_url()`}{
-#'      Get the HDX server URL
-#'    }
-#'
-#'   \item{`remoteclient()`}{
-#'      Remote API client
-#'    }
-#'
-#'   \item{`call_remoteclient()`}{
-#'      Call remote API client
-#'    }
-#'
-#'   \item{`setup()`}{
-#'      Setup configuration i.e HDX server, API and read only status.
-#'    }
-#'
-#'   \item{`delete()`}{
-#'      Delete actual configuration.
-#'    }
-#'
-#'   \item{`general_statistics()`}{
-#'      Some statistics about HDX
-#'    }
-#'
-#' }
+#' HDX Configuration allow to connect to an HDX server
+#' and setup project where you can interact with the HDX platform
 #'
 #' @format NULL
 #' @usage NULL
@@ -82,15 +23,16 @@ Configuration <- R6::R6Class(
     #' @field data all info in list.
     data = list(),
 
-
     #' @description
     #' Create a new Configuration object.
     #'
     #' @param hdx_site character the server instance to use
     #' @param hdx_key character, the HDX API key
     #' @param hdx_config configuration in a list
-    #' @param hdx_config_file a character value config file. default is the config supplied in the package
-    #' @param read_only a logical value indicating if you want to just read or be also able to write on the HDX server. You will need a API key to write.
+    #' @param hdx_config_file a character value config file.
+    #' default is the config supplied in the package
+    #' @param read_only a logical value indicating if you want to just read
+    #' or be also able to write on the HDX server. You will need a API key to write.
     #' @param user_agent a character value, User agent
     #' @return A new Configuration object.
     initialize = function(hdx_site = "prod", hdx_key = NULL,
@@ -141,7 +83,7 @@ Configuration <- R6::R6Class(
 
     #' @description
     #' Configuration credentials when using a HDX API key
-    #'
+    #' @importFrom base64enc base64decode
     #' @return the username and password associated to the HDX API key
     get_credentials = function() {
       hdx_site <- paste0("hdx_", self$data$hdx_site, "_site")
