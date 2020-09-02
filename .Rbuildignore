@@ -46,3 +46,4 @@ _dev\.R$
 ^data\-raw/*
 ^CODE\_OF\_CONDUCT\.md$
 ^codemeta\.json
+^codemeta\.json$
