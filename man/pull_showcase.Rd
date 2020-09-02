@@ -23,6 +23,6 @@ Delete resource from dataset
 \examples{
 \dontrun{
  # Setting the config to use HDX default server
- delete_resource(dataset, 1) # first resource
+ pull_showcase("fts-requirements-and-funding-data-for-zimbabwe-showcase") # first resource
 }
 }

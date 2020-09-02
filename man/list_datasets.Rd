@@ -10,11 +10,11 @@
 list_datasets(limit = NULL, offset = NULL, configuration = NULL)
 }
 \arguments{
-\item{limit}{Integer limit}
+\item{limit}{integer; limit}
 
-\item{offset}{Integer offset}
+\item{offset}{integer; offset}
 
-\item{configuration}{a Configuration}
+\item{configuration}{a Configuration object}
 }
 \value{
 A vector of datasets names

@@ -11,6 +11,9 @@ HDX Location
 \details{
 HDX location mostly countries
 }
+\section{Super class}{
+\code{\link[rhdx:HDXObject]{rhdx::HDXObject}} -> \code{Location}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -29,6 +32,16 @@ HDX location mostly countries
 \item \href{#method-print}{\code{Location$print()}}
 \item \href{#method-clone}{\code{Location$clone()}}
 }
+}
+\if{html}{
+\out{<details open ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="check_required_field">}\href{../../rhdx/html/HDXObject.html#method-check_required_field}{\code{rhdx::HDXObject$check_required_field()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="get_configuration">}\href{../../rhdx/html/HDXObject.html#method-get_configuration}{\code{rhdx::HDXObject$get_configuration()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_json">}\href{../../rhdx/html/HDXObject.html#method-update_from_json}{\code{rhdx::HDXObject$update_from_json()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_yaml">}\href{../../rhdx/html/HDXObject.html#method-update_from_yaml}{\code{rhdx::HDXObject$update_from_yaml()}}\out{</span>}
+}
+\out{</details>}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
@@ -75,7 +88,8 @@ Check dataset required field
 }
 
 \subsection{Returns}{
-a logical value, TRUE if the the dataset is not missing a required field and throws an error otherwise
+a logical value, TRUE if the the dataset is not
+missing a required field and throws an error otherwise
 }
 }
 \if{html}{\out{<hr>}}

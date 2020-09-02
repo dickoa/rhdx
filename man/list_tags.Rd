@@ -8,8 +8,7 @@ list_tags(
   query = NULL,
   vocabulary_id = NULL,
   all_fields = FALSE,
-  configuration = NULL,
-  ...
+  configuration = NULL
 )
 }
 \arguments{
@@ -20,11 +19,9 @@ list_tags(
 \item{all_fields}{logical return full Tag object instead of just names}
 
 \item{configuration}{Configuration the configuration to use}
-
-\item{...}{Extra parameters}
 }
 \description{
-List all tags
+List all available tags
 }
 \examples{
 \dontrun{

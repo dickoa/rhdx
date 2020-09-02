@@ -6,6 +6,7 @@
 #' @usage NULL
 User <- R6::R6Class(
   classname = "User",
+  inherit = HDXObject,
 
   private = list(
     configuration = NULL
@@ -73,11 +74,14 @@ as.list.User <- function(x, ...) {
 
 #' @noRd
 #' @rdname pull_user
-.pull_user  <-  function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+.pull_user  <-  function(identifier = NULL,
+                         include_datasets = FALSE, configuration = NULL, ...) {
   if (is.null(configuration) | !inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("user_show", list(id = identifier, include_datasets = include_datasets, ...))
+  res <- configuration$call_action("user_show",
+                                   list(id = identifier,
+                                        include_datasets = include_datasets, ...))
   User$new(initial_data = res, configuration = configuration)
 }
 
@@ -85,6 +89,8 @@ as.list.User <- function(x, ...) {
 #'
 #'
 #' Read an HDX user from its name or id
+#'
+#' @importFrom memoise memoise
 #'
 #' @param identifier character user keyword
 #' @param configuration a Configuration object
@@ -101,20 +107,28 @@ as.list.User <- function(x, ...) {
 #'  res <- pull_user("xxxx")
 #'  res
 #' }
-pull_user <- memoise::memoise(.pull_user)
+pull_user <- memoise(.pull_user)
 
 #' @noRd
 .list_users  <-  function(order_by = "number_created_packages", configuration = NULL, ...) {
   if (!order_by %in% c("name", "number_of_edits", "number_created_packages"))
-    stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`")
+    stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`",
+         call. = TRUE)
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("user_list", list(order_by = order_by, ...))
+  res <- configuration$call_action("user_list",
+                                   list(order_by = order_by, ...))
   res
 }
 
+
 #' List all users
+#'
+#' List all users
+#'
+#' @importFrom memoise memoise
+#'
 #' @param order_by Logical user sorted is TRUE
 #' @param configuration Configuration the configuration to use
 #' @param ... Extra parameters
@@ -128,4 +142,4 @@ pull_user <- memoise::memoise(.pull_user)
 #'  set_rhdx_config()
 #'  list_user()
 #' }
-list_users <- memoise::memoise(.list_users)
+list_users <- memoise(.list_users)

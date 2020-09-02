@@ -6,6 +6,7 @@
 #' @usage NULL
 Tag <- R6::R6Class(
   classname = "Tag",
+  inherit = HDXObject,
 
   private = list(
     configuration = NULL
@@ -72,24 +73,28 @@ as.list.Tag <- function(x, ...) {
 
 #' @noRd
 #' @rdname pull_tag
-.pull_tag  <-  function(identifier = NULL, vocabulary_id = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+.pull_tag  <-  function(identifier = NULL, vocabulary_id = NULL,
+                        include_datasets = FALSE, configuration = NULL) {
   if (is.null(configuration) | !inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("tag_show", list(id = identifier, vocabulary_id = vocabulary_id, include_datasets = include_datasets, ...))
+  res <- configuration$call_action("tag_show",
+                                   list(id = identifier,
+                                        vocabulary_id = vocabulary_id,
+                                        include_datasets = include_datasets))
   Tag$new(initial_data = res, configuration = configuration)
 }
 
 #' Read an HDX tag
 #'
-#'
 #' Read an HDX tag from its name or id
+#'
+#' @importFrom memoise memoise
 #'
 #' @param identifier character the name or id of the tag
 #' @param vocabulary_id character the id or name of the tag vocabulary that the tag is in - if it is not specified it will assume it is a free tag.
 #' @param configuration a Configuration object
 #' @param include_datasets logical, include a list of the tag’s datasets.
-#' @param ... Extra parameters
 #'
 #' @rdname pull_tag
 #' @return Tag the tag
@@ -98,27 +103,38 @@ as.list.Tag <- function(x, ...) {
 #' \dontrun{
 #' # Setting the config to use HDX default server
 #'  set_rhdx_config()
-#'  res <- pull_tag("xxxx")
+#'  res <- pull_tag("covid19")
 #'  res
 #' }
-pull_tag <- memoise::memoise(.pull_tag)
+pull_tag <- memoise(.pull_tag)
 
 #' @noRd
 #' @rdname list_tag
-.list_tags  <-  function(query = NULL, vocabulary_id = NULL, all_fields = FALSE, configuration = NULL, ...) {
+.list_tags  <-  function(query = NULL,
+                         vocabulary_id = NULL,
+                         all_fields = FALSE,
+                         configuration = NULL) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("tag_list", list(query = query, vocabulary_id = vocabulary_id, all_fields = all_fields, configuration = configuration, ...))
-  res
+  res <- configuration$call_action("tag_list",
+                                   drop_nulls(list(query = query,
+                                                   vocabulary_id = vocabulary_id,
+                                                   all_fields = all_fields)))
+  lapply(res, function(r)
+         Tag$new(initial_data = r, configuration = configuration))
 }
 
 #' List all tags
+#'
+#' List all available tags
+#'
+#' @importFrom memoise memoise
+#'
 #' @param query a tag name query to search for, if given only tags whose names contain this string will be returned
 #' @param vocabulary_id the id or name of a vocabulary, if give only tags that belong to this vocabulary will be returned
 #' @param all_fields logical return full Tag object instead of just names
 #' @param configuration Configuration the configuration to use
-#' @param ... Extra parameters
 #'
 #' @rdname list_tags
 #' @export
@@ -129,4 +145,54 @@ pull_tag <- memoise::memoise(.pull_tag)
 #'  set_rhdx_config()
 #'  list_tag()
 #' }
-list_tags <- memoise::memoise(.list_tags)
+list_tags <- memoise(.list_tags)
+
+#'
+#' @importFrom jsonlite fromJSON
+#' @rdname search_tags
+#' @noRd
+.search_tags  <-  function(query = "",
+                           vocabulary_id = NULL,
+                           limit = NULL,
+                           offset = NULL,
+                           configuration = NULL) {
+  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+    set_rhdx_config(configuration = configuration)
+  configuration <- get_rhdx_config()
+  params <- drop_nulls(list(query = query,
+                            vocabulary_id = vocabulary_id,
+                            limit = limit,
+                            offset = offset))
+  res <- configuration$call_action("tag_search", params)
+  list_of_tags <- lapply(res$results,
+                         function(x)
+                           Tag$new(initial_data = x, configuration = configuration))
+  class(list_of_tags) <- "tags_list"
+  list_of_tags
+}
+
+
+#' Search for datasets on HDX
+#'
+#' Search for datasets on HDX
+#'
+#' @param query (character) - character to search for
+#' @param vocabulary_id (character) - the id or name of the tag vocabulary to search in
+#' @param limit (integer) - the maximum number of tags to return
+#' @param offset (integer) - when `limit` is given, the offset to start returnings tags from
+#' @param configuration Configuration object.
+#'
+#' @details Search and find tags on HDX
+#'
+#'
+#' @return A list of HDX tags
+#'
+#' @examples
+#' \dontrun{
+#'  # Setting the config to use HDX default server
+#'  search_tags("idps", rows = 3L)
+#' }
+#' @rdname search_tags
+#' @importFrom memoise memoise
+#' @export
+search_tags <- memoise(.search_tags)

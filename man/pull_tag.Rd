@@ -8,8 +8,7 @@ pull_tag(
   identifier = NULL,
   vocabulary_id = NULL,
   include_datasets = FALSE,
-  configuration = NULL,
-  ...
+  configuration = NULL
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ pull_tag(
 \item{include_datasets}{logical, include a list of the tag’s datasets.}
 
 \item{configuration}{a Configuration object}
-
-\item{...}{Extra parameters}
 }
 \value{
 Tag the tag
@@ -33,7 +30,7 @@ Read an HDX tag from its name or id
 \dontrun{
 # Setting the config to use HDX default server
  set_rhdx_config()
- res <- pull_tag("xxxx")
+ res <- pull_tag("covid19")
  res
 }
 }

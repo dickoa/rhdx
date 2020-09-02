@@ -16,13 +16,13 @@ download_resource(
 \arguments{
 \item{resource}{Resource, an HDX resource}
 
-\item{folder}{Character, path of the directory where you will store the data}
+\item{folder}{character, path of the directory where you will store the data}
 
-\item{filename}{Character, name of the file you will download}
+\item{filename}{(character), name of the file you will download}
 
-\item{quiet}{Logical, no progress bar from download (default = FALSE)}
+\item{quiet}{(logical), no progress bar from download (default = \code{FALSE})}
 
-\item{force}{Logical, force download (default = FALSE)}
+\item{force}{(logical) force download (default = \code{FALSE})}
 
 \item{...}{extra paramaters}
 }
@@ -35,7 +35,6 @@ Download an HDX resource into a specific folder
 \examples{
 \dontrun{
 #Setting the config to use HDX default server
- set_rhdx_config()
  res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
  download_resource(res, folder = "/tmp")
 }

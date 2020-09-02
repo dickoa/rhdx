@@ -9,14 +9,11 @@ HDX Resource
 HDX Resource
 }
 \details{
-HDX Resource
+HDX Resource, it contains all the logic for creating, checking,
+and updating resources
 }
-\examples{
-\dontrun{
-  set_rhdx_config()
-  resource <- pull_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
-  resource
-}
+\section{Super class}{
+\code{\link[rhdx:HDXObject]{rhdx::HDXObject}} -> \code{Resource}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -43,6 +40,15 @@ HDX Resource
 \item \href{#method-print}{\code{Resource$print()}}
 \item \href{#method-clone}{\code{Resource$clone()}}
 }
+}
+\if{html}{
+\out{<details open ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="get_configuration">}\href{../../rhdx/html/HDXObject.html#method-get_configuration}{\code{rhdx::HDXObject$get_configuration()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_json">}\href{../../rhdx/html/HDXObject.html#method-update_from_json}{\code{rhdx::HDXObject$update_from_json()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_yaml">}\href{../../rhdx/html/HDXObject.html#method-update_from_yaml}{\code{rhdx::HDXObject$update_from_yaml()}}\out{</span>}
+}
+\out{</details>}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
@@ -122,6 +128,7 @@ Read a Resource object directly into memory
 \if{html}{\out{<div class="r">}}\preformatted{Resource$read_resource(
   sheet = NULL,
   layer = NULL,
+  format = NULL,
   download_folder = NULL,
   simplify_json = TRUE,
   force_download = FALSE,
@@ -136,6 +143,8 @@ Read a Resource object directly into memory
 \item{\code{sheet}}{a character value, only for resource in Excel format}
 
 \item{\code{layer}}{a character value, only for spatial (vector) resource}
+
+\item{\code{format}}{a character value, file format;}
 
 \item{\code{download_folder}}{a character value, folder to save the downloaded resource}
 
@@ -160,6 +169,7 @@ a \code{tibble}, a \code{sf}, a \code{stars} or a \code{list} depending on the t
 Get spatial (vector) resource list of layers
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$get_layers(
+  format = NULL,
   download_folder = NULL,
   quiet_download = TRUE,
   force_download = FALSE,
@@ -170,6 +180,8 @@ Get spatial (vector) resource list of layers
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{format}}{character; file format}
+
 \item{\code{download_folder}}{a character value, folder to save the downloaded resource}
 
 \item{\code{quiet_download}}{a logical value, if TRUE silent download}
@@ -191,6 +203,7 @@ a the list of layers available in the resource
 Get the list of sheets name of resource
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Resource$get_sheets(
+  format = NULL,
   download_folder = NULL,
   quiet_download = TRUE,
   force_download = FALSE,
@@ -201,6 +214,8 @@ Get the list of sheets name of resource
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{format}}{character; file format}
+
 \item{\code{download_folder}}{a character value, folder to save the downloaded resource}
 
 \item{\code{quiet_download}}{a logical value, if TRUE silent download}
@@ -258,7 +273,8 @@ Check dataset required field
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-a logical value, TRUE if the the resource is not missing a required field and throws an error otherwise
+a logical value, TRUE if the the resource is not missing
+a required field and throws an error otherwise
 }
 }
 \if{html}{\out{<hr>}}

@@ -12,6 +12,9 @@ HDX Dataset
 Dataset class containing all logic for accessing,
 creating, and updating datasets and associated resources.
 }
+\section{Super class}{
+\code{\link[rhdx:HDXObject]{rhdx::HDXObject}} -> \code{Dataset}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -27,19 +30,18 @@ creating, and updating datasets and associated resources.
 \item \href{#method-new}{\code{Dataset$new()}}
 \item \href{#method-get_resource}{\code{Dataset$get_resource()}}
 \item \href{#method-get_resources}{\code{Dataset$get_resources()}}
+\item \href{#method-number_of_resources}{\code{Dataset$number_of_resources()}}
 \item \href{#method-delete_resource}{\code{Dataset$delete_resource()}}
 \item \href{#method-delete_resources}{\code{Dataset$delete_resources()}}
 \item \href{#method-browse}{\code{Dataset$browse()}}
 \item \href{#method-get_configuration}{\code{Dataset$get_configuration()}}
 \item \href{#method-get_dataset_date}{\code{Dataset$get_dataset_date()}}
-\item \href{#method-set_dataset_date}{\code{Dataset$set_dataset_date()}}
 \item \href{#method-get_update_frequency}{\code{Dataset$get_update_frequency()}}
 \item \href{#method-get_tags}{\code{Dataset$get_tags()}}
 \item \href{#method-get_locations}{\code{Dataset$get_locations()}}
 \item \href{#method-get_maintainer}{\code{Dataset$get_maintainer()}}
 \item \href{#method-get_organization}{\code{Dataset$get_organization()}}
 \item \href{#method-get_showcases}{\code{Dataset$get_showcases()}}
-\item \href{#method-set_organization}{\code{Dataset$set_organization()}}
 \item \href{#method-is_requestable}{\code{Dataset$is_requestable()}}
 \item \href{#method-get_required_fields}{\code{Dataset$get_required_fields()}}
 \item \href{#method-check_required_fields}{\code{Dataset$check_required_fields()}}
@@ -47,6 +49,15 @@ creating, and updating datasets and associated resources.
 \item \href{#method-print}{\code{Dataset$print()}}
 \item \href{#method-clone}{\code{Dataset$clone()}}
 }
+}
+\if{html}{
+\out{<details open ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="check_required_field">}\href{../../rhdx/html/HDXObject.html#method-check_required_field}{\code{rhdx::HDXObject$check_required_field()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_json">}\href{../../rhdx/html/HDXObject.html#method-update_from_json}{\code{rhdx::HDXObject$update_from_json()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_yaml">}\href{../../rhdx/html/HDXObject.html#method-update_from_yaml}{\code{rhdx::HDXObject$update_from_yaml()}}\out{</span>}
+}
+\out{</details>}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
@@ -101,6 +112,19 @@ Get all resources of the dataset
 
 \subsection{Returns}{
 a list of Resource objects, all resources available in the dataset
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-number_of_resources"></a>}}
+\if{latex}{\out{\hypertarget{method-number_of_resources}{}}}
+\subsection{Method \code{number_of_resources()}}{
+Get number of dataset resources
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Dataset$number_of_resources()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The number of Resource objects
 }
 }
 \if{html}{\out{<hr>}}
@@ -164,25 +188,6 @@ Get the dataset date
 
 \subsection{Returns}{
 a date, the dataset date.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_dataset_date"></a>}}
-\if{latex}{\out{\hypertarget{method-set_dataset_date}{}}}
-\subsection{Method \code{set_dataset_date()}}{
-Set the dataset date
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dataset$set_dataset_date(date, format = "\%m/\%d/\%Y")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{date}}{a character, by default with the format month/day/year}
-
-\item{\code{format}}{the format of the date supplied}
-}
-\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -264,23 +269,6 @@ a Showcase object containing the dataset
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_organization"></a>}}
-\if{latex}{\out{\hypertarget{method-set_organization}{}}}
-\subsection{Method \code{set_organization()}}{
-Set organization for a dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dataset$set_organization(organization)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{organization}}{Organization}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-is_requestable"></a>}}
 \if{latex}{\out{\hypertarget{method-is_requestable}{}}}
 \subsection{Method \code{is_requestable()}}{
@@ -316,7 +304,8 @@ Check dataset required field
 }
 
 \subsection{Returns}{
-a logical value, TRUE if the the dataset is not missing a required field and throws an error otherwise
+a logical value, TRUE if the the dataset
+is not missing a required field and throws an error otherwise
 }
 }
 \if{html}{\out{<hr>}}

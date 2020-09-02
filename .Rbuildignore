@@ -1,13 +1,48 @@
-^.*\.Rproj$             # No Rproj
-^\.Rproj\.user$         # used for temporary files.
-^README\.Rmd$           # An Rmarkdown file used to generate README.md
-^cran-comments\.md$     # Comments for CRAN submission
-^NEWS\.md$              # A news file written in Markdown
-^CODE_OF_CONDUCT\.md$   # A code of conduct file written in Markdown
-^codecov\.yml$          # Codecov config
-^codemeta\.json$        # Codecov config
-^pkgdown$               # Remove de pkgdown directory
-^\.gitlab-ci\.yml$
+^.git$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^README\.md$
+^covr\.Rproj$
+\.tar\.gz$
+^travis-tool\.sh$
+^covr\.Rcheck$
 ^\.travis\.yml$
-^\appveyor\.yml$
-^codemeta\.json$
+^\.gitlab-ci\.yml$
+^shim_package\.sh$
+^unshim_package\.sh$
+Makefile
+docker_checker
+_dev\.R$
+^\.lintr$
+^appveyor\.yml$
+^wercker\.yml$
+^\.Rproj\.user$
+^tests/testthat/.*/.*(o|sl|so|dylib|a|dll|def)$
+^covr.*$
+^cran_comments\.md$
+^revdep/
+^cran-comments\.md$
+^cache$
+^data.Rmd$
+^covr_performance.Rmd$
+^revdep$
+^ci
+^CRAN-RELEASE$
+^docs$
+^_pkgdown\.yml$
+^pkgdown$
+^script.R$
+^azure-pipelines\.yml$
+^[.]github$
+^codecov\.yml$
+^README_cache$
+^man/figures/*
+^CONDUCT\.md$
+^doc$
+^Meta$
+^README\.html$
+^LICENSE\.md$
+^data\-raw/*
+^CODE\_OF\_CONDUCT\.md$
+^codemeta\.json

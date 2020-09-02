@@ -6,6 +6,7 @@
 #' @usage NULL
 Organization <- R6::R6Class(
   classname = "Organization",
+  inherit = HDXObject,
 
   private = list(
     configuration = NULL
@@ -35,13 +36,14 @@ Organization <- R6::R6Class(
 
 
     #' @description
-    #' Get the list of datasets
+    #' Get the list of datasets within the organization
     #' @return list of Dataset objects
     get_datasets = function() {
       if (!"packages" %in% names(self$data))
-        stop("No datasets available, please run Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
+        stop("No datasets available, use Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
       list_of_ds <- lapply(self$data$packages,
                            function(x) Dataset$new(initial_data = x))
+      class(list_of_ds) <- "datasets_list"
       list_of_ds
     },
 
@@ -90,11 +92,14 @@ as.list.Organization <- function(x, ...) {
 }
 
 #' @noRd
-.pull_organization  <-  function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+.pull_organization  <-  function(identifier = NULL,
+                                 include_datasets = FALSE, configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("organization_show", list(id = identifier, include_datasets = include_datasets, ...))
+  res <- configuration$call_action("organization_show",
+                                   list(id = identifier,
+                                        include_datasets = include_datasets, ...))
   Organization$new(initial_data = res, configuration = configuration)
 }
 
@@ -132,12 +137,19 @@ browse.Organization <- function(x, ...)
 #'
 #' @rdname list_organizations
 #' @return A list of organizations on HDX
-.list_organizations  <-  function(sort = "name asc", all_fields = FALSE, include_dataset_count = TRUE, include_groups = FALSE, include_user = FALSE, include_tags = FALSE, configuration = NULL, ...) {
+.list_organizations  <-  function(sort = "name asc", all_fields = FALSE,
+                                  include_dataset_count = TRUE,
+                                  include_groups = FALSE,
+                                  include_user = FALSE,
+                                  include_tags = FALSE,
+                                  configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  data <- drop_nulls(list(sort = sort, all_fields = all_fields, include_dataset_count = include_dataset_count,
-                          include_groups = include_groups, include_user = include_user, include_tags = include_tags))
+  data <- drop_nulls(list(sort = sort, all_fields = all_fields,
+                          include_dataset_count = include_dataset_count,
+                          include_groups = include_groups,
+                          include_user = include_user, include_tags = include_tags))
   res <- configuration$call_action("organization_list", data)
   if (isFALSE(all_fields))
     res <- unlist(res)

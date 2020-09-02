@@ -21,7 +21,7 @@ Read an HDX resource
 \dontrun{
 #Setting the config to use HDX default server
  set_rhdx_config()
- res <- read_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
+ res <- pull_resource("98aa1742-b5d3-40c3-94c6-01e31ded6e84")
  res
 }
 }

@@ -6,6 +6,7 @@
 #' @usage NULL
 Location <- R6::R6Class(
   classname = "Location",
+  inherit = HDXObject,
 
   private = list(
     configuration = NULL
@@ -44,7 +45,8 @@ Location <- R6::R6Class(
     #' @description
     #' Check dataset required field
     #'
-    #' @return a logical value, TRUE if the the dataset is not missing a required field and throws an error otherwise
+    #' @return a logical value, TRUE if the the dataset is not
+    #' missing a required field and throws an error otherwise
     check_required_fields = function() {
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
@@ -85,18 +87,23 @@ Location <- R6::R6Class(
 
 #' @noRd
 #' @rdname pull_location
-.pull_location <- function(identifier = NULL, include_datasets = FALSE, configuration = NULL, ...) {
+.pull_location <- function(identifier = NULL, include_datasets = FALSE,
+                           configuration = NULL, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   identifier <- assert_location(tolower(identifier))
-  res <- configuration$call_action("group_show", list(id = identifier, include_datasets = include_datasets, ...))
+  res <- configuration$call_action("group_show",
+                                   list(id = identifier,
+                                        include_datasets = include_datasets, ...))
   Location$new(initial_data = res, configuration = configuration)
 }
 
 #' Read an HDX location
 #'
 #' Read an HDX location
+#'
+#' @importFrom memoise memoise
 #'
 #' @param identifier Character location uuid
 #' @param configuration Configuration a configuration object
@@ -114,7 +121,7 @@ Location <- R6::R6Class(
 #'  res <- pull_location("mli")
 #'  res
 #' }
-pull_location <- memoise::memoise(.pull_location)
+pull_location <- memoise(.pull_location)
 
 #' @export
 #' @aliases Location
@@ -135,13 +142,16 @@ as.list.Location <- function(x, ...) {
 
 #' @noRd
 #' @rdname list_locations
-.list_locations  <-  function(sort = "name asc", all_fields = FALSE, configuration = NULL, ...) {
+.list_locations  <-  function(sort = "name asc",
+                              all_fields = FALSE, configuration = NULL, ...) {
   if (!sort %in% c("name asc", "name", "package_count", "title"))
     stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("group_list", list(sort = sort, all_fields = all_fields, ...))
+  res <- configuration$call_action("group_list",
+                                   list(sort = sort,
+                                        all_fields = all_fields, ...))
   if (!all_fields)
     res <- unlist(res)
   res
@@ -152,9 +162,12 @@ as.list.Location <- function(x, ...) {
 #'
 #' List locations
 #'
+#' @importFrom memoise memoise
+#'
 #' @param sort Character sorting of the search results. Default: “name asc”, the allowed fields are ‘name’, ‘package_count’ and ‘title’
 #' @param all_fields Logical if TRUE returns list instead of just names
-#' @param ... Extra parameters to group_list https://docs.ckan.org/en/ckan-2.8.2/api/index.html#ckan.logic.action.get.group_list
+#' @param ... Extra parameters to group_list
+#' https://docs.ckan.org/en/ckan-2.8.2/api/index.html#ckan.logic.action.get.group_list
 #' @param configuration a Configuration
 #'
 #' @return A vector of locations names
@@ -169,4 +182,4 @@ as.list.Location <- function(x, ...) {
 #'  set_rhdx_config()
 #'  list_locations(limit = 10L)
 #' }
-list_locations <- memoise::memoise(.list_locations)
+list_locations <- memoise(.list_locations)

@@ -17,7 +17,8 @@ create_rhdx_config(
 
 \item{hdx_key}{Character for the CKAN API key, it is required to push data into HDX}
 
-\item{read_only}{Logical if \code{FALSE} and hdx_key provided is correct you can push metdata and data to HDX}
+\item{read_only}{Logical if \code{FALSE} and hdx_key provided is correct
+you can push metdata and data to HDX}
 
 \item{hdx_config}{List of HDX configuration}
 

@@ -11,6 +11,9 @@ HDX Tag
 \details{
 HDX tag
 }
+\section{Super class}{
+\code{\link[rhdx:HDXObject]{rhdx::HDXObject}} -> \code{Tag}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -26,6 +29,18 @@ HDX tag
 \item \href{#method-print}{\code{Tag$print()}}
 \item \href{#method-clone}{\code{Tag$clone()}}
 }
+}
+\if{html}{
+\out{<details ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="browse">}\href{../../rhdx/html/HDXObject.html#method-browse}{\code{rhdx::HDXObject$browse()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="check_required_field">}\href{../../rhdx/html/HDXObject.html#method-check_required_field}{\code{rhdx::HDXObject$check_required_field()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="get_configuration">}\href{../../rhdx/html/HDXObject.html#method-get_configuration}{\code{rhdx::HDXObject$get_configuration()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="get_required_fields">}\href{../../rhdx/html/HDXObject.html#method-get_required_fields}{\code{rhdx::HDXObject$get_required_fields()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_json">}\href{../../rhdx/html/HDXObject.html#method-update_from_json}{\code{rhdx::HDXObject$update_from_json()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="update_from_yaml">}\href{../../rhdx/html/HDXObject.html#method-update_from_yaml}{\code{rhdx::HDXObject$update_from_yaml()}}\out{</span>}
+}
+\out{</details>}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}

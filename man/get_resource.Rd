@@ -9,7 +9,7 @@ get_resource(dataset, index)
 \arguments{
 \item{dataset}{Dataset}
 
-\item{index}{Integer, resource position in the dataset}
+\item{index}{integer; resource position in the dataset}
 }
 \value{
 Resource

@@ -6,6 +6,7 @@
 #' @usage NULL
 Showcase <- R6::R6Class(
   classname = "Showcase",
+  inherit = HDXObject,
 
   private = list(
     configuration = NULL
@@ -36,18 +37,26 @@ Showcase <- R6::R6Class(
       key <- names(initial_data)
       if ("dataset" %in% key)
         self$datasets <- lapply(self$data$datasets,
-                                function(x) Dataset$new(initial_data = x, configuration = configuration))
+                                function(x)
+                                  Dataset$new(initial_data = x,
+                                              configuration = configuration))
 
     },
 
     #' @description
     #' List datasets using the Showcase
     #' @return a list of dataset
-    list_datasets = function() {
+    get_datasets = function() {
       configuration <- private$configuration
       showcase_id <- self$data$id
-      res <- configuration$call_action("ckanext_showcase_package_list", body = list(showcase_id = showcase_id), verb = "post")
-      res
+      res <- configuration$call_action("ckanext_showcase_package_list",
+                                       body = list(showcase_id = showcase_id),
+                                       verb = "post")
+      list_of_ds <- lapply(res, function(x)
+        Dataset$new(initial_data = x,
+                    configuration = configuration))
+      class(list_of_ds) <- "datasets_list"
+      list_of_ds
     },
 
 
@@ -101,13 +110,17 @@ as.list.Showcase <- function(x, ...) {
   if (!is.null(configuration) & inherits(configuration, "Configuration"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("ckanext_showcase_show", body = list(id = identifier), verb = "post")
+  res <- configuration$call_action("ckanext_showcase_show",
+                                   body = list(id = identifier),
+                                   verb = "post")
   Showcase$new(initial_data = res, configuration = configuration)
 }
 
 #' Read Showcase
 #'
 #' Read HDX Showcase
+#'
+#' @importFrom memoise memoise
 #'
 #' @param identifier Character Showcase name or id
 #' @param configuration Configuration an HDX configuration object
@@ -121,6 +134,6 @@ as.list.Showcase <- function(x, ...) {
 #' @examples
 #' \dontrun{
 #'  # Setting the config to use HDX default server
-#'  delete_resource(dataset, 1) # first resource
+#'  pull_showcase("fts-requirements-and-funding-data-for-zimbabwe-showcase") # first resource
 #' }
-pull_showcase <- memoise::memoise(.pull_showcase)
+pull_showcase <- memoise(.pull_showcase)

@@ -15,19 +15,21 @@ search_datasets(
 )
 }
 \arguments{
-\item{query}{Character Query terms, use solr format and default to "\emph{:}" (match everything)}
+\item{query}{Character Query terms, use solr format
+and default to "\emph{:}" (match everything)}
 
 \item{filter_query}{Character Filter Query results}
 
-\item{rows}{Integer Number of matching records to return. Defaults to 10.}
+\item{rows}{integer; Number of matching records to return. Defaults to 10.}
 
-\item{start}{Integer the offset in the complete result for where the set of returned datasets should begin.}
+\item{start}{integer; the offset in the complete result for where
+the set of returned datasets should begin.}
 
-\item{page_size}{Integer Size of page to return. Defaults to 1000.}
+\item{page_size}{integer; Size of page to return. Defaults to 1000.}
 
 \item{configuration}{Configuration object.}
 
-\item{...}{Extra parameters}
+\item{...}{Extra parameters for \code{package_search} endpoints}
 }
 \value{
 A list of HDX datasets

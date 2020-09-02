@@ -18,7 +18,8 @@ list_locations(
 
 \item{configuration}{a Configuration}
 
-\item{...}{Extra parameters to group_list https://docs.ckan.org/en/ckan-2.8.2/api/index.html#ckan.logic.action.get.group_list}
+\item{...}{Extra parameters to group_list
+https://docs.ckan.org/en/ckan-2.8.2/api/index.html#ckan.logic.action.get.group_list}
 }
 \value{
 A vector of locations names

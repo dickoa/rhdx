@@ -159,7 +159,8 @@ Specify a HDX server to use
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{hdx_site}}{a character, the server type to use, \code{prod}, \code{test}, \code{feature} or \code{demo}}
+\item{\code{hdx_site}}{a character, the server type to use,
+\code{prod}, \code{test}, \code{feature} or \code{demo}}
 }
 \if{html}{\out{</div>}}
 }
@@ -197,7 +198,7 @@ the server URL
 \if{html}{\out{<a id="method-remoteclient"></a>}}
 \if{latex}{\out{\hypertarget{method-remoteclient}{}}}
 \subsection{Method \code{remoteclient()}}{
-Get remoteclient
+Get the remoteclient currently used
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Configuration$remoteclient()}\if{html}{\out{</div>}}
 }
@@ -234,7 +235,7 @@ list a with status code and results
 \if{html}{\out{<a id="method-read"></a>}}
 \if{latex}{\out{\hypertarget{method-read}{}}}
 \subsection{Method \code{read()}}{
-Show Configuration object
+read and show Configuration object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Configuration$read()}\if{html}{\out{</div>}}
 }
@@ -278,14 +279,12 @@ Setup Configuration object
 \if{html}{\out{<a id="method-delete"></a>}}
 \if{latex}{\out{\hypertarget{method-delete}{}}}
 \subsection{Method \code{delete()}}{
-Delete configuration
+Delete a Configuration object
+Access the global Configuration
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Configuration$delete()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Access global configuration
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_global_config"></a>}}
@@ -296,7 +295,7 @@ Access global configuration
 }
 
 \subsection{Returns}{
-list with info
+list with HDX configuration information
 }
 }
 \if{html}{\out{<hr>}}

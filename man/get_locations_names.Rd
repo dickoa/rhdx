@@ -20,6 +20,6 @@ Gets locations name from the datasets
 # Setting the config to use HDX default server
  set_rhdx_config()
  res <- search_dataset(rows = 3L)
- get_locations_names(res[[1]])
+ get_location_names(res[[1]])
 }
 }
