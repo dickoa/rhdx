@@ -49,7 +49,7 @@ remotes::install_github("dickoa/rhdx")
 library("rhdx")
 ```
 
-The first step is to connect to HDX using the `set_rhdx_config` function and check the config using `get_rhdx_config`
+The first step is usually to connect to HDX using the `set_rhdx_config` function and check the config using `get_rhdx_config`
 
 ```{r}
 set_rhdx_config(hdx_site = "prod")

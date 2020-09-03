@@ -126,7 +126,7 @@ Resource <- R6::R6Class(
         format <- self$get_format()
 
       hxl <- any(grepl("hxl",
-                       get_tags_name(self$get_dataset()), ignore.case = TRUE))
+                       get_tags_names(self$get_dataset()), ignore.case = TRUE))
 
       switch(format,
              csv = read_hdx_csv(file_path, hxl = hxl),

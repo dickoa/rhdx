@@ -76,13 +76,13 @@ Tag object to list
 
 \subsection{Returns}{
 a list with of tag fields element
-List of accepted tags on HDX
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-authorized_tags_name"></a>}}
 \if{latex}{\out{\hypertarget{method-authorized_tags_name}{}}}
 \subsection{Method \code{authorized_tags_name()}}{
+List of accepted tags on HDX
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Vocabulary$authorized_tags_name()}\if{html}{\out{</div>}}
 }

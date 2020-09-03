@@ -269,7 +269,7 @@ as_tibble.Dataset <- function(x, ...) {
                  locations_name = list(get_locations_names(x)),
                  organization_name = get_organization_name(x),
                  resources_format = list(get_resources_formats(x)),
-                 tags_name = list(get_tags_name(x)),
+                 tags_name = list(get_tags_names(x)),
                  resources = list(x$get_resources()),
                  dataset = list(x))
 }

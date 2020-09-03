@@ -40,6 +40,7 @@ Vocabulary <- R6::R6Class(
       self$data
     },
 
+    #' @description
     #' List of accepted tags on HDX
     #'
     #' @return a vector of tags name
@@ -159,7 +160,6 @@ list_vocabularies <- memoise(.list_vocabularies)
 #'
 #' @importFrom memoise memoise
 #'
-#' @param identifier character the identifier
 #' @param configuration Configuration
 #'
 #' @rdname authorized_tags

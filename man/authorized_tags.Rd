@@ -8,8 +8,6 @@ authorized_tags(configuration = NULL)
 }
 \arguments{
 \item{configuration}{Configuration}
-
-\item{identifier}{character the identifier}
 }
 \value{
 A vector of character, the authorized tags name
