@@ -96,6 +96,37 @@ search_datasets("ACLED Mali", rows = 2) %>% ## search dataset in HDX, limit the 
 `read_resource` will not work with resources in HDX, so far the following format are supported: `csv`, `xlsx`, `xls`, `json`, `geojson`, `zipped shapefile`, `kmz`, `zipped geodatabase` and `zipped geopackage`.
 I will consider adding more data types in the future, feel free to file an issue if it doesn't work as expected or you want to add a support for a format.
 
+### Reading dataset directly
+
+We can also use `pull_dataset` to directly read and access a dataset object.
+
+```{r, eval = FALSE}
+pull_dataset("acled-data-for-mali") %>%
+  get_resource(1) %>%
+  read_resource()
+## # A tibble: 3,990 x 31
+##    data_id   iso event_id_cnty event_id_no_cnty event_date  year
+##      <dbl> <dbl> <chr>                    <dbl> <date>     <dbl>
+##  1 7173324   466 MLI4111                   4111 2020-07-31  2020
+##  2 7173322   466 MLI4109                   4109 2020-07-29  2020
+##  3 7173323   466 MLI4110                   4110 2020-07-29  2020
+##  4 7173423   466 MLI4107                   4107 2020-07-28  2020
+##  5 7173761   466 MLI4108                   4108 2020-07-28  2020
+##  6 7173702   466 MLI4104                   4104 2020-07-27  2020
+##  7 7173732   466 MLI4103                   4103 2020-07-27  2020
+##  8 7173319   466 MLI4102                   4102 2020-07-27  2020
+##  9 7173320   466 MLI4105                   4105 2020-07-27  2020
+## 10 7173321   466 MLI4106                   4106 2020-07-27  2020
+## # … with 3,980 more rows, and 25 more variables:
+## #   time_precision <dbl>, event_type <chr>,
+## #   sub_event_type <chr>, actor1 <chr>, assoc_actor_1 <chr>,
+## #   inter1 <dbl>, actor2 <chr>, assoc_actor_2 <chr>,
+## #   inter2 <dbl>, interaction <dbl>, region <chr>,
+## #   country <chr>, admin1 <chr>, admin2 <chr>, admin3 <chr>,
+## #   location <chr>, latitude <dbl>, longitude <dbl>,
+## #   geo_precision <dbl>, source <chr>, source_scale <chr>,
+## #   notes <chr>, fatalities <dbl>, timestamp <dbl>, iso3 <chr>
+```
 
 ## A step by step tutorial to getting data from rhdx
 ### Connect to a server
@@ -188,46 +219,22 @@ The resource is a `json` file and it can be read directly using `jsonlite` packa
 idp_nga_rs <- get_resource(ds, 1)
 idp_nga_df <- read_resource(idp_nga_rs, simplify_json = TRUE, download_folder = tempdir())
 idp_nga_df
-## $results
-##   iso iso3 geo_name year conflict_new_displacements
-## 1  NG  NGA  Nigeria 2009                       5000
-## 2  NG  NGA  Nigeria 2010                       5000
-## 3  NG  NGA  Nigeria 2011                      65000
-## 4  NG  NGA  Nigeria 2012                      63000
-## 5  NG  NGA  Nigeria 2013                     471000
-## 6  NG  NGA  Nigeria 2014                     975000
-## 7  NG  NGA  Nigeria 2015                     737000
-## 8  NG  NGA  Nigeria 2016                     501000
-##   disaster_new_displacements conflict_stock_displacement
-## 1                     140000                          NA
-## 2                     560000                          NA
-## 3                       6300                          NA
-## 4                    6112000                          NA
-## 5                     117000                     3300000
-## 6                       3000                     1075000
-## 7                     100000                     2096000
-## 8                      78000                     1955000
-
-## $lookups
-## named list()
-
-## $errors
-## list()
-
-## $success
-## [1] TRUE
-
-## $params
-## [1] "/api/displacement_data?iso3=NGA&ci=HDX00AKEYJUl17"
-
-## $total
-## [1] 8
-
-## $limit
-## [1] 0
-
-## $offset
-## [1] 0
+## # A tibble: 11 x 7
+##    ISO3  Name   Year `Conflict Stock… `Conflict New D…
+##    <chr> <chr> <dbl>            <dbl>            <dbl>
+##  1 NGA   Nige…  2009               NA             5000
+##  2 NGA   Nige…  2010               NA             5000
+##  3 NGA   Nige…  2011               NA            65000
+##  4 NGA   Nige…  2012               NA            63000
+##  5 NGA   Nige…  2013          3300000           471000
+##  6 NGA   Nige…  2014          1075000           975000
+##  7 NGA   Nige…  2015          2096000           737000
+##  8 NGA   Nige…  2016          1955000           501000
+##  9 NGA   Nige…  2017          1707000           279000
+## 10 NGA   Nige…  2018          2216000           541000
+## 11 NGA   Nige…  2019          2583000           248000
+## # … with 2 more variables: `Disaster New Displacements` <dbl>,
+## #   `Disaster Stock Displacement` <dbl>
 ```
 
 ### Using `magrittr` pipe
@@ -246,46 +253,22 @@ idp_nga_df <-
   read_resource(simplify_json = TRUE, download_folder = tempdir()) ## the file will be downloaded in a temporary directory
 
 idp_nga_df
-## $results
-##   iso iso3 geo_name year conflict_new_displacements
-## 1  NG  NGA  Nigeria 2009                       5000
-## 2  NG  NGA  Nigeria 2010                       5000
-## 3  NG  NGA  Nigeria 2011                      65000
-## 4  NG  NGA  Nigeria 2012                      63000
-## 5  NG  NGA  Nigeria 2013                     471000
-## 6  NG  NGA  Nigeria 2014                     975000
-## 7  NG  NGA  Nigeria 2015                     737000
-## 8  NG  NGA  Nigeria 2016                     501000
-##   disaster_new_displacements conflict_stock_displacement
-## 1                     140000                          NA
-## 2                     560000                          NA
-## 3                       6300                          NA
-## 4                    6112000                          NA
-## 5                     117000                     3300000
-## 6                       3000                     1075000
-## 7                     100000                     2096000
-## 8                      78000                     1955000
-
-## $lookups
-## named list()
-
-## $errors
-## list()
-
-## $success
-## [1] TRUE
-
-## $params
-## [1] "/api/displacement_data?iso3=NGA&ci=HDX00AKEYJUl17"
-
-## $total
-## [1] 8
-
-## $limit
-## [1] 0
-
-## $offset
-## [1] 0
+## # A tibble: 11 x 7
+##    ISO3  Name   Year `Conflict Stock… `Conflict New D…
+##    <chr> <chr> <dbl>            <dbl>            <dbl>
+##  1 NGA   Nige…  2009               NA             5000
+##  2 NGA   Nige…  2010               NA             5000
+##  3 NGA   Nige…  2011               NA            65000
+##  4 NGA   Nige…  2012               NA            63000
+##  5 NGA   Nige…  2013          3300000           471000
+##  6 NGA   Nige…  2014          1075000           975000
+##  7 NGA   Nige…  2015          2096000           737000
+##  8 NGA   Nige…  2016          1955000           501000
+##  9 NGA   Nige…  2017          1707000           279000
+## 10 NGA   Nige…  2018          2216000           541000
+## 11 NGA   Nige…  2019          2583000           248000
+## # … with 2 more variables: `Disaster New Displacements` <dbl>,
+## #   `Disaster Stock Displacement` <dbl>
 ```
 
 ## Meta
