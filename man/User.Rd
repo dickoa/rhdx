@@ -26,14 +26,14 @@ HDX user
 \itemize{
 \item \href{#method-new}{\code{User$new()}}
 \item \href{#method-as_list}{\code{User$as_list()}}
+\item \href{#method-browse}{\code{User$browse()}}
 \item \href{#method-print}{\code{User$print()}}
 \item \href{#method-clone}{\code{User$clone()}}
 }
 }
 \if{html}{
-\out{<details ><summary>Inherited methods</summary>}
+\out{<details open ><summary>Inherited methods</summary>}
 \itemize{
-\item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="browse">}\href{../../rhdx/html/HDXObject.html#method-browse}{\code{rhdx::HDXObject$browse()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="check_required_field">}\href{../../rhdx/html/HDXObject.html#method-check_required_field}{\code{rhdx::HDXObject$check_required_field()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="get_configuration">}\href{../../rhdx/html/HDXObject.html#method-get_configuration}{\code{rhdx::HDXObject$get_configuration()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="rhdx" data-topic="HDXObject" data-id="get_required_fields">}\href{../../rhdx/html/HDXObject.html#method-get_required_fields}{\code{rhdx::HDXObject$get_required_fields()}}\out{</span>}
@@ -76,6 +76,16 @@ Get dataset field into list
 \subsection{Returns}{
 a list with dataset field
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-browse"></a>}}
+\if{latex}{\out{\hypertarget{method-browse}{}}}
+\subsection{Method \code{browse()}}{
+Browse the user page on HDX
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{User$browse()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}

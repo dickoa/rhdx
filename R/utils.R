@@ -138,25 +138,6 @@ get_user_agent <- function(x) {
   header
 }
 
-#' Strip HXL tags from tibble
-#'
-#' Strip HXL tags from tibble
-#' @importFrom readr type_convert
-#' @param x a tibble with HXL tags
-#' @return tibble
-#' @noRd
-strip_hxl <- function(x) {
-  tbl <- tibble::as_tibble(x)
-  schema_row <- find_schema_row(tbl)
-  base_tbl <- if (schema_row > 0) {
-    new_tbl <- tbl[-1 * 1L:schema_row, ]
-    suppressMessages(readr::type_convert(new_tbl))
-  } else {
-    tbl
-  }
-  base_tbl
-}
-
 #' @noRd
 #' @author Dirk Schumascher
 find_schema_row <- function(tbl) {
@@ -174,6 +155,27 @@ find_schema_row <- function(tbl) {
   -1
 }
 
+
+#' Strip HXL tags from tibble
+#'
+#' Strip HXL tags from tibble
+#' @importFrom readr type_convert
+#' @param x a tibble with HXL tags
+#' @return tibble
+#' @noRd
+strip_hxl <- function(x) {
+  tbl <- tibble::as_tibble(x)
+  schema_row <- find_schema_row(tbl)
+  base_tbl <- if (schema_row > 0) {
+    new_tbl <- tbl[-1 * 1L:schema_row, ]
+    suppressMessages(type_convert(new_tbl))
+  } else {
+    tbl
+  }
+  base_tbl
+}
+
+
 #' @noRd
 #' @author Dirk Schumascher
 is_valid_tag <- function(tag) {
@@ -182,67 +184,74 @@ is_valid_tag <- function(tag) {
   grepl(x = ltag, pattern = pattern)
 }
 
+#' @importFrom jsonlite fromJSON
 #' @noRd
 read_hdx_json <- function(file, simplify_json = FALSE, ...) {
   check_packages("jsonlite")
-  jsonlite::fromJSON(file, simplifyVector = simplify_json, ...)
+  fromJSON(file, simplifyVector = simplify_json, ...)
 }
 
+#' @importFrom readr read_csv
 #' @noRd
 read_hdx_csv <- function(file, hxl = FALSE, ...) {
   check_packages("readr")
-  df <- readr::read_csv(file, ...)
+  df <- read_csv(file, ...)
   if (isTRUE(hxl))
     df <- strip_hxl(df)
   df
 }
 
 
+#' @importFrom readxl excel_sheets read_excel
 #' @noRd
 read_hdx_excel <- function(file = NULL, sheet = NULL, hxl = FALSE, ...) {
   check_packages("readxl")
   if (is.null(sheet)) {
-    sheet <- readxl::excel_sheets(file)[[1]]
+    sheet <- excel_sheets(file)[[1]]
     cat("Reading sheet: ", sheet, "\n")
   }
-  df <- readxl::read_excel(file, sheet = sheet, ...)
+  df <- read_excel(file, sheet = sheet, ...)
   if (isTRUE(hxl))
     df <- strip_hxl(df)
   df
 }
 
+#' @importFrom sf st_layers
 #' @noRd
 get_hdx_layers_ <- function(file = NULL, zipped = TRUE) {
   check_packages("sf")
   if (zipped)
     file <- file.path("/vsizip", file)
-  sf::st_layers(file)
+  st_layers(file)
 }
 
+#' @importFrom readxl excel_sheets
 #' @noRd
 get_hdx_sheets_ <- function(file = NULL) {
   check_packages("readxl")
-  readxl::excel_sheets(file)
+  excel_sheets(file)
 }
 
+#' @importFrom sf read_sf st_layers
 #' @noRd
 read_hdx_vector <- function(file = NULL, layer = NULL, zipped = TRUE, ...) {
   check_packages("sf")
   if (zipped)
     file <- file.path("/vsizip", file)
   if (is.null(layer)) {
-    layer <- sf::st_layers(file)[[1]][1]
-    message("reading layer: ", layer, "\n")
+    layer <- st_layers(file)[[1]][1]
+    message("Reading layer: ", layer, "\n")
   }
-  sf::read_sf(dsn = file, layer = layer, ...)
+  read_sf(dsn = file, layer = layer, ...)
 }
 
+#' @importFrom stars read_stars
 #' @noRd
 read_hdx_raster <- function(file = NULL, zipped = TRUE, ...) {
   check_packages("stars")
   if (zipped)
     file <- file.path("/vsizip", file)
-  stars::read_stars(file, ...)
+  read_stars(file, ...)
 }
 
 

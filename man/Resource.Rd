@@ -159,7 +159,8 @@ Read a Resource object directly into memory
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-a \code{tibble}, a \code{sf}, a \code{stars} or a \code{list} depending on the type of resource read
+a \code{tibble}, a \code{sf}, a \code{stars} or a \code{list} depending
+on the type of resource read
 }
 }
 \if{html}{\out{<hr>}}

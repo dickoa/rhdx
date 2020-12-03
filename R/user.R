@@ -43,6 +43,13 @@ User <- R6::R6Class(
     },
 
     #' @description
+    #' Browse the user page on HDX
+    browse = function() {
+      url <- private$configuration$get_hdx_site_url()
+      browseURL(url = paste0(url, "user/", self$data$name))
+    },
+
+    #' @description
     #' Print a User object
     print = function() {
       cat(paste0("<HDX User> ", self$data$id), "\n")
@@ -143,3 +150,8 @@ pull_user <- memoise(.pull_user)
 #'  list_user()
 #' }
 list_users <- memoise(.list_users)
+
+#' @rdname browse
+#' @export
+browse.User <- function(x, ...)
+  x$browse()

@@ -80,7 +80,8 @@ Resource <- R6::R6Class(
         download.file(url = url,
                       destfile = file_path,
                       mode = "wb",
-                      quiet = quiet, ...)
+                      quiet = quiet,
+                      ...)
 
       private$download_folder_ <- tools::file_path_as_absolute(folder)
       invisible(file_path_as_absolute(file_path))
@@ -109,7 +110,8 @@ Resource <- R6::R6Class(
     #' @param force_download a logical value, if TRUE force download
     #' @param quiet_download a logical value, if TRUE silent download
     #' @param ... other parameters to `$download`
-    #' @return a `tibble`, a `sf`, a `stars` or a `list` depending on the type of resource read
+    #' @return a `tibble`, a `sf`, a `stars` or a `list` depending
+    #' on the type of resource read
     read_resource = function(sheet = NULL, layer = NULL,
                              format = NULL, download_folder = NULL,
                              simplify_json = TRUE, force_download = FALSE,
@@ -126,7 +128,8 @@ Resource <- R6::R6Class(
         format <- self$get_format()
 
       hxl <- any(grepl("hxl",
-                       get_tags_names(self$get_dataset()), ignore.case = TRUE))
+                       get_tags_names(self$get_dataset()),
+                       ignore.case = TRUE))
 
       switch(format,
              csv = read_hdx_csv(file_path, hxl = hxl),
@@ -135,16 +138,18 @@ Resource <- R6::R6Class(
              xlsx = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
              xls = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
              json = read_hdx_json(file_path, simplify_json = simplify_json),
-             geojson = read_hdx_vector(file_path, layer),
+             geojson = read_hdx_vector(file_path, layer, zipped = FALSE),
              geotiff = read_hdx_raster(file_path, zipped = FALSE),
              kmz = read_hdx_vector(file_path, layer = layer),
+             `geodatabase` = read_hdx_vector(file_path,
+                                             layer = layer, zipped = FALSE),
+             `gdb` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
+             shp = read_hdx_vector(file_path, layer = layer),
              `zipped shapefile` = read_hdx_vector(file_path, layer = layer),
              `zipped shapefiles` = read_hdx_vector(file_path, layer = layer),
              `zipped geodatabase` = read_hdx_vector(file_path,
                                                     layer = layer, zipped = FALSE),
              `zipped gdb` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
-             `geodatabase` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
-             `gdb` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
              `zipped kml` = read_hdx_vector(file_path, layer = layer),
              `zipped geopackage` = read_hdx_vector(file_path, layer = layer),
              `zipped geotiff` = read_hdx_raster(file_path))
