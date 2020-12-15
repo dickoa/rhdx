@@ -35,7 +35,7 @@ and data frames for JSON resources}
 
 \item{quiet_download}{logical, silent download}
 
-\item{...}{Extra parameters}
+\item{...}{extra parameters}
 }
 \value{
 an \code{tibble}, a \code{list}, a \code{stars} or a \code{sf} object depending

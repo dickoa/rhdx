@@ -4,10 +4,14 @@
 \alias{get_resources}
 \title{Add resource to dataset}
 \usage{
-get_resources(dataset)
+get_resources(dataset, pattern = NULL, format = NULL)
 }
 \arguments{
 \item{dataset}{Dataset}
+
+\item{pattern}{regex pattern in resource name}
+
+\item{format}{format of the resources}
 }
 \value{
 resource_list

@@ -8,8 +8,7 @@ get_resource_sheets(
   resource,
   format = NULL,
   download_folder = NULL,
-  quiet = TRUE,
-  ...
+  quiet = TRUE
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ get_resource_sheets(
 \item{download_folder}{character, path of the directory where you will store the data}
 
 \item{quiet}{logical, no progress bar from download (default = FALSE)}
-
-\item{...}{extra parameters}
 }
 \value{
 the names of the sheets of XLS(X) resources

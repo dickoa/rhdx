@@ -55,11 +55,28 @@ Dataset <- R6::R6Class(
     #' @description
     #' Get all resources of the dataset
     #'
+    #' @param pattern regex pattern in resource name
+    #' @param format format of the resources
+    #'
     #' @return a list of Resource objects, all resources available in the dataset
-    get_resources = function() {
+    get_resources = function(pattern = NULL, format = NULL) {
       l <- self$resources
-      if (is.null(l))
+
+      if (!is.null(pattern)) {
+        b <- sapply(self$data$resources,
+                    function(x) grepl(pattern, x$name, ignore.case = TRUE))
+        l <- l[b]
+      }
+
+      if (!is.null(format)) {
+        b <- sapply(self$data$resources,
+                    function(x) tolower(x$format) %in% tolower(format))
+        l <- l[b]
+      }
+
+      if (is.null(l) | length(l) < 1)
         l <- list()
+
       class(l) <- "resources_list"
       l
     },
@@ -292,12 +309,14 @@ get_resource <- function(dataset, index) {
 #' Add resource to dataset
 #'
 #' @param dataset Dataset
+#' @param pattern regex pattern in resource name
+#' @param format format of the resources
 #'
 #' @export
 #' @return resource_list
-get_resources <- function(dataset) {
+get_resources <- function(dataset, pattern = NULL, format = NULL) {
   assert_dataset(dataset)
-  dataset$get_resources()
+  dataset$get_resources(pattern = pattern, format = format)
 }
 
 #' Delete resource from dataset

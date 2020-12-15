@@ -154,7 +154,7 @@ Read a Resource object directly into memory
 
 \item{\code{quiet_download}}{a logical value, if TRUE silent download}
 
-\item{\code{...}}{other parameters to \verb{$download}}
+\item{\code{...}}{other parameters}
 }
 \if{html}{\out{</div>}}
 }
@@ -173,8 +173,7 @@ Get spatial (vector) resource list of layers
   format = NULL,
   download_folder = NULL,
   quiet_download = TRUE,
-  force_download = FALSE,
-  ...
+  force_download = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -188,8 +187,6 @@ Get spatial (vector) resource list of layers
 \item{\code{quiet_download}}{a logical value, if TRUE silent download}
 
 \item{\code{force_download}}{a logical value, if TRUE force download}
-
-\item{\code{...}}{other parameters to \verb{$download}}
 }
 \if{html}{\out{</div>}}
 }
@@ -207,8 +204,7 @@ Get the list of sheets name of resource
   format = NULL,
   download_folder = NULL,
   quiet_download = TRUE,
-  force_download = FALSE,
-  ...
+  force_download = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -222,8 +218,6 @@ Get the list of sheets name of resource
 \item{\code{quiet_download}}{a logical value, if TRUE silent download}
 
 \item{\code{force_download}}{a logical value, if TRUE force download}
-
-\item{\code{...}}{other parameters to \verb{$download}}
 }
 \if{html}{\out{</div>}}
 }

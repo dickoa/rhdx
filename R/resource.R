@@ -109,7 +109,7 @@ Resource <- R6::R6Class(
     #' @param simplify_json a logical value
     #' @param force_download a logical value, if TRUE force download
     #' @param quiet_download a logical value, if TRUE silent download
-    #' @param ... other parameters to `$download`
+    #' @param ... other parameters
     #' @return a `tibble`, a `sf`, a `stars` or a `list` depending
     #' on the type of resource read
     read_resource = function(sheet = NULL, layer = NULL,
@@ -122,7 +122,7 @@ Resource <- R6::R6Class(
 
       file_path <- self$download(folder = download_folder,
                                  quiet = quiet_download,
-                                 force = force_download, ...)
+                                 force = force_download)
 
       if (is.null(format))
         format <- self$get_format()
@@ -132,27 +132,17 @@ Resource <- R6::R6Class(
                        ignore.case = TRUE))
 
       switch(format,
-             csv = read_hdx_csv(file_path, hxl = hxl),
-             `zipped csv` = read_hdx_csv(file_path, hxl = hxl),
-             excel = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
-             xlsx = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
-             xls = read_hdx_excel(file_path, sheet = sheet, hxl = hxl),
-             json = read_hdx_json(file_path, simplify_json = simplify_json),
-             geojson = read_hdx_vector(file_path, layer, zipped = FALSE),
-             geotiff = read_hdx_raster(file_path, zipped = FALSE),
-             kmz = read_hdx_vector(file_path, layer = layer),
-             `geodatabase` = read_hdx_vector(file_path,
-                                             layer = layer, zipped = FALSE),
-             `gdb` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
-             shp = read_hdx_vector(file_path, layer = layer),
-             `zipped shapefile` = read_hdx_vector(file_path, layer = layer),
-             `zipped shapefiles` = read_hdx_vector(file_path, layer = layer),
-             `zipped geodatabase` = read_hdx_vector(file_path,
-                                                    layer = layer, zipped = FALSE),
-             `zipped gdb` = read_hdx_vector(file_path, layer = layer, zipped = FALSE),
-             `zipped kml` = read_hdx_vector(file_path, layer = layer),
-             `zipped geopackage` = read_hdx_vector(file_path, layer = layer),
-             `zipped geotiff` = read_hdx_raster(file_path))
+             csv = read_hdx_delim(file_path, hxl = hxl, ...),
+             xlsx = read_hdx_excel(file_path, sheet = sheet, hxl = hxl, ...),
+             xls = read_hdx_excel(file_path, sheet = sheet, hxl = hxl, ...),
+             json = read_hdx_json(file_path, simplify_json = simplify_json, ...),
+             geojson = read_hdx_vector(file_path, layer = layer, ...),
+             kmz = read_hdx_vector(file_path, layer = layer, ...),
+             geodatabase = read_hdx_vector(file_path, layer = layer, ...),
+             shp = read_hdx_vector(file_path, layer = layer, ...),
+             geopackage = read_hdx_vector(file_path, layer = layer, ...),
+             kml = read_hdx_vector(file_path, layer = layer, ...),
+             geotiff = read_hdx_raster(file_path, ...))
     },
 
     #' @description
@@ -163,40 +153,34 @@ Resource <- R6::R6Class(
     #' @param format character; file format
     #' @param force_download a logical value, if TRUE force download
     #' @param quiet_download a logical value, if TRUE silent download
-    #' @param ... other parameters to `$download`
+    #'
     #' @return a the list of layers available in the resource
     get_layers = function(format = NULL, download_folder = NULL,
-                          quiet_download = TRUE, force_download = FALSE, ...) {
+                          quiet_download = TRUE, force_download = FALSE) {
 
       if (!is.null(private$download_folder_) & is.null(download_folder))
         folder <- self$download_folder()
 
       file_path <- self$download(folder = download_folder,
-                                 quiet = quiet_download, force = force_download, ...)
+                                 quiet = quiet_download, force = force_download)
 
       if (is.null(format))
         format <- self$get_format()
 
-      supported_geo_format <- c("geojson", "zipped shapefile",
-                                "zipped shapefiles", "zipped geodatabase",
-                                "zipped gdb", "zipped geopackage",
-                                "kmz", "zipped kml", "gdb", "geodatabase")
+      supported_geo_format <- c("geojson", "shp", "geopackage",
+                                "kmz", "geodatabase", "kml")
 
       if (!format %in% supported_geo_format)
         stop("This (spatial) vector format is not yet supported",
              call. = FALSE)
 
       switch(format,
-             geojson = get_hdx_layers_(file_path, zipped = FALSE),
-             `zipped shapefile` = get_hdx_layers_(file_path),
-             `zipped shapefiles` = get_hdx_layers_(file_path),
-             `zipped geodatabase` = get_hdx_layers_(file_path, zipped = FALSE),
-             `geodatabase` = get_hdx_layers_(file_path, zipped = FALSE),
-             `zipped gdb` = get_hdx_layers_(file_path, zipped = FALSE),
-             `gdb` = get_hdx_layers_(file_path, zipped = FALSE),
-             `zipped geopackage` = get_hdx_layers_(file_path),
-             kmz = get_hdx_layers_(file_path),
-             `zipped kml` = get_hdx_layers_(file_path))
+             geojson = get_hdx_layers_(file_path),
+             shp = get_hdx_layers_(file_path),
+             geodatabase = get_hdx_layers_(file_path),
+             geopackage = get_hdx_layers_(file_path),
+             kml = get_hdx_layers_(file_path),
+             kmz = get_hdx_layers_(file_path))
     },
 
     #' @description
@@ -207,25 +191,25 @@ Resource <- R6::R6Class(
     #' @param format character; file format
     #' @param force_download a logical value, if TRUE force download
     #' @param quiet_download a logical value, if TRUE silent download
-    #' @param ... other parameters to `$download`
+    #'
     #' @return a the list of layers available in the resource
     get_sheets = function(format = NULL, download_folder = NULL,
-                          quiet_download = TRUE, force_download = FALSE, ...) {
+                          quiet_download = TRUE, force_download = FALSE) {
 
       if (!is.null(private$download_folder_) & is.null(download_folder))
         folder <- self$download_folder()
 
       file_path <- self$download(folder = download_folder,
-                                 quiet = quiet, force = force_download, ...)
+                                 quiet = quiet,
+                                 force = force_download)
 
       if (is.null(format))
       format <- self$get_format()
 
-      if (!format %in% c("xlsx", "xls", "excel"))
+      if (!format %in% c("xlsx", "xls"))
         stop("`get_sheets work only with Excel file", call. = FALSE)
 
       switch(format,
-             excel = get_hdx_sheets_(file_path),
              xlsx = get_hdx_sheets_(file_path),
              xls = get_hdx_sheets_(file_path))
     },
@@ -374,15 +358,14 @@ get_resource_layers <- function(resource, format = NULL,
 #' @param format character; file format
 #' @param download_folder character, path of the directory where you will store the data
 #' @param quiet logical, no progress bar from download (default = FALSE)
-#' @param ... extra parameters
 #'
 #' @return the names of the sheets of XLS(X) resources
 #' @export
 get_resource_sheets <- function(resource, format = NULL,
-                                download_folder = NULL, quiet = TRUE, ...) {
+                                download_folder = NULL, quiet = TRUE) {
   assert_resource(resource)
   resource$get_sheets(format = format,
-                      download_folder = download_folder, quiet = quiet, ...)
+                      download_folder = download_folder, quiet = quiet)
 }
 
 #' Get the file format of the resource
@@ -422,7 +405,7 @@ get_resource_dataset <- function(resource) {
 #'  and data frames for JSON resources
 #' @param force_download Logical, force download if TRUE
 #' @param quiet_download logical, silent download
-#' @param ... Extra parameters
+#' @param ... extra parameters
 #' @return an `tibble`, a `list`, a `stars` or a `sf` object depending
 #' on the type of resource you are reading from HDX
 #' @export

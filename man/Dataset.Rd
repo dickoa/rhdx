@@ -107,9 +107,18 @@ a Resource object, the selected resource
 \subsection{Method \code{get_resources()}}{
 Get all resources of the dataset
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dataset$get_resources()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Dataset$get_resources(pattern = NULL, format = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pattern}}{regex pattern in resource name}
+
+\item{\code{format}}{format of the resources}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 a list of Resource objects, all resources available in the dataset
 }

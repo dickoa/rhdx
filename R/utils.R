@@ -155,7 +155,6 @@ find_schema_row <- function(tbl) {
   -1
 }
 
-
 #' Strip HXL tags from tibble
 #'
 #' Strip HXL tags from tibble
@@ -175,7 +174,6 @@ strip_hxl <- function(x) {
   base_tbl
 }
 
-
 #' @noRd
 #' @author Dirk Schumascher
 is_valid_tag <- function(tag) {
@@ -191,16 +189,17 @@ read_hdx_json <- function(file, simplify_json = FALSE, ...) {
   fromJSON(file, simplifyVector = simplify_json, ...)
 }
 
-#' @importFrom readr read_csv
+#' @importFrom readr read_delim default_locale locale
 #' @noRd
-read_hdx_csv <- function(file, hxl = FALSE, ...) {
+read_hdx_delim <- function(file, hxl = FALSE, delim = NULL, locale = default_locale(), ...) {
   check_packages("readr")
-  df <- read_csv(file, ...)
+  if (is.null(delim))
+    delim <- ","
+  df <- read_delim(file, delim = delim, locale = locale, ...)
   if (isTRUE(hxl))
     df <- strip_hxl(df)
   df
 }
-
 
 #' @importFrom readxl excel_sheets read_excel
 #' @noRd
@@ -218,11 +217,12 @@ read_hdx_excel <- function(file = NULL, sheet = NULL, hxl = FALSE, ...) {
 
 #' @importFrom sf st_layers
 #' @noRd
-get_hdx_layers_ <- function(file = NULL, zipped = TRUE) {
+get_hdx_layers_ <- function(file = NULL) {
   check_packages("sf")
+  zipped <- grepl("\\.zip$", file, ignore.case = TRUE)
   if (zipped)
     file <- file.path("/vsizip", file)
-  st_layers(file)
+  st_layers(file)$name
 }
 
 #' @importFrom readxl excel_sheets
@@ -234,26 +234,28 @@ get_hdx_sheets_ <- function(file = NULL) {
 
 #' @importFrom sf read_sf st_layers
 #' @noRd
-read_hdx_vector <- function(file = NULL, layer = NULL, zipped = TRUE, ...) {
+read_hdx_vector <- function(file = NULL, layer = NULL, ...) {
   check_packages("sf")
+  zipped <- grepl("\\.zip$", file, ignore.case = TRUE)
   if (zipped)
     file <- file.path("/vsizip", file)
   if (is.null(layer)) {
-    layer <- st_layers(file)[[1]][1]
+    layer <- st_layers(file)$name[1]
     message("Reading layer: ", layer, "\n")
   }
   read_sf(dsn = file, layer = layer, ...)
 }
 
+
 #' @importFrom stars read_stars
 #' @noRd
-read_hdx_raster <- function(file = NULL, zipped = TRUE, ...) {
+read_hdx_raster <- function(file = NULL, ...) {
   check_packages("stars")
+  zipped <- grepl("\\.zip$", file, ignore.case = TRUE)
   if (zipped)
     file <- file.path("/vsizip", file)
   read_stars(file, ...)
 }
-
 
 #' Encode URL from proxy.hxlstandard
 #'
