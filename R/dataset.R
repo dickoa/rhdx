@@ -137,7 +137,7 @@ HDXDataset <- R6::R6Class(
       date <- self$data$dataset_date
       if (is.null(date))
         date <- ""
-      date
+      parse_hdx_date_range(date)
     },
 
     #' @description
@@ -252,7 +252,8 @@ HDXDataset <- R6::R6Class(
         cat(paste0("<HDX Requestable Dataset> ", self$data$id), "\n")
         cat("  Title: ", self$data$title, "\n", sep = "")
         cat("  Name: ", self$data$name, "\n", sep = "")
-        cat("  Date: ", self$get_dataset_date(), "\n", sep = "")
+        cat("  Date range: ", paste(self$get_dataset_date(), collapse = " to "),
+            "\n", sep = "")
         cat("  Tags (up to 5): ", sift_res(self$data$tags), "\n", sep = "")
         cat("  Locations (up to 5): ",
             sift_res(self$data$groups, "title"), "\n", sep = "")
@@ -260,7 +261,8 @@ HDXDataset <- R6::R6Class(
         cat(paste0("<HDX Dataset> ", self$data$id), "\n")
         cat("  Title: ", self$data$title, "\n", sep = "")
         cat("  Name: ", self$data$name, "\n", sep = "")
-        cat("  Date: ", self$get_dataset_date(), "\n", sep = "")
+        cat("  Date range: ", paste(self$get_dataset_date(), collapse = " to "),
+            "\n", sep = "")
         cat("  Tags (up to 5): ", sift_res(self$data$tags), "\n", sep = "")
         cat("  Locations (up to 5): ",
             sift_res(self$data$groups, "title"), "\n", sep = "")

@@ -12,6 +12,13 @@ drop_nulls <- function(x) {
 }
 
 #' @noRd
+parse_hdx_date_range <- function(x) {
+  reg <- gregexpr("\\d{4}\\-\\d{2}\\-\\d{2}", x)
+  regmatches(x, reg)[[1]]
+}
+
+
+#' @noRd
 check_config_params <- function(hdx_site = NULL, hdx_key = NULL, hdx_config_file = NULL, read_only = NULL, user_agent = NULL) {
 
   if (!is.null(hdx_site) && !hdx_site %in% c("prod", "test", "feature", "demo"))
