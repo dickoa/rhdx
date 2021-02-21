@@ -4,8 +4,8 @@
 #'
 #' @format NULL
 #' @usage NULL
-Showcase <- R6::R6Class(
-  classname = "Showcase",
+HDXShowcase <- R6::R6Class(
+  classname = "HDXShowcase",
   inherit = HDXObject,
 
   private = list(
@@ -25,7 +25,7 @@ Showcase <- R6::R6Class(
     #' @param configuration Configuration, configuration to use
     #' @return a new Showcase object
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
+      if (is.null(configuration) | !inherits(configuration, "HDXShowcase")) {
         private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
@@ -91,7 +91,7 @@ Showcase <- R6::R6Class(
 #' @export
 #' @aliases Showcase
 #' @importFrom tibble as_tibble
-as_tibble.Showcase <- function(x) {
+as_tibble.HDXShowcase <- function(x) {
   df <- tibble::tibble(
     showcase_id = x$data$id,
     showcase_name = x$data$name)
@@ -101,19 +101,19 @@ as_tibble.Showcase <- function(x) {
 
 #' @export
 #' @aliases Showcase
-as.list.Showcase <- function(x, ...) {
+as.list.HDXShowcase <- function(x, ...) {
   x$as_list()
 }
 
 #' @noRd
 .pull_showcase <- function(identifier = NULL, configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXShowcase"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("ckanext_showcase_show",
                                    body = list(id = identifier),
                                    verb = "post")
-  Showcase$new(initial_data = res, configuration = configuration)
+  HDXShowcase$new(initial_data = res, configuration = configuration)
 }
 
 #' Read Showcase

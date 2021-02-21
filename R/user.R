@@ -4,8 +4,8 @@
 #'
 #' @format NULL
 #' @usage NULL
-User <- R6::R6Class(
-  classname = "User",
+HDXUser <- R6::R6Class(
+  classname = "HDXUser",
   inherit = HDXObject,
 
   private = list(
@@ -23,7 +23,7 @@ User <- R6::R6Class(
     #' @param configuration Configuration configuration to use
     #' @return a new User object
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
+      if (is.null(configuration) | !inherits(configuration, "HDXConfig")) {
         private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
@@ -46,7 +46,7 @@ User <- R6::R6Class(
     #' Browse the user page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
-      browseURL(url = paste0(url, "user/", self$data$name))
+      browseURL(url = paste0(url, "/user/", self$data$name))
     },
 
     #' @description
@@ -65,7 +65,7 @@ User <- R6::R6Class(
 #' @export
 #' @aliases User
 #' @importFrom tibble as_tibble
-as_tibble.User <- function(x, ...) {
+as_tibble.HDXUser <- function(x, ...) {
   df <- tibble::tibble(
     user_id = x$data$id,
     user_name = x$data$name)
@@ -75,7 +75,7 @@ as_tibble.User <- function(x, ...) {
 
 #' @export
 #' @aliases User
-as.list.User <- function(x, ...) {
+as.list.HDXUser <- function(x, ...) {
   x$as_list()
 }
 
@@ -83,13 +83,13 @@ as.list.User <- function(x, ...) {
 #' @rdname pull_user
 .pull_user  <-  function(identifier = NULL,
                          include_datasets = FALSE, configuration = NULL, ...) {
-  if (is.null(configuration) | !inherits(configuration, "Configuration"))
+  if (is.null(configuration) | !inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("user_show",
                                    list(id = identifier,
                                         include_datasets = include_datasets, ...))
-  User$new(initial_data = res, configuration = configuration)
+  HDXUser$new(initial_data = res, configuration = configuration)
 }
 
 #' Read an HDX user
@@ -121,14 +121,13 @@ pull_user <- memoise(.pull_user)
   if (!order_by %in% c("name", "number_of_edits", "number_created_packages"))
     stop("You can just sort by the following parameters `name`, `number_of_edits` or `number_created_packages`",
          call. = TRUE)
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("user_list",
                                    list(order_by = order_by, ...))
   res
 }
-
 
 #' List all users
 #'
@@ -153,5 +152,5 @@ list_users <- memoise(.list_users)
 
 #' @rdname browse
 #' @export
-browse.User <- function(x, ...)
+browse.HDXUser <- function(x, ...)
   x$browse()

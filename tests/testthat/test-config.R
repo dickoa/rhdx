@@ -1,7 +1,7 @@
 context("set_rhdx_config")
 
 test_that("create_rhdx_config must returns a Configuration object", {
-  expect_is(create_rhdx_config(), "Configuration")
+  expect_is(create_rhdx_config(), "HDXConfig")
 })
 
 test_that("Set configuration on the wrong server", {

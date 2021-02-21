@@ -7,7 +7,7 @@ test_that("pull_dataset must return an object of class Dataset", {
   vcr::use_cassette("pull_dataset", {
     output <- pull_dataset("reliefweb-crisis-figures")
   })
-  expect_is(output, "Dataset")
+  expect_is(output, "HDXDataset")
 })
 
 test_that("get_resource must return an object of class Dataset", {
@@ -17,7 +17,7 @@ test_that("get_resource must return an object of class Dataset", {
   vcr::use_cassette("pull_dataset", {
     output <- pull_dataset("reliefweb-crisis-figures")
   })
-  expect_is(get_resource(output, 1), "Resource")
+  expect_is(get_resource(output, 1), "HDXResource")
 })
 
 test_that("get_resources must return a list of Resources", {
@@ -27,8 +27,8 @@ test_that("get_resources must return a list of Resources", {
   vcr::use_cassette("pull_dataset", {
     output <- pull_dataset("reliefweb-crisis-figures")
   })
-  expect_is(get_resources(output), "resources_list")
-  expect_is(get_resources(output)[[1]], "Resource")
+  expect_is(get_resources(output), "hdx_resources_list")
+  expect_is(get_resources(output)[[1]], "HDXResource")
   expect_that(length(get_resources(delete_resources(output))),
               equals(0))
 })

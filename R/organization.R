@@ -4,8 +4,8 @@
 #'
 #' @format NULL
 #' @usage NULL
-Organization <- R6::R6Class(
-  classname = "Organization",
+HDXOrganization <- R6::R6Class(
+  classname = "HDXOrganization",
   inherit = HDXObject,
 
   private = list(
@@ -23,7 +23,7 @@ Organization <- R6::R6Class(
     #' @param configuration a Configuration object
     #' @return A Organization object
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
+      if (is.null(configuration) | !inherits(configuration, "HDXConfig")) {
         private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
@@ -34,13 +34,12 @@ Organization <- R6::R6Class(
       self$data <- initial_data
     },
 
-
     #' @description
     #' Get the list of datasets within the organization
     #' @return list of Dataset objects
     get_datasets = function() {
       if (!"packages" %in% names(self$data))
-        stop("No datasets available, use Organization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
+        stop("No datasets available, use HDXOrganization$pull with `include_datasets = TRUE` and try again!", call. = FALSE)
       list_of_ds <- lapply(self$data$packages,
                            function(x) Dataset$new(initial_data = x))
       class(list_of_ds) <- "datasets_list"
@@ -51,7 +50,7 @@ Organization <- R6::R6Class(
     #' Browse the Organization page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
-      browseURL(url = paste0(url, "organization/", self$data$name))
+      browseURL(url = paste0(url, "/organization/", self$data$name))
     },
 
     #' @description
@@ -87,20 +86,22 @@ as_tibble.Organization <- function(x, ...) {
 
 #' @export
 #' @aliases Organization
-as.list.Organization <- function(x, ...) {
+as.list.HDXOrganization <- function(x, ...) {
   x$as_list()
 }
 
 #' @noRd
 .pull_organization  <-  function(identifier = NULL,
                                  include_datasets = FALSE, configuration = NULL, ...) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("organization_show",
                                    list(id = identifier,
-                                        include_datasets = include_datasets, ...))
-  Organization$new(initial_data = res, configuration = configuration)
+                                        include_datasets = include_datasets,
+                                        ...))
+  HDXOrganization$new(initial_data = res,
+                      configuration = configuration)
 }
 
 #' Read an HDX organization
@@ -137,13 +138,14 @@ browse.Organization <- function(x, ...)
 #'
 #' @rdname list_organizations
 #' @return A list of organizations on HDX
-.list_organizations  <-  function(sort = "name asc", all_fields = FALSE,
+.list_organizations  <-  function(sort = "name asc",
+                                  all_fields = FALSE,
                                   include_dataset_count = TRUE,
                                   include_groups = FALSE,
                                   include_user = FALSE,
                                   include_tags = FALSE,
                                   configuration = NULL, ...) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   data <- drop_nulls(list(sort = sort, all_fields = all_fields,

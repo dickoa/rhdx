@@ -2,9 +2,8 @@
 #'
 #' HDX Resource, it contains all the logic for creating, checking,
 #' and updating resources
-#'
-Resource <- R6::R6Class(
-  classname = "Resource",
+HDXResource <- R6::R6Class(
+  classname = "HDXResource",
   inherit = HDXObject,
 
   private = list(
@@ -23,7 +22,7 @@ Resource <- R6::R6Class(
     #' @param configuration a Configuration object
     #' @return A new Resource object
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
+      if (is.null(configuration) | !inherits(configuration, "HDXConfig")) {
         private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
@@ -84,9 +83,8 @@ Resource <- R6::R6Class(
                       ...)
 
       private$download_folder_ <- tools::file_path_as_absolute(folder)
-      invisible(file_path_as_absolute(file_path))
+      invisible(tools::file_path_as_absolute(file_path))
     },
-
 
     #' @description
     #' Get the download folder for the latest downloaded resource
@@ -162,7 +160,8 @@ Resource <- R6::R6Class(
         folder <- self$download_folder()
 
       file_path <- self$download(folder = download_folder,
-                                 quiet = quiet_download, force = force_download)
+                                 quiet = quiet_download,
+                                 force = force_download)
 
       if (is.null(format))
         format <- self$get_format()
@@ -291,7 +290,7 @@ Resource <- R6::R6Class(
 #' @export
 #' @aliases Resource
 #' @importFrom tibble as_tibble
-as_tibble.Resource <- function(x, ...) {
+as_tibble.HDXResource <- function(x, ...) {
   df <- tibble::tibble(
     resource_id = x$data$id,
     resource_name = x$data$name,
@@ -303,7 +302,7 @@ as_tibble.Resource <- function(x, ...) {
 
 #' @export
 #' @aliases Resource
-as.list.Resource <- function(x, ...) {
+as.list.HDXResource <- function(x, ...) {
   x$as_list()
 }
 
@@ -362,10 +361,12 @@ get_resource_layers <- function(resource, format = NULL,
 #' @return the names of the sheets of XLS(X) resources
 #' @export
 get_resource_sheets <- function(resource, format = NULL,
-                                download_folder = NULL, quiet = TRUE) {
+                                download_folder = NULL,
+                                quiet = TRUE) {
   assert_resource(resource)
   resource$get_sheets(format = format,
-                      download_folder = download_folder, quiet = quiet)
+                      download_folder = download_folder,
+                      quiet = quiet)
 }
 
 #' Get the file format of the resource
@@ -411,8 +412,11 @@ get_resource_dataset <- function(resource) {
 #' @export
 read_resource <- function(resource, sheet = NULL,
                           layer = NULL, format = NULL,
-                          download_folder = NULL, simplify_json = TRUE,
-                          force_download = FALSE, quiet_download = TRUE, ...) {
+                          download_folder = NULL,
+                          simplify_json = TRUE,
+                          force_download = FALSE,
+                          quiet_download = TRUE,
+                          ...) {
   assert_resource(resource)
   resource$read_resource(sheet = sheet,
                          layer = layer,
@@ -427,7 +431,7 @@ read_resource <- function(resource, sheet = NULL,
 
 #' @export
 #' @aliases Resource
-as_tibble.resources_list <- function(x, ...) {
+as_tibble.hdx_resources_list <- function(x, ...) {
   l <- lapply(x, as_tibble)
   Reduce(rbind, l)
 }
@@ -436,14 +440,14 @@ as_tibble.resources_list <- function(x, ...) {
 #' @rdname search_resources
 #' @noRd
 .search_resources  <-  function(query = "*:*", configuration = NULL, ...) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("resource_search", list(query = query, ...))
   list_of_rs <- lapply(res$results, function(x)
-    Resource$new(initial_data = x,
+    HDXResource$new(initial_data = x,
                  configuration = configuration))
-  class(list_of_rs) <- "resources_list"
+  class(list_of_rs) <- "hdx_resources_list"
   list_of_rs
 }
 
@@ -462,20 +466,20 @@ search_resources <- memoise(.search_resources)
 
 #' @export
 #' @aliases Resource
-as_tibble.resources_list <- function(x, ...) {
+as_tibble.hdx_resources_list <- function(x, ...) {
   l <- lapply(x, as_tibble)
   Reduce(rbind, l)
 }
 
-
 #' @noRd
 .pull_resource <- function(identifier, configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  res <- configuration$call_action("resource_show", list(id = identifier))
-  Resource$new(initial_data = res,
-               configuration = configuration)
+  res <- configuration$call_action("resource_show",
+                                   list(id = identifier))
+  HDXResource$new(initial_data = res,
+                  configuration = configuration)
 }
 
 #' Read an HDX resource
@@ -503,5 +507,5 @@ pull_resource <- memoise(.pull_resource)
 
 #' @rdname browse
 #' @export
-browse.Resource <- function(x, ...)
+browse.HDXResource <- function(x, ...)
   x$browse()

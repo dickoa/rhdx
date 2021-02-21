@@ -4,8 +4,8 @@
 \name{browse.Dataset}
 \alias{browse.Dataset}
 \alias{browse.Organization}
-\alias{browse.Resource}
-\alias{browse.User}
+\alias{browse.HDXResource}
+\alias{browse.HDXUser}
 \alias{browse}
 \alias{browse.default}
 \title{Browse a HDX object}
@@ -14,9 +14,9 @@
 
 \method{browse}{Organization}(x, ...)
 
-\method{browse}{Resource}(x, ...)
+\method{browse}{HDXResource}(x, ...)
 
-\method{browse}{User}(x, ...)
+\method{browse}{HDXUser}(x, ...)
 
 browse(x, ...)
 

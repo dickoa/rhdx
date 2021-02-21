@@ -3,13 +3,14 @@
 #' Dataset class containing all logic for accessing,
 #' creating, and updating datasets and associated resources.
 #'
-Dataset <- R6::R6Class(
-  classname = "Dataset",
+HDXDataset <- R6::R6Class(
+  classname = "HDXDataset",
   inherit = HDXObject,
 
   private = list(
     configuration = NULL
   ),
+
   public = list(
     #' @field resources list of Resource object within the dataset
     resources = NULL,
@@ -22,7 +23,7 @@ Dataset <- R6::R6Class(
     #' @param configuration a Configuration object
     #' @return A Dataset object
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
+      if (is.null(configuration) | !inherits(configuration, "HDXConfig")) {
         private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
@@ -35,8 +36,8 @@ Dataset <- R6::R6Class(
       if ("resources" %in% key)
         self$resources <- lapply(self$data$resources,
                                  function(x)
-                                   Resource$new(initial_data = x,
-                                                configuration = configuration))
+                                   HDXResource$new(initial_data = x,
+                                                   configuration = configuration))
     },
 
     #' @description
@@ -77,7 +78,7 @@ Dataset <- R6::R6Class(
       if (is.null(l) | length(l) < 1)
         l <- list()
 
-      class(l) <- "resources_list"
+      class(l) <- "hdx_resources_list"
       l
     },
 
@@ -117,7 +118,7 @@ Dataset <- R6::R6Class(
     #' Browse the dataset page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
-      browseURL(url = paste0(url, "dataset/", self$data$name))
+      browseURL(url = paste0(url, "/dataset/", self$data$name))
     },
 
     #' @description
@@ -190,9 +191,11 @@ Dataset <- R6::R6Class(
       configuration <- private$configuration
       id <- self$data$id
       res <- configuration$call_action("ckanext_package_showcase_list",
-                                       body = list(package_id = id), verb = "post")
+                                       body = list(package_id = id),
+                                       verb = "post")
       lapply(res, function(r)
-        Showcase$new(initial_data = r, configuration = configuration))
+        HDXShowcase$new(initial_data = r,
+                        configuration = configuration))
     },
 
     #' @description
@@ -271,14 +274,14 @@ Dataset <- R6::R6Class(
 
 #' @export
 #' @aliases Dataset
-as.list.Dataset <- function(x, ...) {
+as.list.HDXDataset <- function(x, ...) {
   x$as_list()
 }
 
 #' @export
 #' @aliases Dataset
 #' @importFrom tibble as_tibble
-as_tibble.Dataset <- function(x, ...) {
+as_tibble.HDXDataset <- function(x, ...) {
   tibble::tibble(dataset_title = tolower(x$data$title),
                  dataset_name = x$data$name,
                  dataset_date = x$get_dataset_date(),
@@ -355,29 +358,30 @@ delete_resources <- function(dataset) {
 
 #' need to solve the issue with start and paginator
 #' @importFrom jsonlite fromJSON
+#' @importFrom crul Paginator
 #' @rdname search_datasets
 #' @noRd
 .search_datasets  <-  function(query = "*:*", filter_query = NULL,
                                rows = 10L, start = 0L, page_size = 1000L,
                                configuration = NULL, ...) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
-  cc <- crul::Paginator$new(client = configuration$remoteclient(),
-                            by = "query_params",
-                            limit_param = "rows",
-                            offset_param = "start",
-                            limit = rows,
-                            limit_chunk = page_size)
+  cc <- Paginator$new(client = configuration$remoteclient(),
+                      by = "limit_offset",
+                      limit_param = "rows",
+                      offset_param = "start",
+                      limit = rows,
+                      chunk = page_size)
   suppressMessages(cc$get(path = paste0("/api/3/action/", "package_search"),
                           list(q = query, fq = filter_query, ...)))
   list_of_ds <- fromJSON(cc$parse(),
                          simplifyVector = FALSE)$result$results
   list_of_ds <- lapply(list_of_ds,
                        function(x)
-                         Dataset$new(initial_data = x,
+                         HDXDataset$new(initial_data = x,
                                      configuration = configuration))
-  class(list_of_ds) <- "datasets_list"
+  class(list_of_ds) <- "hdx_datasets_list"
   list_of_ds
 }
 
@@ -413,20 +417,20 @@ search_datasets <- memoise(.search_datasets)
 
 #' @export
 #' @aliases Dataset
-as_tibble.datasets_list <- function(x, ...) {
+as_tibble.hdx_datasets_list <- function(x, ...) {
   l <- lapply(x, as_tibble)
   Reduce(rbind, l)
 }
 
 #' @noRd
 .pull_dataset <-  function(identifier, configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("package_show",
                                    list(id = identifier))
-  Dataset$new(initial_data = res,
-              configuration = configuration)
+  HDXDataset$new(initial_data = res,
+                 configuration = configuration)
 }
 
 #' Pull HDX dataset into R
@@ -469,7 +473,7 @@ pull_dataset <- memoise(.pull_dataset)
 #'  list_datasets(limit = 10L)
 #' }
 .list_datasets  <-  function(limit = NULL, offset = NULL, configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   data <- drop_nulls(list(offset = offset, limit = limit))
@@ -484,7 +488,7 @@ list_datasets <- memoise(.list_datasets)
 
 #' @noRd
 .count_datasets  <-  function(configuration = NULL) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   stats <- hdx_general_statistics()

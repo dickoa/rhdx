@@ -4,8 +4,8 @@
 #'
 #' @format NULL
 #' @usage NULL
-Location <- R6::R6Class(
-  classname = "Location",
+HDXLocation <- R6::R6Class(
+  classname = "HDXLocation",
   inherit = HDXObject,
 
   private = list(
@@ -23,7 +23,7 @@ Location <- R6::R6Class(
     #' @param configuration a Configuration object
     #' @return A Location object
     initialize = function(initial_data = NULL, configuration = NULL) {
-      if (is.null(configuration) | !inherits(configuration, "Configuration")) {
+      if (is.null(configuration) | !inherits(configuration, "HDXConfig")) {
         private$configuration <- get_rhdx_config()
       } else {
         private$configuration <- configuration
@@ -51,7 +51,8 @@ Location <- R6::R6Class(
       n2 <- names(self$data)
       n1 <- self$get_required_fields()
       if (!all(n1 %in% n2)) {
-        stop(sprintf("Field %s is missing in the dataset!\n", setdiff(n1, n2)),
+        stop(sprintf("Field %s is missing in the dataset!\n",
+                     setdiff(n1, n2)),
              call. = FALSE)
       } else {
         TRUE
@@ -62,7 +63,7 @@ Location <- R6::R6Class(
     #' Browser the Location page on HDX
     browse = function() {
       url <- private$configuration$get_hdx_site_url()
-      browseURL(url = paste0(url, "group/", self$data$name))
+      browseURL(url = paste0(url, "/group/", self$data$name))
     },
 
     #' @description
@@ -89,14 +90,16 @@ Location <- R6::R6Class(
 #' @rdname pull_location
 .pull_location <- function(identifier = NULL, include_datasets = FALSE,
                            configuration = NULL, ...) {
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   identifier <- assert_location(tolower(identifier))
   res <- configuration$call_action("group_show",
                                    list(id = identifier,
-                                        include_datasets = include_datasets, ...))
-  Location$new(initial_data = res, configuration = configuration)
+                                        include_datasets = include_datasets,
+                                        ...))
+  HDXLocation$new(initial_data = res,
+                  configuration = configuration)
 }
 
 #' Read an HDX location
@@ -126,7 +129,7 @@ pull_location <- memoise(.pull_location)
 #' @export
 #' @aliases Location
 #' @importFrom tibble as_tibble
-as_tibble.Location <- function(x, ...) {
+as_tibble.HDXLocation <- function(x, ...) {
   df <- tibble::tibble(
     location_id = x$data$id,
     location_name = x$data$name)
@@ -136,7 +139,7 @@ as_tibble.Location <- function(x, ...) {
 
 #' @export
 #' @aliases Location
-as.list.Location <- function(x, ...) {
+as.list.HDXLocation <- function(x, ...) {
   x$as_list()
 }
 
@@ -146,7 +149,7 @@ as.list.Location <- function(x, ...) {
                               all_fields = FALSE, configuration = NULL, ...) {
   if (!sort %in% c("name asc", "name", "package_count", "title"))
     stop("You can just sort by the following parameters `name asc`, `name`, `package_count` or `title`", call. = FALSE)
-  if (!is.null(configuration) & inherits(configuration, "Configuration"))
+  if (!is.null(configuration) & inherits(configuration, "HDXConfig"))
     set_rhdx_config(configuration = configuration)
   configuration <- get_rhdx_config()
   res <- configuration$call_action("group_list",

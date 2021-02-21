@@ -16,8 +16,8 @@
 #' set_rhdx_config(hdx_site = "prod")
 #' get_rhd_config()
 #' }
-Configuration <- R6::R6Class(
-  classname = "Configuration",
+HDXConfig <- R6::R6Class(
+  classname = "HDXConfig",
   private = list(shared = .rhdx_env),
   public = list(
     #' @field data all info in list.
@@ -220,7 +220,7 @@ Configuration <- R6::R6Class(
           stop("Not a 'Configuration' object!", call. = FALSE)
         private$shared$configuration <- configuration
       } else {
-        private$shared$configuration <- Configuration$new(hdx_site = hdx_site,
+        private$shared$configuration <- HDXConfig$new(hdx_site = hdx_site,
                                                           hdx_key = hdx_key,
                                                           read_only = read_only,
                                                           hdx_config = hdx_config)
@@ -284,9 +284,9 @@ Configuration <- R6::R6Class(
 #' @export
 create_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL,
                                read_only = TRUE, hdx_config = NULL, hdx_config_file = NULL) {
-  Configuration$new(hdx_site = hdx_site, hdx_key = hdx_key,
-                    read_only = read_only, hdx_config = hdx_config,
-                    hdx_config_file = hdx_config_file)
+  HDXConfig$new(hdx_site = hdx_site, hdx_key = hdx_key,
+                read_only = read_only, hdx_config = hdx_config,
+                hdx_config_file = hdx_config_file)
 }
 
 #' Set rhdx config
@@ -322,11 +322,11 @@ set_rhdx_config <- function(hdx_site = "prod", hdx_key = NULL, read_only = TRUE,
   if (!is.null(configuration) & inherits(configuration, "Configuration")) {
     .rhdx_env$configuration <- configuration
   } else {
-    .rhdx_env$configuration <- Configuration$new(hdx_site = hdx_site,
-                                                 hdx_key = hdx_key,
-                                                 read_only = read_only,
-                                                 hdx_config = hdx_config,
-                                                 hdx_config_file = hdx_config_file)
+    .rhdx_env$configuration <- HDXConfig$new(hdx_site = hdx_site,
+                                             hdx_key = hdx_key,
+                                             read_only = read_only,
+                                             hdx_config = hdx_config,
+                                             hdx_config_file = hdx_config_file)
   }
 }
 

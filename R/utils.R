@@ -38,12 +38,12 @@ check_config_params <- function(hdx_site = NULL, hdx_key = NULL, hdx_config_file
 
 #' @noRd
 assert_configuration <- function(configuration)
-  if (is.null(configuration) | !inherits(configuration, "Configuration"))
+  if (is.null(configuration) | !inherits(configuration, "HDXConfig"))
     stop("HDX configuration not set! Use `set_rhdx_config`", call. = FALSE)
 
 #' @noRd
 assert_dataset <- function(x, requestable = NULL) {
-  if (!inherits(x, "Dataset"))
+  if (!inherits(x, "HDXDataset"))
     stop("Not an HDX dataset!", call. = FALSE)
   if (!is.null(requestable) && isTRUE(requestable) && isFALSE(x$is_requestable()))
     stop("Not an HDX requestable dataset", call. = FALSE)
@@ -53,21 +53,21 @@ assert_dataset <- function(x, requestable = NULL) {
 
 #' @noRd
 assert_datasets_list <- function(x) {
-  if (!inherits(x, "datasets_list"))
+  if (!inherits(x, "hdx_datasets_list"))
     stop("Not a list of HDX Datasets!", call. = FALSE)
   invisible(x)
 }
 
 #' @noRd
 assert_resource <- function(x) {
-  if (!inherits(x, "Resource"))
+  if (!inherits(x, "HDXResource"))
     stop("Not an HDX Resource object!", call. = FALSE)
   invisible(x)
 }
 
 #' @noRd
 assert_organization <- function(x) {
-  if (!inherits(x, "Organization"))
+  if (!inherits(x, "HDXOrganization"))
     stop("Not an HDX Organization object!", call. = FALSE)
   invisible(x)
 }
@@ -78,7 +78,8 @@ assert_location <- function(x) {
   pattern <- paste0("^", x, "$")
   cond <- any(grepl(pattern, loc, ignore.case = TRUE))
   if (!cond)
-    stop("Not a valid HDX Location, enter the ISO3 code of the country!", call. = FALSE)
+    stop("Not a valid HDX Location, enter the ISO3 code of the country!",
+         call. = FALSE)
   invisible(x)
 }
 
@@ -92,7 +93,8 @@ parse_response <- function(res) {
   if(!inherits(res, "HttpResponse"))
     stop("Not a API call response object!", call. = FALSE)
   if (res$status_code < 400) {
-    x <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"), simplifyVector = FALSE)
+    x <- jsonlite::fromJSON(res$parse(encoding = "UTF-8"),
+                            simplifyVector = FALSE)
     x <- x$result
   } else {
     x <- list()
