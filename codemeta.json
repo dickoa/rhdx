@@ -16,7 +16,7 @@
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.2 Patched (2020-09-02 r79116)",
+  "runtimePlatform": "R version 4.0.4 RC (2021-02-12 r80000)",
   "author": [
     {
       "@type": "Person",
@@ -130,7 +130,7 @@
       "@type": "SoftwareApplication",
       "identifier": "crul",
       "name": "crul",
-      "version": ">= 0.8",
+      "version": ">= 1.1",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -284,7 +284,7 @@
       "sameAs": "https://CRAN.R-project.org/package=countrycode"
     }
   ],
-  "fileSize": "255.825KB",
+  "fileSize": "295.62KB",
   "contIntegration": ["https://travis-ci.org/dickoa/rhdx", "https://ci.appveyor.com/project/dickoa/rhdx", "https://codecov.io/gh/dickoa/rhdx"],
   "contributor": {},
   "copyrightHolder": {},
