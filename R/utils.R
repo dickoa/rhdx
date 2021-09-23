@@ -258,11 +258,17 @@ read_hdx_vector <- function(file = NULL, layer = NULL, ...) {
 
 #' @importFrom stars read_stars
 #' @noRd
-read_hdx_raster <- function(file = NULL, ...) {
+read_hdx_geotiff <- function(file = NULL, raster_file_path = "",...) {
   check_packages("stars")
   zipped <- grepl("\\.zip$", file, ignore.case = TRUE)
-  if (zipped)
-    file <- file.path("/vsizip", file)
+  if (zipped) {
+    l <- unzip(file, list = TRUE)
+    geo_file <- grep("\\.tif$", l$Name, value = TRUE)
+    geo_file <- geo_file[1]
+    if (length(geo_file) <= 0)
+      geo_file <- ""
+    file <- file.path("/vsizip", file, geo_file)
+  }
   read_stars(file, ...)
 }
 

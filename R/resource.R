@@ -140,7 +140,7 @@ HDXResource <- R6::R6Class(
              shp = read_hdx_vector(file_path, layer = layer, ...),
              geopackage = read_hdx_vector(file_path, layer = layer, ...),
              kml = read_hdx_vector(file_path, layer = layer, ...),
-             geotiff = read_hdx_raster(file_path, ...))
+             geotiff = read_hdx_geotiff(file_path, ...))
     },
 
     #' @description
