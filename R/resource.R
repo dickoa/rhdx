@@ -130,7 +130,8 @@ HDXResource <- R6::R6Class(
                        ignore.case = TRUE))
 
       switch(format,
-             csv = read_hdx_delim(file_path, hxl = hxl, ...),
+             txt = read_hdx_delim(file_path, hxl = hxl, ...),
+             csv = read_hdx_csv(file_path, hxl = hxl, ...),
              xlsx = read_hdx_excel(file_path, sheet = sheet, hxl = hxl, ...),
              xls = read_hdx_excel(file_path, sheet = sheet, hxl = hxl, ...),
              json = read_hdx_json(file_path, simplify_json = simplify_json, ...),

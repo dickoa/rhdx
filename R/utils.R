@@ -198,12 +198,23 @@ read_hdx_json <- function(file, simplify_json = FALSE, ...) {
   fromJSON(file, simplifyVector = simplify_json, ...)
 }
 
+#' @importFrom readr read_csv
+#' @noRd
+read_hdx_csv <- function(file, hxl = FALSE, ...) {
+  check_packages("readr")
+  df <- read_csv(file, ...)
+  if (isTRUE(hxl))
+    df <- strip_hxl(df)
+  df
+}
+
+
 #' @importFrom readr read_delim default_locale locale
 #' @noRd
 read_hdx_delim <- function(file, hxl = FALSE, delim = NULL, locale = default_locale(), ...) {
   check_packages("readr")
   if (is.null(delim))
-    delim <- ","
+    delim <- "\t"
   df <- read_delim(file, delim = delim, locale = locale, ...)
   if (isTRUE(hxl))
     df <- strip_hxl(df)
@@ -262,7 +273,7 @@ read_hdx_geotiff <- function(file = NULL, raster_file_path = "",...) {
   check_packages("stars")
   zipped <- grepl("\\.zip$", file, ignore.case = TRUE)
   if (zipped) {
-    l <- unzip(file, list = TRUE)
+    l <- utils::unzip(file, list = TRUE)
     geo_file <- grep("\\.tif$", l$Name, value = TRUE)
     geo_file <- geo_file[1]
     if (length(geo_file) <= 0)
